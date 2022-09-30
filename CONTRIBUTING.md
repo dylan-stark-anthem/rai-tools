@@ -26,8 +26,10 @@ There is almost never a reason to use HTML directly - the entire point of Markdo
 In general, development requires `poetry` for package/dependency management, `Make` for CI orchestration, and `pre-commit` for managing Git hooks.
 
 The best and fastest way to get started with a base development environment is to use the provided [VSCODE development container](https://code.visualstudio.com/docs/remote/containers).
+This will take care of all system-level dependencies (e.g., SSL certs, utilities, etc.) and project-level setup (e.g., pre-commit and poetry installs).
+
 Once in the dev container, you have the general requirements installed and all you need to do to start is to run
 
 ```
-make setup
+make build
 ```
