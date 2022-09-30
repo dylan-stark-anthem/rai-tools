@@ -3,6 +3,7 @@ help:
 
 setup:
 	pre-commit install --install-hooks
+	poetry install
 
 ################################################################################
 
