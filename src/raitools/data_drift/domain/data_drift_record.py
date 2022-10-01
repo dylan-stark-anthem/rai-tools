@@ -8,6 +8,8 @@ class BundleManifestMetadata(BaseModel):
     """Bundle manifest metadata."""
 
     bundle_path: Path
+    job_config_filename: str
+    data_filename: str
 
 
 class BundleManifest(BaseModel):
@@ -19,4 +21,4 @@ class BundleManifest(BaseModel):
 class DataDriftRecord(BaseModel):
     """A Data Drift record."""
 
-    manifest: BundleManifest
+    bundle_manifest: BundleManifest
