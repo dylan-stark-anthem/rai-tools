@@ -14,7 +14,13 @@ build:
 	poetry run mypy src tests --ignore-missing-import
 	poetry run pytest --cov
 
+test:
+	poetry run pytest --cov
+
 ################################################################################
 
 .PHONY: \
-	help
+	build \
+	help \
+	setup \
+	test

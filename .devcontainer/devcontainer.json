@@ -13,7 +13,6 @@
 			"NODE_VERSION": "lts/*"
 		}
 	},
-
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"editor.formatOnSave": true,
@@ -25,18 +24,19 @@
 		"python.linting.flake8Enabled": true,
 		"python.linting.mypyEnabled": true,
 		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
-		"python.pythonPath": "/usr/local/bin/python"
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.testing.pytestArgs": [
+			"tests"
+		],
+		"python.testing.pytestEnabled": true
 	},
-
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
 		"ms-python.vscode-pylance",
 		"redhat.vscode-yaml"
 	],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "make setup",
-
 	"remoteUser": "vscode"
 }
