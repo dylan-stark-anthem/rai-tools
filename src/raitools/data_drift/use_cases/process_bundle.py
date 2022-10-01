@@ -27,7 +27,8 @@ def process_bundle(request: Request) -> DataDriftRecord:
                 bundle_path=request.bundle_path,
                 job_config_filename=bundle.job_config_filename,
                 data_filename=bundle.data_filename,
-            )
+            ),
+            job_config=bundle.job_config,
         )
     )
 

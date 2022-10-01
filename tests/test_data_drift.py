@@ -1,5 +1,6 @@
 """Tests for data drift."""
 
+import json
 from pathlib import Path
 from zipfile import ZipFile
 from raitools.data_drift.use_cases.process_bundle import Request, process_bundle
@@ -7,9 +8,15 @@ from raitools.data_drift.use_cases.process_bundle import Request, process_bundle
 
 def test_can_process_bundle(tmp_path: Path) -> None:
     """Tests that we can process a bundle."""
+    job_config = {
+        "dataset_name": "Some name for this dataset",
+        "model_catalog_id": "123",
+        "feature_mapping": [],
+    }
     job_config_filename = "some_job_config.json"
     job_config_path = tmp_path / job_config_filename
     job_config_path.touch()
+    job_config_path.write_text(json.dumps(job_config, indent=2))
 
     data_filename = "some_data.csv"
     data_path = tmp_path / data_filename
@@ -26,3 +33,4 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.bundle_manifest.metadata.bundle_path == bundle_path
     assert record.bundle_manifest.metadata.job_config_filename == job_config_filename
     assert record.bundle_manifest.metadata.data_filename == data_filename
+    assert record.bundle_manifest.job_config == job_config

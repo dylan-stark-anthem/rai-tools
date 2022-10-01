@@ -3,6 +3,8 @@
 from pathlib import Path
 from pydantic import BaseModel
 
+from raitools.data_drift.domain.job_config import JobConfig
+
 
 class BundleManifestMetadata(BaseModel):
     """Bundle manifest metadata."""
@@ -16,6 +18,7 @@ class BundleManifest(BaseModel):
     """A bundle manifest."""
 
     metadata: BundleManifestMetadata
+    job_config: JobConfig
 
 
 class DataDriftRecord(BaseModel):
