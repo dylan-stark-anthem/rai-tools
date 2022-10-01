@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from pydantic import BaseModel
+from raitools.data_drift.domain.data_summary import DataSummary
 
 from raitools.data_drift.domain.job_config import JobConfig
 
@@ -11,7 +12,8 @@ class BundleManifestMetadata(BaseModel):
 
     bundle_path: Path
     job_config_filename: str
-    data_filename: str
+    baseline_data_filename: str
+    test_data_filename: str
 
 
 class BundleManifest(BaseModel):
@@ -19,6 +21,8 @@ class BundleManifest(BaseModel):
 
     metadata: BundleManifestMetadata
     job_config: JobConfig
+    baseline_data_summary: DataSummary
+    test_data_summary: DataSummary
 
 
 class DataDriftRecord(BaseModel):
