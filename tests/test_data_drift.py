@@ -1,14 +1,18 @@
 """Tests for data drift."""
 
 from pathlib import Path
+from typing import Dict
 from zipfile import ZipFile
 
-import numpy as np
 import pyarrow as pa
 from pyarrow.csv import write_csv
 
 from raitools.data_drift.domain.job_config import JobConfig
-from raitools.data_drift.use_cases.process_bundle import Request, process_bundle
+from raitools.data_drift.use_cases.process_bundle import (
+    Request,
+    bonferroni_correction,
+    process_bundle,
+)
 
 
 def test_can_process_bundle(tmp_path: Path) -> None:
@@ -16,8 +20,12 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     num_numerical_features = 2
     num_categorical_features = 3
     num_observations = 10
-    kolmogorov_smirnov_test_threshold = 0.025
-    chi_squared_test_threshold = 0.01666667
+    kolmogorov_smirnov_test_threshold = round(
+        bonferroni_correction(num_numerical_features, alpha=0.05), ndigits=6
+    )
+    chi_squared_test_threshold = round(
+        bonferroni_correction(num_categorical_features, alpha=0.05), ndigits=6
+    )
 
     # Create config
     numerical_features = [
@@ -88,32 +96,45 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.data_summary.num_numerical_features == num_numerical_features
     assert record.data_summary.num_categorical_features == num_categorical_features
 
-    assert (
-        len(
-            [
-                test
-                for test in record.statistical_tests
-                if test.name == "kolmogorov-smirnov"
-            ]
-        )
-        == 1
-    )
-    assert (
-        len([test for test in record.statistical_tests if test.name == "chi-squared"])
-        == 1
-    )
+    expected_record_dict = {
+        "bundle_manifest": {
+            "job_config": job_config,
+            "baseline_data_summary": {
+                "num_rows": num_rows,
+                "num_columns": num_columns,
+            },
+            "test_data_summary": {
+                "num_rows": num_rows,
+                "num_columns": num_columns,
+            },
+            "metadata": {
+                "bundle_path": bundle_path,
+                "job_config_filename": job_config_filename,
+                "baseline_data_filename": baseline_data_path.name,
+            },
+        },
+        "data_summary": {
+            "num_numerical_features": num_numerical_features,
+            "num_categorical_features": num_categorical_features,
+        },
+        "statistical_tests": {
+            "kolmogorov-smirnov": {
+                "name": "kolmogorov-smirnov",
+                "threshold": kolmogorov_smirnov_test_threshold,
+            },
+            "chi-squared": {
+                "name": "chi-squared",
+                "threshold": chi_squared_test_threshold,
+            },
+        },
+    }
 
-    kolmogorov_smirnov_test = [
-        test for test in record.statistical_tests if test.name == "kolmogorov-smirnov"
-    ][0]
-    np.testing.assert_approx_equal(
-        kolmogorov_smirnov_test_threshold, kolmogorov_smirnov_test.threshold
-    )
+    def _assert_equal_dicts(expected_dict: Dict, actual_dict: Dict) -> None:
+        for key in expected_dict:
+            assert key in actual_dict
+            if isinstance(expected_dict[key], dict):
+                _assert_equal_dicts(expected_dict[key], actual_dict[key])
+            else:
+                assert expected_dict[key] == actual_dict[key]
 
-    chi_squared_test = [
-        test for test in record.statistical_tests if test.name == "chi-squared"
-    ][0]
-    np.testing.assert_approx_equal(
-        chi_squared_test_threshold,
-        chi_squared_test.threshold,
-    )
+    _assert_equal_dicts(expected_record_dict, record.dict())

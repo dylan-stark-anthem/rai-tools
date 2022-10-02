@@ -56,11 +56,15 @@ def process_bundle(request: Request) -> DataDriftRecord:
 
     kolmogorov_smirnov_test = StatisticalTest(
         name="kolmogorov-smirnov",
-        threshold=bonferroni_correction(num_numerical_features, alpha=0.05),
+        threshold=round(
+            bonferroni_correction(num_numerical_features, alpha=0.05), ndigits=6
+        ),
     )
     chi_squared_test = StatisticalTest(
         name="chi-squared",
-        threshold=bonferroni_correction(num_categorical_features, alpha=0.05),
+        threshold=round(
+            bonferroni_correction(num_categorical_features, alpha=0.05), ndigits=6
+        ),
     )
 
     record = DataDriftRecord(
@@ -79,10 +83,10 @@ def process_bundle(request: Request) -> DataDriftRecord:
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
         ),
-        statistical_tests=[
-            kolmogorov_smirnov_test,
-            chi_squared_test,
-        ],
+        statistical_tests={
+            kolmogorov_smirnov_test.name: kolmogorov_smirnov_test,
+            chi_squared_test.name: chi_squared_test,
+        },
     )
 
     return record
