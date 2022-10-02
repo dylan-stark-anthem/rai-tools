@@ -3,6 +3,7 @@
 from pathlib import Path
 from zipfile import ZipFile
 
+import numpy as np
 import pyarrow as pa
 from pyarrow.csv import write_csv
 
@@ -15,6 +16,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     num_numerical_features = 2
     num_categorical_features = 3
     num_observations = 10
+    kolmogorov_smirnov_test_threshold = 0.025
+    chi_squared_test_threshold = 0.01666667
 
     # Create config
     numerical_features = [
@@ -84,3 +87,33 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.bundle_manifest.test_data_summary.num_columns == num_columns
     assert record.data_summary.num_numerical_features == num_numerical_features
     assert record.data_summary.num_categorical_features == num_categorical_features
+
+    assert (
+        len(
+            [
+                test
+                for test in record.statistical_tests
+                if test.name == "kolmogorov-smirnov"
+            ]
+        )
+        == 1
+    )
+    assert (
+        len([test for test in record.statistical_tests if test.name == "chi-squared"])
+        == 1
+    )
+
+    kolmogorov_smirnov_test = [
+        test for test in record.statistical_tests if test.name == "kolmogorov-smirnov"
+    ][0]
+    np.testing.assert_approx_equal(
+        kolmogorov_smirnov_test_threshold, kolmogorov_smirnov_test.threshold
+    )
+
+    chi_squared_test = [
+        test for test in record.statistical_tests if test.name == "chi-squared"
+    ][0]
+    np.testing.assert_approx_equal(
+        chi_squared_test_threshold,
+        chi_squared_test.threshold,
+    )

@@ -1,11 +1,13 @@
 """The data drift record."""
 
 from pathlib import Path
+from typing import List
 from pydantic import BaseModel
 from raitools.data_drift.domain.data_summary import DataSummary
 
 from raitools.data_drift.domain.job_config import JobConfig
 from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
+from raitools.data_drift.domain.statistical_test import StatisticalTest
 
 
 class BundleManifestMetadata(BaseModel):
@@ -31,3 +33,4 @@ class DataDriftRecord(BaseModel):
 
     bundle_manifest: BundleManifest
     data_summary: DataDriftDataSummary
+    statistical_tests: List[StatisticalTest]

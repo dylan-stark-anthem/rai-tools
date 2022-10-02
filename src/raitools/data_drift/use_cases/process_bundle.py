@@ -15,6 +15,7 @@ from raitools.data_drift.domain.data_drift_record import (
 from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 from raitools.data_drift.domain.data_summary import DataSummary
 from raitools.data_drift.domain.job_config import Feature
+from raitools.data_drift.domain.statistical_test import StatisticalTest
 
 
 class Request(BaseModel):
@@ -36,6 +37,11 @@ def compute_num_feature_kind(feature_mapping: List[Feature], kind: str) -> int:
     return len([feature for feature in feature_mapping if feature.kind == kind])
 
 
+def bonferroni_correction(num_features: int, alpha: float) -> float:
+    """Calculates Bonferroni correction for given number of features."""
+    return alpha / num_features
+
+
 def process_bundle(request: Request) -> DataDriftRecord:
     """Processes a data drift bundle."""
     bundle = create_bundle_from_zip(request.bundle_path)
@@ -46,6 +52,15 @@ def process_bundle(request: Request) -> DataDriftRecord:
     )
     num_categorical_features = compute_num_feature_kind(
         bundle.job_config.feature_mapping, "categorical"
+    )
+
+    kolmogorov_smirnov_test = StatisticalTest(
+        name="kolmogorov-smirnov",
+        threshold=bonferroni_correction(num_numerical_features, alpha=0.05),
+    )
+    chi_squared_test = StatisticalTest(
+        name="chi-squared",
+        threshold=bonferroni_correction(num_categorical_features, alpha=0.05),
     )
 
     record = DataDriftRecord(
@@ -64,6 +79,10 @@ def process_bundle(request: Request) -> DataDriftRecord:
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
         ),
+        statistical_tests=[
+            kolmogorov_smirnov_test,
+            chi_squared_test,
+        ],
     )
 
     return record
