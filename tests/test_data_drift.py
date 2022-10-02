@@ -12,24 +12,43 @@ from raitools.data_drift.use_cases.process_bundle import Request, process_bundle
 
 def test_can_process_bundle(tmp_path: Path) -> None:
     """Tests that we can process a bundle."""
+    num_numerical_features = 2
+    num_categorical_features = 3
+    num_observations = 10
+
+    # Create config
+    numerical_features = [
+        {"name": f"numerical_feature_{index}", "kind": "numerical"}
+        for index in range(num_numerical_features)
+    ]
+    categorical_features = [
+        {"name": f"categorical_feature_{index}", "kind": "categorical"}
+        for index in range(num_categorical_features)
+    ]
+    feature_mapping = numerical_features + categorical_features
     job_config_json = {
         "dataset_name": "Some name for this dataset",
         "baseline_data_filename": "some_baseline_data.csv",
         "test_data_filename": "some_test_data.csv",
         "model_catalog_id": "123",
-        "feature_mapping": [],
+        "feature_mapping": feature_mapping,
     }
     job_config_filename = "some_job_config.json"
     job_config = JobConfig(**job_config_json)
     job_config_path = tmp_path / job_config_filename
     job_config_path.write_text(job_config.json())
 
-    num_rows = 10
-    num_columns = 3
+    num_columns = num_numerical_features + num_categorical_features
+    num_rows = num_observations
 
-    baseline_data = {
-        f"feature_{column}": range(num_rows) for column in range(num_columns)
+    # Create data
+    baseline_numerical_data = {
+        feature["name"]: range(num_rows) for feature in numerical_features
     }
+    baseline_categorical_data = {
+        feature["name"]: range(num_rows) for feature in categorical_features
+    }
+    baseline_data = {**baseline_numerical_data, **baseline_categorical_data}
     baseline_data_table = pa.Table.from_pydict(baseline_data)
     baseline_data_path = tmp_path / job_config.baseline_data_filename
     write_csv(baseline_data_table, baseline_data_path)
@@ -63,3 +82,5 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.bundle_manifest.baseline_data_summary.num_columns == num_columns
     assert record.bundle_manifest.test_data_summary.num_rows == num_rows
     assert record.bundle_manifest.test_data_summary.num_columns == num_columns
+    assert record.data_summary.num_numerical_features == num_numerical_features
+    assert record.data_summary.num_categorical_features == num_categorical_features
