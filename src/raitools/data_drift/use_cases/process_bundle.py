@@ -66,9 +66,9 @@ def create_drift_summary(
             )
             adjusted_significance_level = test_corrections[test_name].threshold
             if result.p_value <= adjusted_significance_level:
-                outcome = "fail to reject null hypothesis"
-            else:
                 outcome = "reject null hypothesis"
+            else:
+                outcome = "fail to reject null hypothesis"
             result = DriftSummary(
                 name=test_name,
                 result=result,
@@ -76,10 +76,10 @@ def create_drift_summary(
                 adjusted_significance_level=adjusted_significance_level,
                 outcome=outcome,
             )
-            if outcome == "fail to reject null hypothesis":
-                drift_status = "not drifted"
-            else:
+            if outcome == "reject null hypothesis":
                 drift_status = "drifted"
+            else:
+                drift_status = "not drifted"
             results[feature_name] = FeatureSummary(
                 name=feature_name,
                 kind=kind,
