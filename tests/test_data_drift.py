@@ -206,16 +206,6 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "num_categorical_features": num_categorical_features,
             },
         },
-        "statistical_tests": {
-            "kolmogorov-smirnov": {
-                "name": "kolmogorov-smirnov",
-                "threshold": kolmogorov_smirnov_test_threshold,
-            },
-            "chi-squared": {
-                "name": "chi-squared",
-                "threshold": chi_squared_test_threshold,
-            },
-        },
         "bundle": {
             "job_config": job_config,
             "data": {

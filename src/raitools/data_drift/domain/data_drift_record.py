@@ -8,7 +8,6 @@ from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 
 from raitools.data_drift.domain.drift_summary import FeatureSummary
 from raitools.data_drift.domain.job_config import JobConfig
-from raitools.data_drift.domain.statistical_test import StatisticalTest
 
 
 class BundleManifest(BaseModel):
@@ -56,5 +55,4 @@ class DataDriftRecord(BaseModel):
     kind: str = "DataDriftRecord"
     metadata: DataDriftMetadata
     bundle: Bundle
-    statistical_tests: Dict[str, StatisticalTest]
     drift_summary: DataDriftRecordDriftSummary

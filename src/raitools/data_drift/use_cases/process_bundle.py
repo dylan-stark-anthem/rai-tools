@@ -167,7 +167,6 @@ def process_bundle(request: Request) -> DataDriftRecord:
                 test_data_filename=bundle.test_data_filename,
             ),
         ),
-        statistical_tests=test_corrections,
         drift_summary=DataDriftRecordDriftSummary(
             features=drift_summary,
             metadata=DataDriftDataSummary(
