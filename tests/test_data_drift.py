@@ -98,23 +98,25 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     request = Request(bundle_path=bundle_path)
     record = process_bundle(request)
 
-    assert record.bundle_manifest.metadata.bundle_path == bundle_path
-    assert record.bundle_manifest.metadata.job_config_filename == job_config_filename
+    assert record.bundle.manifest.bundle_path == bundle_path
+    assert record.bundle.manifest.job_config_filename == job_config_filename
     assert (
-        record.bundle_manifest.metadata.baseline_data_filename
+        record.bundle.manifest.baseline_data_filename
         == job_config.baseline_data_filename
     )
+    assert record.bundle.manifest.test_data_filename == job_config.test_data_filename
+    assert record.bundle.job_config == job_config
+    assert record.bundle.data["baseline_data"].num_rows == num_rows
+    assert record.bundle.data["baseline_data"].num_columns == num_columns
+    assert record.bundle.data["test_data"].num_rows == num_rows
+    assert record.bundle.data["test_data"].num_columns == num_columns
     assert (
-        record.bundle_manifest.metadata.test_data_filename
-        == job_config.test_data_filename
+        record.drift_summary.metadata.num_numerical_features == num_numerical_features
     )
-    assert record.bundle_manifest.job_config == job_config
-    assert record.bundle_manifest.baseline_data_summary.num_rows == num_rows
-    assert record.bundle_manifest.baseline_data_summary.num_columns == num_columns
-    assert record.bundle_manifest.test_data_summary.num_rows == num_rows
-    assert record.bundle_manifest.test_data_summary.num_columns == num_columns
-    assert record.data_summary.num_numerical_features == num_numerical_features
-    assert record.data_summary.num_categorical_features == num_categorical_features
+    assert (
+        record.drift_summary.metadata.num_categorical_features
+        == num_categorical_features
+    )
 
     expected_record_dict = {
         "apiVersion": "raitools/v1",
@@ -122,84 +124,86 @@ def test_can_process_bundle(tmp_path: Path) -> None:
         "metadata": {
             "raitools_version": raitools.__version__,
         },
-        "data_summary": {
-            "num_numerical_features": num_numerical_features,
-            "num_categorical_features": num_categorical_features,
-        },
         "drift_summary": {
-            "numerical_feature_0": {
-                "name": "numerical_feature_0",
-                "kind": "numerical",
-                "rank": 1,
-                "statistical_test": {
-                    "name": "kolmogorov-smirnov",
-                    "result": {"statistic": 0.0, "p_value": 1.0},
-                    "significance_level": 0.05,
-                    "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
-                    "outcome": "fail to reject null hypothesis",
-                },
-                "drift_status": "not drifted",
-            },
-            "numerical_feature_1": {
-                "name": "numerical_feature_1",
-                "kind": "numerical",
-                "rank": 2,
-                "statistical_test": {
-                    "name": "kolmogorov-smirnov",
-                    "result": {"statistic": 0.0, "p_value": 1.0},
-                    "significance_level": 0.05,
-                    "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
-                    "outcome": "fail to reject null hypothesis",
-                },
-                "drift_status": "not drifted",
-            },
-            "categorical_feature_0": {
-                "name": "categorical_feature_0",
-                "kind": "categorical",
-                "rank": 3,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "statistic": 0.0,
-                        "p_value": 1.0,
+            "features": {
+                "numerical_feature_0": {
+                    "name": "numerical_feature_0",
+                    "kind": "numerical",
+                    "rank": 1,
+                    "statistical_test": {
+                        "name": "kolmogorov-smirnov",
+                        "result": {"statistic": 0.0, "p_value": 1.0},
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                        "outcome": "fail to reject null hypothesis",
                     },
-                    "significance_level": 0.05,
-                    "adjusted_significance_level": chi_squared_test_threshold,
-                    "outcome": "fail to reject null hypothesis",
+                    "drift_status": "not drifted",
                 },
-                "drift_status": "not drifted",
-            },
-            "categorical_feature_1": {
-                "name": "categorical_feature_1",
-                "kind": "categorical",
-                "rank": 4,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "statistic": 0.0,
-                        "p_value": 1.0,
+                "numerical_feature_1": {
+                    "name": "numerical_feature_1",
+                    "kind": "numerical",
+                    "rank": 2,
+                    "statistical_test": {
+                        "name": "kolmogorov-smirnov",
+                        "result": {"statistic": 0.0, "p_value": 1.0},
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                        "outcome": "fail to reject null hypothesis",
                     },
-                    "significance_level": 0.05,
-                    "adjusted_significance_level": chi_squared_test_threshold,
-                    "outcome": "fail to reject null hypothesis",
+                    "drift_status": "not drifted",
                 },
-                "drift_status": "not drifted",
-            },
-            "categorical_feature_2": {
-                "name": "categorical_feature_2",
-                "kind": "categorical",
-                "rank": 5,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "statistic": 0.0,
-                        "p_value": 1.0,
+                "categorical_feature_0": {
+                    "name": "categorical_feature_0",
+                    "kind": "categorical",
+                    "rank": 3,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "outcome": "fail to reject null hypothesis",
                     },
-                    "significance_level": 0.05,
-                    "adjusted_significance_level": chi_squared_test_threshold,
-                    "outcome": "fail to reject null hypothesis",
+                    "drift_status": "not drifted",
                 },
-                "drift_status": "not drifted",
+                "categorical_feature_1": {
+                    "name": "categorical_feature_1",
+                    "kind": "categorical",
+                    "rank": 4,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "outcome": "fail to reject null hypothesis",
+                    },
+                    "drift_status": "not drifted",
+                },
+                "categorical_feature_2": {
+                    "name": "categorical_feature_2",
+                    "kind": "categorical",
+                    "rank": 5,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "outcome": "fail to reject null hypothesis",
+                    },
+                    "drift_status": "not drifted",
+                },
+            },
+            "metadata": {
+                "num_numerical_features": num_numerical_features,
+                "num_categorical_features": num_categorical_features,
             },
         },
         "statistical_tests": {
@@ -212,20 +216,25 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "threshold": chi_squared_test_threshold,
             },
         },
-        "bundle_manifest": {
+        "bundle": {
             "job_config": job_config,
-            "baseline_data_summary": {
-                "num_rows": num_rows,
-                "num_columns": num_columns,
+            "data": {
+                "baseline_data": {
+                    "filename": baseline_data_path.name,
+                    "num_rows": num_rows,
+                    "num_columns": num_columns,
+                },
+                "test_data": {
+                    "filename": test_data_path.name,
+                    "num_rows": num_rows,
+                    "num_columns": num_columns,
+                },
             },
-            "test_data_summary": {
-                "num_rows": num_rows,
-                "num_columns": num_columns,
-            },
-            "metadata": {
+            "manifest": {
                 "bundle_path": bundle_path,
                 "job_config_filename": job_config_filename,
                 "baseline_data_filename": baseline_data_path.name,
+                "test_data_filename": test_data_path.name,
             },
         },
     }

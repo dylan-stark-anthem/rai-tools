@@ -4,16 +4,15 @@ from pathlib import Path
 from typing import Dict
 
 from pydantic import BaseModel
+from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 
-from raitools.data_drift.domain.data_summary import DataSummary
 from raitools.data_drift.domain.drift_summary import FeatureSummary
 from raitools.data_drift.domain.job_config import JobConfig
-from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 from raitools.data_drift.domain.statistical_test import StatisticalTest
 
 
-class BundleManifestMetadata(BaseModel):
-    """Bundle manifest metadata."""
+class BundleManifest(BaseModel):
+    """A bundle manifest."""
 
     bundle_path: Path
     job_config_filename: str
@@ -21,13 +20,20 @@ class BundleManifestMetadata(BaseModel):
     test_data_filename: str
 
 
-class BundleManifest(BaseModel):
-    """A bundle manifest."""
+class BundleData(BaseModel):
+    """Bundle data."""
 
-    metadata: BundleManifestMetadata
+    filename: str
+    num_rows: int
+    num_columns: int
+
+
+class Bundle(BaseModel):
+    """A bundle."""
+
     job_config: JobConfig
-    baseline_data_summary: DataSummary
-    test_data_summary: DataSummary
+    data: Dict[str, BundleData]
+    manifest: BundleManifest
 
 
 class DataDriftMetadata(BaseModel):
@@ -36,13 +42,19 @@ class DataDriftMetadata(BaseModel):
     raitools_version: str
 
 
+class DataDriftRecordDriftSummary(BaseModel):
+    """Data drift record drift summary."""
+
+    features: Dict[str, FeatureSummary]
+    metadata: DataDriftDataSummary
+
+
 class DataDriftRecord(BaseModel):
     """A Data Drift record."""
 
     apiVersion: str = "raitools/v1"
     kind: str = "DataDriftRecord"
     metadata: DataDriftMetadata
-    bundle_manifest: BundleManifest
-    data_summary: DataDriftDataSummary
+    bundle: Bundle
     statistical_tests: Dict[str, StatisticalTest]
-    drift_summary: Dict[str, FeatureSummary]
+    drift_summary: DataDriftRecordDriftSummary

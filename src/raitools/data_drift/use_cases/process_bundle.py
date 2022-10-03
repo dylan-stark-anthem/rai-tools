@@ -9,15 +9,21 @@ import raitools
 
 from raitools.data_drift.domain.bundle import create_bundle_from_zip
 from raitools.data_drift.domain.data_drift_record import (
+    Bundle,
+    BundleData,
     BundleManifest,
-    BundleManifestMetadata,
     DataDriftMetadata,
     DataDriftRecord,
+    DataDriftRecordDriftSummary,
 )
 from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 from raitools.data_drift.domain.data_summary import DataSummary
-from raitools.data_drift.domain.drift_summary import DriftSummary, FeatureSummary
-from raitools.data_drift.domain.job_config import Feature
+from raitools.data_drift.domain.drift_summary import (
+    DriftSummary,
+    Feature,
+    FeatureSummary,
+)
+from raitools.data_drift.domain import job_config
 from raitools.data_drift.domain.stats import statistical_tests
 from raitools.data_drift.domain.statistical_test import StatisticalTest
 
@@ -36,7 +42,9 @@ def create_data_summary(data: pa.Table) -> DataSummary:
     )
 
 
-def compute_num_feature_kind(feature_mapping: Dict[str, Feature], kind: str) -> int:
+def compute_num_feature_kind(
+    feature_mapping: Dict[str, job_config.Feature], kind: str
+) -> int:
     """Counts number of features of a specific kind."""
     return len(
         [feature for feature in feature_mapping.values() if feature.kind == kind]
@@ -51,14 +59,14 @@ def bonferroni_correction(num_features: int, alpha: float) -> float:
 def create_drift_summary(
     baseline_data: pa.Table,
     test_data: pa.Table,
-    feature_mapping: Dict[str, Feature],
+    feature: Dict[str, Feature],
     test_corrections: Dict[str, StatisticalTest],
 ) -> Dict[str, FeatureSummary]:
     """Calculates drift statistics for all features."""
     significance_level = 0.05
 
     results: Dict[str, FeatureSummary] = {}
-    for feature_name, feature_details in feature_mapping.items():
+    for feature_name, feature_details in feature.items():
         kind = feature_details.kind
         tests = statistical_tests[kind]
         for test_name, test_details in tests.items():
@@ -97,12 +105,29 @@ def process_bundle(request: Request) -> DataDriftRecord:
     bundle = create_bundle_from_zip(request.bundle_path)
     baseline_data_summary = create_data_summary(bundle.baseline_data)
     test_data_summary = create_data_summary(bundle.test_data)
+    features = {
+        name: Feature(**feature.dict())
+        for name, feature in bundle.job_config.feature_mapping.items()
+    }
     num_numerical_features = compute_num_feature_kind(
         bundle.job_config.feature_mapping, "numerical"
     )
     num_categorical_features = compute_num_feature_kind(
         bundle.job_config.feature_mapping, "categorical"
     )
+
+    bundle_data = {
+        "baseline_data": BundleData(
+            filename=bundle.job_config.baseline_data_filename,
+            num_rows=baseline_data_summary.num_rows,
+            num_columns=baseline_data_summary.num_columns,
+        ),
+        "test_data": BundleData(
+            filename=bundle.job_config.test_data_filename,
+            num_rows=test_data_summary.num_rows,
+            num_columns=test_data_summary.num_columns,
+        ),
+    }
 
     kolmogorov_smirnov_test = StatisticalTest(
         name="kolmogorov-smirnov",
@@ -124,7 +149,7 @@ def process_bundle(request: Request) -> DataDriftRecord:
     drift_summary = create_drift_summary(
         bundle.baseline_data,
         bundle.test_data,
-        bundle.job_config.feature_mapping,
+        features,
         test_corrections,
     )
 
@@ -132,23 +157,25 @@ def process_bundle(request: Request) -> DataDriftRecord:
         metadata=DataDriftMetadata(
             raitools_version=raitools.__version__,
         ),
-        bundle_manifest=BundleManifest(
-            metadata=BundleManifestMetadata(
+        bundle=Bundle(
+            job_config=bundle.job_config,
+            data=bundle_data,
+            manifest=BundleManifest(
                 bundle_path=request.bundle_path,
                 job_config_filename=bundle.job_config_filename,
                 baseline_data_filename=bundle.baseline_data_filename,
                 test_data_filename=bundle.test_data_filename,
             ),
-            job_config=bundle.job_config,
-            baseline_data_summary=baseline_data_summary,
-            test_data_summary=test_data_summary,
-        ),
-        data_summary=DataDriftDataSummary(
-            num_numerical_features=num_numerical_features,
-            num_categorical_features=num_categorical_features,
         ),
         statistical_tests=test_corrections,
-        drift_summary=drift_summary,
+        drift_summary=DataDriftRecordDriftSummary(
+            features=drift_summary,
+            metadata=DataDriftDataSummary(
+                features=features,
+                num_numerical_features=num_numerical_features,
+                num_categorical_features=num_categorical_features,
+            ),
+        ),
     )
 
     return record

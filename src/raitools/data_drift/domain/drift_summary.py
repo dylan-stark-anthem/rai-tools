@@ -16,6 +16,14 @@ class DriftSummary(BaseModel):
     outcome: str
 
 
+class Feature(BaseModel):
+    """Feature."""
+
+    name: str
+    kind: str
+    rank: int
+
+
 class FeatureSummary(BaseModel):
     """Feature summary."""
 

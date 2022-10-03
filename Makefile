@@ -17,6 +17,9 @@ build:
 test:
 	poetry run pytest --cov
 
+type_check:
+	poetry run mypy src tests --ignore-missing-import
+
 ################################################################################
 
 .PHONY: \
