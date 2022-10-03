@@ -1,6 +1,6 @@
 """A Data Drift job config."""
 
-from typing import List
+from typing import Dict
 from pydantic import BaseModel
 
 
@@ -18,4 +18,4 @@ class JobConfig(BaseModel):
     baseline_data_filename: str
     test_data_filename: str
     model_catalog_id: str
-    feature_mapping: List[Feature]
+    feature_mapping: Dict[str, Feature]

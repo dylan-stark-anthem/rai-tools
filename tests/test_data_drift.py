@@ -1,7 +1,7 @@
 """Tests for data drift."""
 
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Union
 from zipfile import ZipFile
 
 import pyarrow as pa
@@ -28,15 +28,23 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     )
 
     # Create config
-    numerical_features = [
-        {"name": f"numerical_feature_{index}", "kind": "numerical"}
+    numerical_features = {
+        f"numerical_feature_{index}": {
+            "name": f"numerical_feature_{index}",
+            "kind": "numerical",
+            "rank": index + 1,
+        }
         for index in range(num_numerical_features)
-    ]
-    categorical_features = [
-        {"name": f"categorical_feature_{index}", "kind": "categorical"}
+    }
+    categorical_features = {
+        f"categorical_feature_{index}": {
+            "name": f"categorical_feature_{index}",
+            "kind": "categorical",
+            "rank": num_numerical_features + index,
+        }
         for index in range(num_categorical_features)
-    ]
-    feature_mapping = numerical_features + categorical_features
+    }
+    feature_mapping = {**numerical_features, **categorical_features}
     job_config_json = {
         "dataset_name": "Some name for this dataset",
         "baseline_data_filename": "some_baseline_data.csv",
@@ -53,19 +61,30 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     num_rows = num_observations
 
     # Create data
-    baseline_numerical_data = {
-        feature["name"]: range(num_rows) for feature in numerical_features
-    }
-    baseline_categorical_data = {
-        feature["name"]: range(num_rows) for feature in categorical_features
-    }
-    baseline_data = {**baseline_numerical_data, **baseline_categorical_data}
-    baseline_data_table = pa.Table.from_pydict(baseline_data)
+    data_schema = pa.schema(
+        [
+            pa.field("numerical_feature_0", pa.int64()),
+            pa.field("numerical_feature_1", pa.int64()),
+            pa.field("categorical_feature_0", pa.string()),
+            pa.field("categorical_feature_1", pa.string()),
+            pa.field("categorical_feature_2", pa.string()),
+        ]
+    )
+    baseline_data: Dict[str, List[Union[int, str]]] = {}
+    for feature in numerical_features:
+        baseline_data[feature] = [index for index in range(num_rows)]
+    for feature in categorical_features:
+        baseline_data[feature] = [f"category_{index}" for index in range(num_rows)]
+    baseline_data_table = pa.Table.from_pydict(baseline_data, schema=data_schema)
     baseline_data_path = tmp_path / job_config.baseline_data_filename
     write_csv(baseline_data_table, baseline_data_path)
 
-    test_data = {f"feature_{column}": range(num_rows) for column in range(num_columns)}
-    test_data_table = pa.Table.from_pydict(test_data)
+    test_data: Dict[str, List[Union[int, str]]] = {}
+    for feature in numerical_features:
+        test_data[feature] = [index for index in range(num_rows)]
+    for feature in categorical_features:
+        test_data[feature] = [f"category_{index}" for index in range(num_rows)]
+    test_data_table = pa.Table.from_pydict(test_data, schema=data_schema)
     test_data_path = tmp_path / job_config.test_data_filename
     write_csv(test_data_table, test_data_path)
 
@@ -97,6 +116,71 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.data_summary.num_categorical_features == num_categorical_features
 
     expected_record_dict = {
+        "data_summary": {
+            "num_numerical_features": num_numerical_features,
+            "num_categorical_features": num_categorical_features,
+        },
+        "drift_summary": {
+            "numerical_feature_0": {
+                "name": "numerical_feature_0",
+                "kind": "numerical",
+                "statistical_test": {
+                    "name": "kolmogorov-smirnov",
+                    "result": {"statistic": 0.0, "p_value": 1.0},
+                },
+            },
+            "numerical_feature_1": {
+                "name": "numerical_feature_1",
+                "kind": "numerical",
+                "statistical_test": {
+                    "name": "kolmogorov-smirnov",
+                    "result": {"statistic": 0.0, "p_value": 1.0},
+                },
+            },
+            "categorical_feature_0": {
+                "name": "categorical_feature_0",
+                "kind": "categorical",
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "statistic": 0.0,
+                        "p_value": 1.0,
+                    },
+                },
+            },
+            "categorical_feature_1": {
+                "name": "categorical_feature_1",
+                "kind": "categorical",
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "statistic": 0.0,
+                        "p_value": 1.0,
+                    },
+                },
+            },
+            "categorical_feature_2": {
+                "name": "categorical_feature_2",
+                "kind": "categorical",
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "statistic": 0.0,
+                        "p_value": 1.0,
+                    },
+                },
+            },
+        },
+        "statistical_tests": {
+            "kolmogorov-smirnov": {
+                "name": "kolmogorov-smirnov",
+                "threshold": kolmogorov_smirnov_test_threshold,
+            },
+            "chi-squared": {
+                "name": "chi-squared",
+                "threshold": chi_squared_test_threshold,
+            },
+        },
         "bundle_manifest": {
             "job_config": job_config,
             "baseline_data_summary": {
@@ -111,20 +195,6 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "bundle_path": bundle_path,
                 "job_config_filename": job_config_filename,
                 "baseline_data_filename": baseline_data_path.name,
-            },
-        },
-        "data_summary": {
-            "num_numerical_features": num_numerical_features,
-            "num_categorical_features": num_categorical_features,
-        },
-        "statistical_tests": {
-            "kolmogorov-smirnov": {
-                "name": "kolmogorov-smirnov",
-                "threshold": kolmogorov_smirnov_test_threshold,
-            },
-            "chi-squared": {
-                "name": "chi-squared",
-                "threshold": chi_squared_test_threshold,
             },
         },
     }
