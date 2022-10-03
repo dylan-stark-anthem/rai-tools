@@ -33,6 +33,8 @@ class BundleManifest(BaseModel):
 class DataDriftRecord(BaseModel):
     """A Data Drift record."""
 
+    apiVersion: str = "raitools/v1"
+    kind: str = "DataDriftRecord"
     bundle_manifest: BundleManifest
     data_summary: DataDriftDataSummary
     statistical_tests: Dict[str, StatisticalTest]

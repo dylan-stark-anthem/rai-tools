@@ -116,6 +116,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     assert record.data_summary.num_categorical_features == num_categorical_features
 
     expected_record_dict = {
+        "apiVersion": "raitools/v1",
+        "kind": "DataDriftRecord",
         "data_summary": {
             "num_numerical_features": num_numerical_features,
             "num_categorical_features": num_categorical_features,
