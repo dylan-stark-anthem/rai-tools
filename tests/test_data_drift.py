@@ -40,7 +40,7 @@ def test_can_process_bundle(tmp_path: Path) -> None:
         f"categorical_feature_{index}": {
             "name": f"categorical_feature_{index}",
             "kind": "categorical",
-            "rank": num_numerical_features + index,
+            "rank": num_numerical_features + index + 1,
         }
         for index in range(num_categorical_features)
     }
@@ -124,6 +124,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
             "numerical_feature_0": {
                 "name": "numerical_feature_0",
                 "kind": "numerical",
+                "rank": 1,
+                # "status": "drifted",
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
@@ -132,6 +134,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
             "numerical_feature_1": {
                 "name": "numerical_feature_1",
                 "kind": "numerical",
+                "rank": 2,
+                #  "status": "not drifted",
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
@@ -140,6 +144,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
             "categorical_feature_0": {
                 "name": "categorical_feature_0",
                 "kind": "categorical",
+                "rank": 3,
+                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -151,6 +157,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
             "categorical_feature_1": {
                 "name": "categorical_feature_1",
                 "kind": "categorical",
+                "rank": 4,
+                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -162,6 +170,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
             "categorical_feature_2": {
                 "name": "categorical_feature_2",
                 "kind": "categorical",
+                "rank": 5,
+                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {

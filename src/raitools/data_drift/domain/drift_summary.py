@@ -18,4 +18,5 @@ class FeatureSummary(BaseModel):
 
     name: str
     kind: str
+    rank: int
     statistical_test: DriftSummary

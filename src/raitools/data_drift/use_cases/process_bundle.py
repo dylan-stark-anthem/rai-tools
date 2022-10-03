@@ -67,6 +67,7 @@ def create_drift_summary(
             results[feature_name] = FeatureSummary(
                 name=feature_name,
                 kind=kind,
+                rank=feature_details.rank,
                 statistical_test=result,
             )
     return results

@@ -9,6 +9,7 @@ class Feature(BaseModel):
 
     name: str
     kind: str
+    rank: int
 
 
 class JobConfig(BaseModel):

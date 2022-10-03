@@ -6,6 +6,9 @@ from raitools.data_drift.domain.stats.chi_squared import chi_squared
 from raitools.data_drift.domain.stats.kolmogorov_smirnov import kolmogorov_smirnov
 
 
+# NOTE: Rationale for using a typed dict here instead ofa Pydantic model
+#       is that this is purely internal typing information. (We'll see if
+#       that reasoning holds up longer-term.)
 class StatisticalTest(TypedDict):
     """Statistical test."""
 
