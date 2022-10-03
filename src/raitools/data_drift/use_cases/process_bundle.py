@@ -50,8 +50,11 @@ def create_drift_summary(
     baseline_data: pa.Table,
     test_data: pa.Table,
     feature_mapping: Dict[str, Feature],
+    test_corrections: Dict[str, StatisticalTest],
 ) -> Dict[str, FeatureSummary]:
     """Calculates drift statistics for all features."""
+    significance_level = 0.05
+
     results: Dict[str, FeatureSummary] = {}
     for feature_name, feature_details in feature_mapping.items():
         kind = feature_details.kind
@@ -63,6 +66,8 @@ def create_drift_summary(
                     baseline_data.column(feature_name).to_pylist(),
                     test_data.column(feature_name).to_pylist(),
                 ),
+                significance_level=significance_level,
+                adjusted_significance_level=test_corrections[test_name].threshold,
             )
             results[feature_name] = FeatureSummary(
                 name=feature_name,
@@ -97,7 +102,7 @@ def process_bundle(request: Request) -> DataDriftRecord:
             bonferroni_correction(num_categorical_features, alpha=0.05), ndigits=6
         ),
     )
-    statistical_tests = {
+    test_corrections = {
         kolmogorov_smirnov_test.name: kolmogorov_smirnov_test,
         chi_squared_test.name: chi_squared_test,
     }
@@ -106,6 +111,7 @@ def process_bundle(request: Request) -> DataDriftRecord:
         bundle.baseline_data,
         bundle.test_data,
         bundle.job_config.feature_mapping,
+        test_corrections,
     )
 
     record = DataDriftRecord(
@@ -124,7 +130,7 @@ def process_bundle(request: Request) -> DataDriftRecord:
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
         ),
-        statistical_tests=statistical_tests,
+        statistical_tests=test_corrections,
         drift_summary=drift_summary,
     )
 

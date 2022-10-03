@@ -129,6 +129,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
                 },
             },
             "numerical_feature_1": {
@@ -139,6 +141,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
                 },
             },
             "categorical_feature_0": {
@@ -152,6 +156,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                         "statistic": 0.0,
                         "p_value": 1.0,
                     },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": chi_squared_test_threshold,
                 },
             },
             "categorical_feature_1": {
@@ -165,6 +171,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                         "statistic": 0.0,
                         "p_value": 1.0,
                     },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": chi_squared_test_threshold,
                 },
             },
             "categorical_feature_2": {
@@ -178,6 +186,8 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                         "statistic": 0.0,
                         "p_value": 1.0,
                     },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": chi_squared_test_threshold,
                 },
             },
         },

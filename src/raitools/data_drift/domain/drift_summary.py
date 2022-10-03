@@ -11,6 +11,8 @@ class DriftSummary(BaseModel):
 
     name: str
     result: StatisticalTestResult
+    significance_level: float
+    adjusted_significance_level: float
 
 
 class FeatureSummary(BaseModel):
