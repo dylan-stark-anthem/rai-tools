@@ -13,6 +13,7 @@ class DriftSummary(BaseModel):
     result: StatisticalTestResult
     significance_level: float
     adjusted_significance_level: float
+    outcome: str
 
 
 class FeatureSummary(BaseModel):
@@ -22,3 +23,4 @@ class FeatureSummary(BaseModel):
     kind: str
     rank: int
     statistical_test: DriftSummary
+    drift_status: str

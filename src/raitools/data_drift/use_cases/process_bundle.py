@@ -60,20 +60,32 @@ def create_drift_summary(
         kind = feature_details.kind
         tests = statistical_tests[kind]
         for test_name, test_details in tests.items():
+            result = test_details["method"](
+                baseline_data.column(feature_name).to_pylist(),
+                test_data.column(feature_name).to_pylist(),
+            )
+            adjusted_significance_level = test_corrections[test_name].threshold
+            if result.p_value <= adjusted_significance_level:
+                outcome = "fail to reject null hypothesis"
+            else:
+                outcome = "reject null hypothesis"
             result = DriftSummary(
                 name=test_name,
-                result=test_details["method"](
-                    baseline_data.column(feature_name).to_pylist(),
-                    test_data.column(feature_name).to_pylist(),
-                ),
+                result=result,
                 significance_level=significance_level,
-                adjusted_significance_level=test_corrections[test_name].threshold,
+                adjusted_significance_level=adjusted_significance_level,
+                outcome=outcome,
             )
+            if outcome == "fail to reject null hypothesis":
+                drift_status = "not drifted"
+            else:
+                drift_status = "drifted"
             results[feature_name] = FeatureSummary(
                 name=feature_name,
                 kind=kind,
                 rank=feature_details.rank,
                 statistical_test=result,
+                drift_status=drift_status,
             )
     return results
 

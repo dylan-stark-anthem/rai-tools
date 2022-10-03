@@ -125,31 +125,32 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                 "name": "numerical_feature_0",
                 "kind": "numerical",
                 "rank": 1,
-                # "status": "drifted",
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
                     "significance_level": 0.05,
                     "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                    "outcome": "reject null hypothesis",
                 },
+                "drift_status": "drifted",
             },
             "numerical_feature_1": {
                 "name": "numerical_feature_1",
                 "kind": "numerical",
                 "rank": 2,
-                #  "status": "not drifted",
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {"statistic": 0.0, "p_value": 1.0},
                     "significance_level": 0.05,
                     "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                    "outcome": "reject null hypothesis",
                 },
+                "drift_status": "drifted",
             },
             "categorical_feature_0": {
                 "name": "categorical_feature_0",
                 "kind": "categorical",
                 "rank": 3,
-                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -158,13 +159,14 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                     },
                     "significance_level": 0.05,
                     "adjusted_significance_level": chi_squared_test_threshold,
+                    "outcome": "reject null hypothesis",
                 },
+                "drift_status": "drifted",
             },
             "categorical_feature_1": {
                 "name": "categorical_feature_1",
                 "kind": "categorical",
                 "rank": 4,
-                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -173,13 +175,14 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                     },
                     "significance_level": 0.05,
                     "adjusted_significance_level": chi_squared_test_threshold,
+                    "outcome": "reject null hypothesis",
                 },
+                "drift_status": "drifted",
             },
             "categorical_feature_2": {
                 "name": "categorical_feature_2",
                 "kind": "categorical",
                 "rank": 5,
-                #  "status": "drifted",
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -188,7 +191,9 @@ def test_can_process_bundle(tmp_path: Path) -> None:
                     },
                     "significance_level": 0.05,
                     "adjusted_significance_level": chi_squared_test_threshold,
+                    "outcome": "reject null hypothesis",
                 },
+                "drift_status": "drifted",
             },
         },
         "statistical_tests": {
