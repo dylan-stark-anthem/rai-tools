@@ -5,11 +5,13 @@ from typing import Dict
 
 import pyarrow as pa
 from pydantic import BaseModel
+import raitools
 
 from raitools.data_drift.domain.bundle import create_bundle_from_zip
 from raitools.data_drift.domain.data_drift_record import (
     BundleManifest,
     BundleManifestMetadata,
+    DataDriftMetadata,
     DataDriftRecord,
 )
 from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
@@ -127,6 +129,9 @@ def process_bundle(request: Request) -> DataDriftRecord:
     )
 
     record = DataDriftRecord(
+        metadata=DataDriftMetadata(
+            raitools_version=raitools.__version__,
+        ),
         bundle_manifest=BundleManifest(
             metadata=BundleManifestMetadata(
                 bundle_path=request.bundle_path,

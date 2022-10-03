@@ -7,6 +7,7 @@ from zipfile import ZipFile
 import pyarrow as pa
 from pyarrow.csv import write_csv
 
+import raitools
 from raitools.data_drift.domain.job_config import JobConfig
 from raitools.data_drift.use_cases.process_bundle import (
     Request,
@@ -118,6 +119,9 @@ def test_can_process_bundle(tmp_path: Path) -> None:
     expected_record_dict = {
         "apiVersion": "raitools/v1",
         "kind": "DataDriftRecord",
+        "metadata": {
+            "raitools_version": raitools.__version__,
+        },
         "data_summary": {
             "num_numerical_features": num_numerical_features,
             "num_categorical_features": num_categorical_features,

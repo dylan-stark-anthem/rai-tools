@@ -30,11 +30,18 @@ class BundleManifest(BaseModel):
     test_data_summary: DataSummary
 
 
+class DataDriftMetadata(BaseModel):
+    """Metadata for data drift record."""
+
+    raitools_version: str
+
+
 class DataDriftRecord(BaseModel):
     """A Data Drift record."""
 
     apiVersion: str = "raitools/v1"
     kind: str = "DataDriftRecord"
+    metadata: DataDriftMetadata
     bundle_manifest: BundleManifest
     data_summary: DataDriftDataSummary
     statistical_tests: Dict[str, StatisticalTest]
