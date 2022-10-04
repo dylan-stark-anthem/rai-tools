@@ -15,7 +15,7 @@ build:
 	poetry run pytest --cov
 
 test:
-	poetry run pytest --cov
+	poetry run pytest -x --cov
 
 type_check:
 	poetry run mypy src tests --ignore-missing-import

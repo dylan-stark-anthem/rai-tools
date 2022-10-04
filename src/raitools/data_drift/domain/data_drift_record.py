@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import Dict
 
 from pydantic import BaseModel
-from raitools.data_drift.domain.data_drift_summary import DataDriftDataSummary
 
-from raitools.data_drift.domain.drift_summary import FeatureSummary
-from raitools.data_drift.domain.job_config import JobConfig
+from raitools.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.data_drift.domain.statistical_test_result import StatisticalTestResult
 
 
 class BundleManifest(BaseModel):
@@ -27,25 +26,52 @@ class BundleData(BaseModel):
     num_columns: int
 
 
-class Bundle(BaseModel):
+class RecordBundle(BaseModel):
     """A bundle."""
 
-    job_config: JobConfig
+    job_config: DataDriftJobConfig
     data: Dict[str, BundleData]
     manifest: BundleManifest
 
 
-class DataDriftMetadata(BaseModel):
+class RecordMetadata(BaseModel):
     """Metadata for data drift record."""
 
     raitools_version: str
 
 
-class DataDriftRecordDriftSummary(BaseModel):
+class DriftSummaryMetadata(BaseModel):
+    """Summary statistics for data."""
+
+    num_numerical_features: int
+    num_categorical_features: int
+
+
+class FeatureStatisticalTest(BaseModel):
+    """Drift summary."""
+
+    name: str
+    result: StatisticalTestResult
+    significance_level: float
+    adjusted_significance_level: float
+    outcome: str
+
+
+class DriftSummaryFeature(BaseModel):
+    """Feature summary."""
+
+    name: str
+    kind: str
+    rank: int
+    statistical_test: FeatureStatisticalTest
+    drift_status: str
+
+
+class RecordDriftSummary(BaseModel):
     """Data drift record drift summary."""
 
-    features: Dict[str, FeatureSummary]
-    metadata: DataDriftDataSummary
+    features: Dict[str, DriftSummaryFeature]
+    metadata: DriftSummaryMetadata
 
 
 class DataDriftRecord(BaseModel):
@@ -53,6 +79,6 @@ class DataDriftRecord(BaseModel):
 
     apiVersion: str = "raitools/v1"
     kind: str = "DataDriftRecord"
-    metadata: DataDriftMetadata
-    bundle: Bundle
-    drift_summary: DataDriftRecordDriftSummary
+    metadata: RecordMetadata
+    bundle: RecordBundle
+    drift_summary: RecordDriftSummary

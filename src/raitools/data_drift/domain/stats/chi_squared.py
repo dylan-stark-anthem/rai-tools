@@ -20,6 +20,19 @@ class ChiSquaredTestResult(StatisticalTestResult):
         arbitrary_types_allowed = True
 
 
+def chi_squared(baseline_data: List, test_data: List) -> StatisticalTestResult:
+    """Applies Chi-Squared test."""
+    observed = _create_contingency_table(baseline_data, test_data)
+    chi2, p, dof, expected = chi2_contingency(observed)
+
+    return ChiSquaredTestResult(
+        statistic=chi2,
+        p_value=p,
+        dof=dof,
+        expected=expected,
+    )
+
+
 def _create_contingency_table(baseline_data: List, test_data: List) -> List[List[int]]:
     """Creates a contingency table."""
     categories = set(baseline_data).union(set(test_data))
@@ -35,16 +48,3 @@ def _create_contingency_table(baseline_data: List, test_data: List) -> List[List
     ]
 
     return observed
-
-
-def chi_squared(baseline_data: List, test_data: List) -> StatisticalTestResult:
-    """Applies Chi-Squared test."""
-    observed = _create_contingency_table(baseline_data, test_data)
-    chi2, p, dof, expected = chi2_contingency(observed)
-
-    return ChiSquaredTestResult(
-        statistic=chi2,
-        p_value=p,
-        dof=dof,
-        expected=expected,
-    )

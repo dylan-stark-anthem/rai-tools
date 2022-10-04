@@ -4,7 +4,7 @@ from typing import Dict
 from pydantic import BaseModel
 
 
-class Feature(BaseModel):
+class JobConfigFeature(BaseModel):
     """A feature."""
 
     name: str
@@ -12,11 +12,11 @@ class Feature(BaseModel):
     rank: int
 
 
-class JobConfig(BaseModel):
+class DataDriftJobConfig(BaseModel):
     """A Data Drift job config."""
 
     dataset_name: str
     baseline_data_filename: str
     test_data_filename: str
     model_catalog_id: str
-    feature_mapping: Dict[str, Feature]
+    feature_mapping: Dict[str, JobConfigFeature]

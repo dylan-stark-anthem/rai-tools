@@ -9,16 +9,16 @@ import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel
 
-from raitools.data_drift.domain.job_config import JobConfig
+from raitools.data_drift.domain.job_config import DataDriftJobConfig
 
 
-class Bundle(BaseModel):
+class DataDriftBundle(BaseModel):
     """A Data Drift bundle."""
 
     job_config_filename: str
     baseline_data_filename: str
     test_data_filename: str
-    job_config: JobConfig
+    job_config: DataDriftJobConfig
     baseline_data: pa.Table
     test_data: pa.Table
 
@@ -28,14 +28,14 @@ class Bundle(BaseModel):
         arbitrary_types_allowed = True
 
 
-def create_bundle_from_zip(bundle_path: Path) -> Bundle:
+def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
     """Creates a bundle."""
     job_config = get_job_config_from_bundle(bundle_path)
     job_config_filename = get_job_config_filename_from_bundle(bundle_path)
     baseline_data = get_data_from_bundle(bundle_path, job_config.baseline_data_filename)
     test_data = get_data_from_bundle(bundle_path, job_config.test_data_filename)
 
-    bundle = Bundle(
+    bundle = DataDriftBundle(
         job_config_filename=job_config_filename,
         baseline_data_filename=job_config.baseline_data_filename,
         test_data_filename=job_config.test_data_filename,
@@ -57,7 +57,7 @@ def get_job_config_filename_from_bundle(bundle_path: Path) -> str:
     return job_config_path.name
 
 
-def get_job_config_from_bundle(bundle_path: Path) -> JobConfig:
+def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     """Gets the job config from the bundle at this path."""
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
@@ -67,7 +67,7 @@ def get_job_config_from_bundle(bundle_path: Path) -> JobConfig:
         job_config_json = json.loads(
             zipfile.Path(zip_file, at=str(job_config_path)).read_text()
         )
-        job_config = JobConfig(**job_config_json)
+        job_config = DataDriftJobConfig(**job_config_json)
     return job_config
 
 

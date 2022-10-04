@@ -1,5 +1,7 @@
 # Absolute paths
 /.coverage
+/.pytest_cache
+/.venv
 
 # Patterns
 __pycache__

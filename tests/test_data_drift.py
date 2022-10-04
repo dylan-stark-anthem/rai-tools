@@ -8,23 +8,23 @@ import pyarrow as pa
 from pyarrow.csv import write_csv
 import pytest
 
-import raitools
+from raitools import __version__
 from raitools.data_drift.domain.bundle import (
     get_data_from_bundle,
     get_job_config_filename_from_bundle,
     get_job_config_from_bundle,
 )
 from raitools.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.data_drift.domain.job_config import JobConfig
+from raitools.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.data_drift.use_cases.process_bundle import (
-    Request,
+    ProcessBundleRequest,
     bonferroni_correction,
     process_bundle,
 )
 
 
 def test_can_process_bundle(
-    simple_request: Request, simple_record: DataDriftRecord
+    simple_request: ProcessBundleRequest, simple_record: DataDriftRecord
 ) -> None:
     """Tests that we can process a bundle."""
     record = process_bundle(simple_request)
@@ -52,13 +52,13 @@ def simple_bundle_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def simple_request(simple_bundle_path: Path) -> Request:
+def simple_request(simple_bundle_path: Path) -> ProcessBundleRequest:
     """A simple request."""
-    return Request(bundle_path=simple_bundle_path)
+    return ProcessBundleRequest(bundle_path=simple_bundle_path)
 
 
 @pytest.fixture
-def simple_record(simple_request: Request) -> DataDriftRecord:
+def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
     """The expected record for the simple request."""
     job_config_filename = get_job_config_filename_from_bundle(
         simple_request.bundle_path
@@ -90,7 +90,7 @@ def simple_record(simple_request: Request) -> DataDriftRecord:
         "apiVersion": "raitools/v1",
         "kind": "DataDriftRecord",
         "metadata": {
-            "raitools_version": raitools.__version__,
+            "raitools_version": __version__,
         },
         "drift_summary": {
             "features": {
@@ -246,7 +246,7 @@ def _create_bundle(
         "model_catalog_id": "123",
         "feature_mapping": feature_mapping,
     }
-    job_config = JobConfig(**job_config_json)
+    job_config = DataDriftJobConfig(**job_config_json)
     job_config_path = tmp_path / job_config_filename
     job_config_path.write_text(job_config.json())
 
