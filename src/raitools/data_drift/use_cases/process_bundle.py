@@ -5,8 +5,8 @@ from typing import Dict
 
 import pyarrow as pa
 from pydantic import BaseModel
-import raitools
 
+import raitools
 from raitools.data_drift.domain.bundle import create_bundle_from_zip
 from raitools.data_drift.domain.data_drift_record import (
     Bundle,
