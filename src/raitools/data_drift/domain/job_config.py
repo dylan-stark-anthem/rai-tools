@@ -15,6 +15,7 @@ class JobConfigFeature(BaseModel):
 class DataDriftJobConfig(BaseModel):
     """A Data Drift job config."""
 
+    report_name: str
     dataset_name: str
     baseline_data_filename: str
     test_data_filename: str
