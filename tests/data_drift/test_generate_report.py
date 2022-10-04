@@ -1,7 +1,6 @@
 """Tests for generate report use case."""
 
 
-import json
 from pathlib import Path
 
 import pytest
@@ -17,14 +16,8 @@ def test_can_generate_report(
     simple_record: DataDriftRecord, simple_report: DataDriftReport, tmp_path: Path
 ) -> None:
     """Tests that we can generate an HTML report."""
-    generate_report(simple_record, output_path=tmp_path)
+    report = generate_report(simple_record, output_path=tmp_path)
 
-    report_name = simple_record.bundle.job_config.report_name
-    report_filename = f"{report_name}.html"
-    report_path = tmp_path / report_filename
-    report_text = report_path.read_text()
-    report_json = json.loads(report_text)
-    report = DataDriftReport(**report_json)
     assert report == simple_report
 
 
