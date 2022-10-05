@@ -14,6 +14,9 @@ build:
 	poetry run mypy src tests --ignore-missing-import
 	poetry run pytest --cov
 
+lint:
+	poetry run flake8 src tests
+
 test:
 	poetry run pytest -x --cov
 
@@ -25,5 +28,7 @@ type_check:
 .PHONY: \
 	build \
 	help \
+	lint \
 	setup \
-	test
+	test \
+	type_check

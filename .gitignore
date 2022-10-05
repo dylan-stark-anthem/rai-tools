@@ -2,6 +2,10 @@
 /.coverage
 /.pytest_cache
 /.venv
+/scratch/*
 
 # Patterns
 __pycache__
+
+# Exclusions
+!/scratch/README.md

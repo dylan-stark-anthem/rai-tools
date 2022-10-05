@@ -17,6 +17,7 @@ class DataDriftJobConfig(BaseModel):
 
     report_name: str
     dataset_name: str
+    dataset_version: str
     baseline_data_filename: str
     test_data_filename: str
     model_catalog_id: str

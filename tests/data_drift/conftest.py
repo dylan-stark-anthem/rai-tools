@@ -219,6 +219,7 @@ def _create_bundle(
     job_config_json = {
         "report_name": "Some simple report",
         "dataset_name": "Some name for this dataset",
+        "dataset_version": "v0.1.0",
         "baseline_data_filename": "some_baseline_data.csv",
         "test_data_filename": "some_test_data.csv",
         "model_catalog_id": "123",
