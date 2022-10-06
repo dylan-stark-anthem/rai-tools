@@ -10,10 +10,7 @@ from raitools.data_drift.helpers.plotly import (
     plotly_drift_summary_maker,
 )
 from raitools.data_drift.use_cases.generate_report import generate_report
-from raitools.data_drift.use_cases.process_bundle import (
-    ProcessBundleRequest,
-    process_bundle,
-)
+from raitools.data_drift.use_cases.process_bundle import process_bundle
 
 
 def create_bundle(
@@ -38,8 +35,7 @@ def run_uci_adult(bundle_path: Path, output_path: Path) -> None:
     print(f"Using bundle at {bundle_path}")
     print(f"Writing results to {output_path}")
 
-    request = ProcessBundleRequest(bundle_path=bundle_path)
-    record = process_bundle(request)
+    record = process_bundle(bundle_path)
     generate_report(
         record,
         output_path=output_path,

@@ -54,3 +54,8 @@ Having a stable reference point makes life easier, too:
 - You don't need to remember which directory you are in.
 - You don't need to figure out if you have to go two up or three down and over to get to where you can actually run thing you want to run.
 - You don't need to do anything more than click the debugger button to kick off a debugging session!
+
+### Why create a new variable just to immediately return it?
+
+Creating a new variable immediately before `return`ing it *makes debugging easier* by giving a nice place to set a breakpoint and a nice reference for inspecting.
+And making debugging easier *makes life easier*.

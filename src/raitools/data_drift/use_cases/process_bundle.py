@@ -4,10 +4,9 @@ from pathlib import Path
 from typing import Dict
 
 import pyarrow as pa
-from pydantic import BaseModel
 
 import raitools
-from raitools.data_drift.domain.bundle import create_bundle_from_zip
+from raitools.data_drift.domain.bundle import DataDriftBundle, create_bundle_from_zip
 from raitools.data_drift.domain.data_drift_record import (
     BundleData,
     BundleManifest,
@@ -21,101 +20,102 @@ from raitools.data_drift.domain.data_drift_record import (
 )
 from raitools.data_drift.domain.job_config import JobConfigFeature
 from raitools.data_drift.domain.stats import statistical_tests
+from raitools.data_drift.domain.stats.bonferroni_correction import bonferroni_correction
 
 
-class ProcessBundleRequest(BaseModel):
-    """A process bundle request."""
-
-    bundle_path: Path
-
-
-def process_bundle(request: ProcessBundleRequest) -> DataDriftRecord:
+def process_bundle(bundle_path: Path) -> DataDriftRecord:
     """Processes a data drift bundle."""
-    bundle = create_bundle_from_zip(request.bundle_path)
-    features = {
-        name: JobConfigFeature(**feature.dict())
-        for name, feature in bundle.job_config.feature_mapping.items()
-    }
-    num_numerical_features = compute_num_feature_kind(
-        bundle.job_config.feature_mapping, "numerical"
-    )
-    num_categorical_features = compute_num_feature_kind(
-        bundle.job_config.feature_mapping, "categorical"
-    )
+    bundle = create_bundle_from_zip(bundle_path)
 
-    bundle_data = {
-        "baseline_data": BundleData(
-            filename=bundle.job_config.baseline_data_filename,
-            num_rows=bundle.baseline_data.num_rows,
-            num_columns=bundle.baseline_data.num_columns,
-        ),
-        "test_data": BundleData(
-            filename=bundle.job_config.test_data_filename,
-            num_rows=bundle.test_data.num_rows,
-            num_columns=bundle.test_data.num_columns,
-        ),
-    }
-
-    adjusted_significance_level = round(
-        bonferroni_correction(len(features), alpha=0.05), ndigits=6
-    )
-
-    drift_summary = create_drift_summary(
-        bundle.baseline_data,
-        bundle.test_data,
-        features,
-        adjusted_significance_level,
-    )
+    metadata = _compile_metadata_for_record()
+    record_bundle = _compile_bundle_for_record(bundle, bundle_path)
+    drift_summary = _compile_drift_summary_for_record(bundle)
 
     record = DataDriftRecord(
-        metadata=RecordMetadata(
-            raitools_version=raitools.__version__,
-        ),
-        bundle=RecordBundle(
-            job_config=bundle.job_config,
-            data=bundle_data,
-            manifest=BundleManifest(
-                bundle_path=request.bundle_path,
-                job_config_filename=bundle.job_config_filename,
-                baseline_data_filename=bundle.baseline_data_filename,
-                test_data_filename=bundle.test_data_filename,
-            ),
-        ),
-        drift_summary=RecordDriftSummary(
-            features=drift_summary,
-            metadata=DriftSummaryMetadata(
-                features=features,
-                num_numerical_features=num_numerical_features,
-                num_categorical_features=num_categorical_features,
-            ),
-        ),
+        metadata=metadata,
+        bundle=record_bundle,
+        drift_summary=drift_summary,
     )
 
     return record
 
 
-def compute_num_feature_kind(
-    feature_mapping: Dict[str, JobConfigFeature], kind: str
-) -> int:
-    """Counts number of features of a specific kind."""
-    return len(
-        [feature for feature in feature_mapping.values() if feature.kind == kind]
+def _compile_metadata_for_record() -> RecordMetadata:
+    """Creates record metadata."""
+    metadata = RecordMetadata(raitools_version=raitools.__version__)
+    return metadata
+
+
+def _compile_bundle_for_record(
+    bundle: DataDriftBundle, bundle_path: Path
+) -> RecordBundle:
+    """Creates record bundle."""
+    record_bundle = RecordBundle(
+        job_config=bundle.job_config,
+        data={
+            "baseline_data": BundleData(
+                filename=bundle.job_config.baseline_data_filename,
+                num_rows=bundle.baseline_data.num_rows,
+                num_columns=bundle.baseline_data.num_columns,
+            ),
+            "test_data": BundleData(
+                filename=bundle.job_config.test_data_filename,
+                num_rows=bundle.test_data.num_rows,
+                num_columns=bundle.test_data.num_columns,
+            ),
+        },
+        manifest=BundleManifest(
+            bundle_path=bundle_path,
+            job_config_filename=bundle.job_config_filename,
+            baseline_data_filename=bundle.baseline_data_filename,
+            test_data_filename=bundle.test_data_filename,
+        ),
+    )
+    return record_bundle
+
+
+def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSummary:
+    """Creates drift summary for record."""
+    features = {
+        name: JobConfigFeature(**feature.dict())
+        for name, feature in bundle.job_config.feature_mapping.items()
+    }
+    num_numerical_features = _compute_num_feature_kind(
+        bundle.job_config.feature_mapping, "numerical"
+    )
+    num_categorical_features = _compute_num_feature_kind(
+        bundle.job_config.feature_mapping, "categorical"
     )
 
+    drift_summary_features = _compile_features_for_drift_summary(
+        bundle.baseline_data,
+        bundle.test_data,
+        features,
+    )
 
-def bonferroni_correction(num_features: int, alpha: float) -> float:
-    """Calculates Bonferroni correction for given number of features."""
-    return alpha / num_features
+    drift_summary = RecordDriftSummary(
+        features=drift_summary_features,
+        metadata=DriftSummaryMetadata(
+            features=features,
+            num_numerical_features=num_numerical_features,
+            num_categorical_features=num_categorical_features,
+        ),
+    )
+
+    return drift_summary
 
 
-def create_drift_summary(
+def _compile_features_for_drift_summary(
     baseline_data: pa.Table,
     test_data: pa.Table,
     feature: Dict[str, JobConfigFeature],
-    adjusted_significance_level: float,
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
     significance_level = 0.05
+    adjusted_significance_level = round(
+        bonferroni_correction(baseline_data.num_columns, alpha=significance_level),
+        ndigits=6,
+    )
 
     results: Dict[str, DriftSummaryFeature] = {}
     for feature_name, feature_details in feature.items():
@@ -148,4 +148,14 @@ def create_drift_summary(
                 statistical_test=statistical_test,
                 drift_status=drift_status,
             )
+
     return results
+
+
+def _compute_num_feature_kind(
+    feature_mapping: Dict[str, JobConfigFeature], kind: str
+) -> int:
+    """Counts number of features of a specific kind."""
+    return len(
+        [feature for feature in feature_mapping.values() if feature.kind == kind]
+    )

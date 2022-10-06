@@ -17,10 +17,7 @@ from raitools.data_drift.domain.bundle import (
 )
 from raitools.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.data_drift.use_cases.process_bundle import (
-    ProcessBundleRequest,
-    bonferroni_correction,
-)
+from raitools.data_drift.domain.stats.bonferroni_correction import bonferroni_correction
 
 
 @pytest.fixture
@@ -43,31 +40,21 @@ def simple_bundle_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def simple_request(simple_bundle_path: Path) -> ProcessBundleRequest:
-    """A simple request."""
-    return ProcessBundleRequest(bundle_path=simple_bundle_path)
-
-
-@pytest.fixture
-def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
+def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
     """The expected record for the simple request."""
-    job_config_filename = get_job_config_filename_from_bundle(
-        simple_request.bundle_path
-    )
-    job_config = get_job_config_from_bundle(simple_request.bundle_path)
+    job_config_filename = get_job_config_filename_from_bundle(simple_bundle_path)
+    job_config = get_job_config_from_bundle(simple_bundle_path)
 
-    num_numerical_features = _get_num_features_of_kind(
-        simple_request.bundle_path, "numerical"
-    )
+    num_numerical_features = _get_num_features_of_kind(simple_bundle_path, "numerical")
     num_categorical_features = _get_num_features_of_kind(
-        simple_request.bundle_path, "categorical"
+        simple_bundle_path, "categorical"
     )
     num_features = num_numerical_features + num_categorical_features
     num_baseline_observations = _get_num_observations_in_dataset(
-        simple_request.bundle_path, "baseline_data"
+        simple_bundle_path, "baseline_data"
     )
     num_test_observations = _get_num_observations_in_dataset(
-        simple_request.bundle_path, "test_data"
+        simple_bundle_path, "test_data"
     )
 
     adjusted_significance_level = round(
@@ -177,7 +164,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                 },
             },
             "manifest": {
-                "bundle_path": simple_request.bundle_path,
+                "bundle_path": simple_bundle_path,
                 "job_config_filename": job_config_filename,
                 "baseline_data_filename": job_config.baseline_data_filename,
                 "test_data_filename": job_config.test_data_filename,

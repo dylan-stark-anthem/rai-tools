@@ -25,8 +25,14 @@ type_check:
 
 ################################################################################
 
+examples:
+	poetry run python examples/data_drift/uci_adult/uci_adult.py
+
+################################################################################
+
 .PHONY: \
 	build \
+	examples
 	help \
 	lint \
 	setup \

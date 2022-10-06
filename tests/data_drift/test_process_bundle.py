@@ -1,19 +1,17 @@
 """Tests for process bundle use case."""
 
+from pathlib import Path
 from typing import Dict
 
 from raitools.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.data_drift.use_cases.process_bundle import (
-    ProcessBundleRequest,
-    process_bundle,
-)
+from raitools.data_drift.use_cases.process_bundle import process_bundle
 
 
 def test_can_process_bundle(
-    simple_request: ProcessBundleRequest, simple_record: DataDriftRecord
+    simple_bundle_path: Path, simple_record: DataDriftRecord
 ) -> None:
     """Tests that we can process a bundle."""
-    record = process_bundle(simple_request)
+    record = process_bundle(simple_bundle_path)
 
     _assert_equal_dicts(simple_record.dict(), record.dict())
 
