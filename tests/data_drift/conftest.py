@@ -70,11 +70,8 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
         simple_request.bundle_path, "test_data"
     )
 
-    kolmogorov_smirnov_test_threshold = round(
-        bonferroni_correction(num_numerical_features, alpha=0.05), ndigits=6
-    )
-    chi_squared_test_threshold = round(
-        bonferroni_correction(num_categorical_features, alpha=0.05), ndigits=6
+    adjusted_significance_level = round(
+        bonferroni_correction(num_features, alpha=0.05), ndigits=6
     )
 
     expected_record_dict = {
@@ -93,7 +90,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                         "name": "kolmogorov-smirnov",
                         "result": {"statistic": 0.0, "p_value": 1.0},
                         "significance_level": 0.05,
-                        "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                        "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -106,7 +103,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                         "name": "kolmogorov-smirnov",
                         "result": {"statistic": 0.0, "p_value": 1.0},
                         "significance_level": 0.05,
-                        "adjusted_significance_level": kolmogorov_smirnov_test_threshold,
+                        "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -122,7 +119,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -138,7 +135,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -154,7 +151,7 @@ def simple_record(simple_request: ProcessBundleRequest) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": chi_squared_test_threshold,
+                        "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",

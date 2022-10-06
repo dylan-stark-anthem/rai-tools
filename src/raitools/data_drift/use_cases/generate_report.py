@@ -8,30 +8,11 @@ from typing import Any, Callable, Dict, List
 
 
 from raitools.data_drift.domain.data_drift_record import DataDriftRecord
-
-
-def plotly_data_summary_maker(
-    num_numerical_features: int, num_categorical_features: int
-) -> str:
-    """Creates a plotly view of the data summary."""
-    return ""
-
-
-def plotly_drift_summary_maker(
-    num_total_features: int,
-    num_features_drifted: int,
-    num_top_10_features_drifted: int,
-    num_top_20_features_drifted: int,
-) -> str:
-    """Creates a plotly view of the data summary."""
-    return ""
-
-
-def plotly_drift_magnitude_maker(
-    fields: List[str], observations: Dict[str, List[Any]]
-) -> str:
-    """Creates a plotly view of the data summary."""
-    return ""
+from raitools.data_drift.helpers.plotly import (
+    plotly_data_summary_maker,
+    plotly_drift_magnitude_maker,
+    plotly_drift_summary_maker,
+)
 
 
 def generate_report(

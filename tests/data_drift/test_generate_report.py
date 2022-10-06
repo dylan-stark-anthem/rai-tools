@@ -69,42 +69,6 @@ def test_can_generate_report(simple_record: DataDriftRecord, tmp_path: Path) -> 
         "drift_status": [feature.drift_status for feature in ranked_features],
     }
 
-    # assert soup.head.title.string == report_name
-    # assert soup.body.contents[1]["style"] == "color: darkred"
-    # assert soup.body.contents[1]["style"].string == f"Timestamp : {timestamp}"
-    # assert soup.body.contents[3]["style"] == "color: darkred"
-    # assert soup.body.contents[3]["style"].string == f" Report name  : {report_name} "
-    # assert soup.body.contents[5]["style"] == "color: darkred"
-    # assert (
-    #     soup.body.contents[5]["style"].string
-    #     == f" Dataset name  : {job_config.dataset_name} "
-    # )
-    # assert soup.body.contents[7]["style"] == "color: darkred"
-    # assert (
-    #     soup.body.contents[7]["style"].string
-    #     == f" Dataset Version : {job_config.dataset_version} "
-    # )
-    # assert soup.body.contents[9]["style"] == "color: darkred"
-    # assert (
-    #     soup.body.contents[9]["style"].string
-    #     == f" Model Catalog ID : {job_config.model_catalog_id} "
-    # )
-    # assert soup.body.contents[11]["style"] == "color: darkred"
-    # assert (
-    #     soup.body.contents[11]["style"].string
-    #     == f" Model Catalog ID : {job_config.model_catalog_id} "
-    # )
-    # assert soup.body.contents[11]
-
-    # actual_thresholds_list = [
-    #     li.string for li in soup.body.contents[11].ul.contents if li != "\n"
-    # ]
-    # expected_threshold_list = [
-    #     "For numerical features, kolmogorov-smirnov test with a threshold of 0.025 is used",
-    #     ">For categorical features, chi-square test with a threshold of 0.000388 is used<",
-    # ]
-    # assert actual_thresholds_list == expected_threshold_list
-
     actual_soup = bs4.BeautifulSoup(
         f"""\
         <html>
@@ -119,8 +83,8 @@ def test_can_generate_report(simple_record: DataDriftRecord, tmp_path: Path) -> 
                 <h3 style ='color: darkred'> Model Catalog ID : {job_config.model_catalog_id} </h3>
                 <h3 style ='color: darkred'>
                     <ul>
-                        <li>For numerical features, kolmogorov-smirnov test with a threshold of 0.025 is used</li>
-                        <li>For categorical features, chi-squared test with a threshold of 0.016667 is used</li>
+                        <li>For numerical features, kolmogorov-smirnov test with a threshold of 0.01 is used</li>
+                        <li>For categorical features, chi-squared test with a threshold of 0.01 is used</li>
                     </ul>
                 </h3>
                 <table border="1" class="dataframe">

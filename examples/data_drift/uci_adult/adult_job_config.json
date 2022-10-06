@@ -1,0 +1,80 @@
+{
+    "report_name": "UCI Adult data set report",
+    "dataset_name": "UCI Adult data set",
+    "dataset_version": "v1.0",
+    "model_catalog_id": "123",
+    "baseline_data_filename": "adult_baseline.csv",
+    "test_data_filename": "adult_test.csv",
+    "feature_mapping": {
+        "age": {
+            "name": "age",
+            "kind": "numerical",
+            "rank": 1
+        },
+        "workclass": {
+            "name": "workclass",
+            "kind": "categorical",
+            "rank": 2
+        },
+        "fnlwgt": {
+            "name": "fnlwgt",
+            "kind": "numerical",
+            "rank": 3
+        },
+        "education": {
+            "name": "education",
+            "kind": "categorical",
+            "rank": 4
+        },
+        "educational-num": {
+            "name": "educational-num",
+            "kind": "numerical",
+            "rank": 5
+        },
+        "marital-status": {
+            "name": "marital-status",
+            "kind": "categorical",
+            "rank": 6
+        },
+        "occupation": {
+            "name": "occupation",
+            "kind": "categorical",
+            "rank": 7
+        },
+        "relationship": {
+            "name": "relationship",
+            "kind": "categorical",
+            "rank": 8
+        },
+        "race": {
+            "name": "race",
+            "kind": "categorical",
+            "rank": 9
+        },
+        "gender": {
+            "name": "gender",
+            "kind": "categorical",
+            "rank": 10
+        },
+        "capital-gain": {
+            "name": "capital-gain",
+            "kind": "numerical",
+            "rank": 11
+        },
+        "capital-loss": {
+            "name": "capital-loss",
+            "kind": "numerical",
+            "rank": 12
+        },
+        "hours-per-week": {
+            "name": "hours-per-week",
+            "kind": "numerical",
+            "rank": 13
+        },
+        "native-country": {
+            "name": "native-country",
+            "kind": "categorical",
+            "rank": 14
+        }
+    }
+}

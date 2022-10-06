@@ -21,7 +21,6 @@ from raitools.data_drift.domain.data_drift_record import (
 )
 from raitools.data_drift.domain.job_config import JobConfigFeature
 from raitools.data_drift.domain.stats import statistical_tests
-from raitools.data_drift.domain.statistical_test import StatisticalTest
 
 
 class ProcessBundleRequest(BaseModel):
@@ -57,28 +56,15 @@ def process_bundle(request: ProcessBundleRequest) -> DataDriftRecord:
         ),
     }
 
-    kolmogorov_smirnov_test = StatisticalTest(
-        name="kolmogorov-smirnov",
-        threshold=round(
-            bonferroni_correction(num_numerical_features, alpha=0.05), ndigits=6
-        ),
+    adjusted_significance_level = round(
+        bonferroni_correction(len(features), alpha=0.05), ndigits=6
     )
-    chi_squared_test = StatisticalTest(
-        name="chi-squared",
-        threshold=round(
-            bonferroni_correction(num_categorical_features, alpha=0.05), ndigits=6
-        ),
-    )
-    test_corrections = {
-        kolmogorov_smirnov_test.name: kolmogorov_smirnov_test,
-        chi_squared_test.name: chi_squared_test,
-    }
 
     drift_summary = create_drift_summary(
         bundle.baseline_data,
         bundle.test_data,
         features,
-        test_corrections,
+        adjusted_significance_level,
     )
 
     record = DataDriftRecord(
@@ -126,7 +112,7 @@ def create_drift_summary(
     baseline_data: pa.Table,
     test_data: pa.Table,
     feature: Dict[str, JobConfigFeature],
-    test_corrections: Dict[str, StatisticalTest],
+    adjusted_significance_level: float,
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
     significance_level = 0.05
@@ -140,7 +126,6 @@ def create_drift_summary(
                 baseline_data.column(feature_name).to_pylist(),
                 test_data.column(feature_name).to_pylist(),
             )
-            adjusted_significance_level = test_corrections[test_name].threshold
             if result.p_value <= adjusted_significance_level:
                 outcome = "reject null hypothesis"
             else:
