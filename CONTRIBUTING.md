@@ -4,6 +4,7 @@ This guide covers many important topics for contributing to the development of `
 
 - [Style guide & documentation](#style-guide--documentation)
 - [Development](#development)
+- [FAQ](#faq)
 
 
 ## Style guide & documentation
@@ -16,10 +17,10 @@ And whatever we can't codify, we'll note here.
 
 Keep Markdown clean:
 Assume someone is going to be reading the text directly, without it being rendered in a browser.
-Make their life easier by using newlines to separate section headers from text, etc.
+Make their life easier by using newlines between sentences and blank lines to separate section headers from text, etc.
 
 Keep Markdown simple:
-There is almost never a reason to use HTML directly - the entire point of Markdown is so we don't need to.
+There is almost never a reason to use HTML directly - the entire point of using Markdown is so we don't need to.
 
 ## Development
 
@@ -33,3 +34,23 @@ Once in the dev container, you have the general requirements installed and all y
 ```
 make build
 ```
+
+When running code or tools (e.g., pytest or mypy) make sure to use Poetry so that they execute within the (Poetry-managed) environment.
+For instance, to run the UCI Adult example, use `poetry run ...`:
+
+```
+poetry run python examples/data_drift/uci_adult/uci_adult.py
+```
+
+## FAQ
+
+### Why do all the commands for all the things assume CWD is the base of the repository?
+
+Having a stable reference point (i.e., CWD is base of repository) makes instrumenting and automating tasks simple, reliable, and repeatable across installations.
+For instance, you can run the examples directly through the VSCODE with the "Run Python file" and "Debug Python file" buttons *because* the example assumes *CWD is base of repository*.
+
+Having a stable reference point makes life easier, too:
+
+- You don't need to remember which directory you are in.
+- You don't need to figure out if you have to go two up or three down and over to get to where you can actually run thing you want to run.
+- You don't need to do anything more than click the debugger button to kick off a debugging session!
