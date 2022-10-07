@@ -5,11 +5,11 @@ from pathlib import Path
 
 import bs4
 
-from raitools.data_drift.domain.data_drift_record import (
+from raitools.services.data_drift.domain.data_drift_record import (
     DataDriftRecord,
 )
-from raitools.data_drift.domain.html_report_builder import HtmlReportBuilder
-from raitools.data_drift.use_cases.generate_report import generate_report
+from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
+from raitools.services.data_drift.use_cases.generate_report import generate_report
 
 
 def test_can_generate_report(

@@ -9,7 +9,7 @@ import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel
 
-from raitools.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 
 
 class DataDriftBundle(BaseModel):

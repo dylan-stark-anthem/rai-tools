@@ -11,21 +11,23 @@ from pyarrow.csv import write_csv
 import pytest
 
 from raitools import __version__
-from raitools.data_drift.domain.bundle import (
+from raitools.services.data_drift.domain.bundle import (
     get_data_from_bundle,
     get_job_config_filename_from_bundle,
     get_job_config_from_bundle,
 )
-from raitools.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.data_drift.domain.data_drift_report import DataDriftReport
-from raitools.data_drift.domain.html_report_builder import (
+from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
+from raitools.services.data_drift.domain.html_report_builder import (
     HtmlReportBuilder,
     basic_data_summary_maker,
     basic_drift_magnitude_maker,
     basic_drift_summary_maker,
 )
-from raitools.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.data_drift.domain.stats.bonferroni_correction import bonferroni_correction
+from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.stats.bonferroni_correction import (
+    bonferroni_correction,
+)
 
 
 @pytest.fixture

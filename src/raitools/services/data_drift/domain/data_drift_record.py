@@ -5,8 +5,10 @@ from typing import Dict
 
 from pydantic import BaseModel
 
-from raitools.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.data_drift.domain.statistical_test_result import StatisticalTestResult
+from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.statistical_test_result import (
+    StatisticalTestResult,
+)
 
 
 class BundleManifest(BaseModel):

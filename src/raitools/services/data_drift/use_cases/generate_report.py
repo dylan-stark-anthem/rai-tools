@@ -4,13 +4,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List
 
-from raitools.data_drift.domain.data_drift_record import (
+from raitools.services.data_drift.domain.data_drift_record import (
     DataDriftRecord,
     DriftSummaryFeature,
 )
-from raitools.data_drift.domain.data_drift_report import DataDriftReport
-from raitools.data_drift.domain.html_report_builder import HtmlReportBuilder
-from raitools.data_drift.helpers.plotly import (
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
+from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
+from raitools.services.data_drift.helpers.plotly import (
     plotly_data_summary_maker,
     plotly_drift_magnitude_maker,
     plotly_drift_summary_maker,

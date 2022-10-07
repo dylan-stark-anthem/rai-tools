@@ -4,7 +4,9 @@ from typing import List
 
 from scipy.stats import ks_2samp
 
-from raitools.data_drift.domain.statistical_test_result import StatisticalTestResult
+from raitools.services.data_drift.domain.statistical_test_result import (
+    StatisticalTestResult,
+)
 
 
 def kolmogorov_smirnov(baseline_data: List, test_data: List) -> StatisticalTestResult:

@@ -4,8 +4,8 @@
 from pathlib import Path
 from zipfile import ZipFile
 
-from raitools.data_drift.use_cases.generate_report import generate_report
-from raitools.data_drift.use_cases.process_bundle import process_bundle
+from raitools.services.data_drift.use_cases.generate_report import generate_report
+from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
 
 def create_bundle(

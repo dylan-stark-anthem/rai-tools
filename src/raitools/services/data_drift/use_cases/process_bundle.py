@@ -6,8 +6,11 @@ from typing import Dict
 import pyarrow as pa
 
 import raitools
-from raitools.data_drift.domain.bundle import DataDriftBundle, create_bundle_from_zip
-from raitools.data_drift.domain.data_drift_record import (
+from raitools.services.data_drift.domain.bundle import (
+    DataDriftBundle,
+    create_bundle_from_zip,
+)
+from raitools.services.data_drift.domain.data_drift_record import (
     BundleData,
     BundleManifest,
     DataDriftRecord,
@@ -18,9 +21,11 @@ from raitools.data_drift.domain.data_drift_record import (
     RecordDriftSummary,
     RecordMetadata,
 )
-from raitools.data_drift.domain.job_config import JobConfigFeature
-from raitools.data_drift.domain.stats import statistical_tests
-from raitools.data_drift.domain.stats.bonferroni_correction import bonferroni_correction
+from raitools.services.data_drift.domain.job_config import JobConfigFeature
+from raitools.services.data_drift.domain.stats import statistical_tests
+from raitools.services.data_drift.domain.stats.bonferroni_correction import (
+    bonferroni_correction,
+)
 
 
 def process_bundle(bundle_path: Path) -> DataDriftRecord:

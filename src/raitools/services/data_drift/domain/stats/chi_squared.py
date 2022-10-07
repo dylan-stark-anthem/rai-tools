@@ -5,7 +5,9 @@ from typing import List
 import numpy as np
 from scipy.stats.contingency import chi2_contingency
 
-from raitools.data_drift.domain.statistical_test_result import StatisticalTestResult
+from raitools.services.data_drift.domain.statistical_test_result import (
+    StatisticalTestResult,
+)
 
 
 class ChiSquaredTestResult(StatisticalTestResult):

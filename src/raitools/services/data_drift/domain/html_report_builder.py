@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List
 
 import bs4
 
-from raitools.data_drift.domain.data_drift_report import DataDriftReport
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
 
 
 class HtmlReportBuilder:
