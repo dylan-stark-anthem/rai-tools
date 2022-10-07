@@ -2,12 +2,14 @@
 
 from collections import defaultdict
 from pathlib import Path
-import textwrap
-import time
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
-
-from raitools.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.data_drift.domain.data_drift_record import (
+    DataDriftRecord,
+    DriftSummaryFeature,
+)
+from raitools.data_drift.domain.data_drift_report import DataDriftReport
+from raitools.data_drift.domain.html_report_builder import HtmlReportBuilder
 from raitools.data_drift.helpers.plotly import (
     plotly_data_summary_maker,
     plotly_drift_magnitude_maker,
@@ -18,58 +20,105 @@ from raitools.data_drift.helpers.plotly import (
 def generate_report(
     record: DataDriftRecord,
     output_path: Path,
-    timestamp: str = None,
-    data_summary_maker: Callable[[int, int], str] = plotly_data_summary_maker,
-    drift_summary_maker: Callable[
-        [int, int, int, int], str
-    ] = plotly_drift_summary_maker,
-    drift_magnitude_maker: Callable[
-        [List[str], Dict[str, List[Any]]], str
-    ] = plotly_drift_magnitude_maker,
+    report_builder: HtmlReportBuilder = None,
 ) -> None:
     """Generates a report for the given record."""
-    job_config = record.bundle.job_config
+    if not report_builder:
+        report_builder = _report_builder()
 
-    report_name = job_config.report_name
+    report_data = compile_report_data(record)
+    report_path = _report_path(record.bundle.job_config.report_name, output_path)
+
+    report_builder.report_data = report_data
+    report_builder.compile()
+    report_html = report_builder.get()
+
+    report_path.write_text(report_html)
+
+
+def compile_report_data(record: DataDriftRecord) -> DataDriftReport:
+    """Compiles report data from the given record."""
+    features_list = list(record.drift_summary.features.values())
+
+    data_drift_report = DataDriftReport(
+        report_name=record.bundle.job_config.report_name,
+        dataset_name=record.bundle.job_config.dataset_name,
+        dataset_version=record.bundle.job_config.dataset_version,
+        model_catalog_id=record.bundle.job_config.model_catalog_id,
+        thresholds=_thresholds_map(record.drift_summary.features),
+        num_total_features=len(record.drift_summary.features),
+        num_features_drifted=len(_drifted_feature_list(features_list)),
+        top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
+        top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
+        fields=_fields(),
+        observations=_observations(features_list),
+        num_rows_baseline_data=record.bundle.data["baseline_data"].num_rows,
+        num_columns_baseline_data=record.bundle.data["baseline_data"].num_columns,
+        num_rows_test_data=record.bundle.data["test_data"].num_rows,
+        num_columns_test_data=record.bundle.data["test_data"].num_columns,
+        num_numerical_features=(record.drift_summary.metadata.num_numerical_features),
+        num_categorical_features=(
+            record.drift_summary.metadata.num_categorical_features
+        ),
+    )
+
+    return data_drift_report
+
+
+def _report_builder() -> HtmlReportBuilder:
+    report_builder = HtmlReportBuilder()
+    report_builder.data_summary_maker = plotly_data_summary_maker
+    report_builder.drift_summary_maker = plotly_drift_summary_maker
+    report_builder.drift_magnitude_maker = plotly_drift_magnitude_maker
+    return report_builder
+
+
+def _report_path(report_name: str, output_path: Path) -> Path:
     report_filename = f"{report_name}.html"
     report_path = output_path / report_filename
+    return report_path
 
-    if not timestamp:
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
-    # Create mapping for type of feature and tests
+def _thresholds_map(
+    features: Dict[str, DriftSummaryFeature]
+) -> Dict[str, Dict[str, float]]:
     thresholds: Dict[str, Dict[str, float]] = defaultdict(dict)
-    for feature in record.drift_summary.features.values():
+    for feature in features.values():
         kind = feature.kind
         test_name = feature.statistical_test.name
         threshold = feature.statistical_test.adjusted_significance_level
         thresholds[kind][test_name] = threshold
-    thresholds_list = "<ul>\n"
-    for kind, tests in thresholds.items():
-        for test_name, threshold in tests.items():
-            thresholds_list += f"    <li>For {kind} features, {test_name} test with a threshold of {threshold} is used</li>\n"
-    thresholds_list += "</ul>"
+    return thresholds
 
-    # Create drift summary statistics
-    features = record.drift_summary.features.values()
-    num_total_features = len(features)
 
+def _drifted_feature_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
     drifted_features = [
         feature for feature in features if feature.drift_status == "drifted"
     ]
-    num_features_drifted = len(drifted_features)
+    return drifted_features
 
+
+def _top_10_drifted_features_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
     top_10_drifted_features = [
-        feature for feature in drifted_features if feature.rank <= 10
+        feature for feature in _drifted_feature_list(features) if feature.rank <= 10
     ]
-    num_top_10_features_drifted = len(top_10_drifted_features)
+    return top_10_drifted_features
 
+
+def _top_20_drifted_features_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
     top_20_drifted_features = [
-        feature for feature in drifted_features if feature.rank <= 20
+        feature for feature in _drifted_feature_list(features) if feature.rank <= 20
     ]
-    num_top_20_features_drifted = len(top_20_drifted_features)
+    return top_20_drifted_features
 
-    # Create magnitude table
+
+def _fields() -> List[str]:
     fields = [
         "rank",
         "name",
@@ -77,6 +126,10 @@ def generate_report(
         "p_value",
         "drift_status",
     ]
+    return fields
+
+
+def _observations(features: List[DriftSummaryFeature]) -> Dict[str, Any]:
     ranked_features = sorted(features, key=lambda x: x.rank)
     observations: Dict[str, Any] = {
         "rank": [feature.rank for feature in ranked_features],
@@ -87,52 +140,4 @@ def generate_report(
         ],
         "drift_status": [feature.drift_status for feature in ranked_features],
     }
-
-    report_html = textwrap.dedent(
-        f"""\
-        <html>
-            <head>
-                <title>{report_name}</title>
-            </head>
-            <body>
-                <h3 style ='color: darkred'>Timestamp : {timestamp}</h3>
-                <h3 style ='color: darkred'> Report name  : {report_name} </h3>
-                <h3 style ='color: darkred'> Dataset name  : {job_config.dataset_name} </h3>
-                <h3 style ='color: darkred'> Dataset Version : {job_config.dataset_version} </h3>
-                <h3 style ='color: darkred'> Model Catalog ID : {job_config.model_catalog_id} </h3>
-                <h3 style ='color: darkred'>
-                    {thresholds_list}
-                </h3>
-                <table border="1" class="dataframe">
-                    <thead>
-                      <tr style="text-align: right;">
-                        <th>Baseline Data Size</th>
-                        <th>Test Data Size</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{record.bundle.data["baseline_data"].num_rows} X {record.bundle.data["baseline_data"].num_columns}</td>
-                        <td>{record.bundle.data["test_data"].num_rows} X {record.bundle.data["test_data"].num_columns}</td>
-                      </tr>
-                    </tbody>
-                </table>
-                <br/>
-                <div>
-                    {data_summary_maker(record.drift_summary.metadata.num_numerical_features, record.drift_summary.metadata.num_categorical_features)}
-                </div>
-                <br/>
-                <div>
-                    {drift_summary_maker(num_total_features, num_features_drifted, num_top_10_features_drifted, num_top_20_features_drifted)}
-                </div>
-                <br/>
-                <div>
-                    {drift_magnitude_maker(fields, observations)}
-                </div>
-                <br/>
-            </body>
-        </html>
-        """  # noqa: B950
-    )
-
-    report_path.write_text(report_html)
+    return observations

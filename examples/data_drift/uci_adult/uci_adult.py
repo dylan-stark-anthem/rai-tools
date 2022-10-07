@@ -4,11 +4,6 @@
 from pathlib import Path
 from zipfile import ZipFile
 
-from raitools.data_drift.helpers.plotly import (
-    plotly_data_summary_maker,
-    plotly_drift_magnitude_maker,
-    plotly_drift_summary_maker,
-)
 from raitools.data_drift.use_cases.generate_report import generate_report
 from raitools.data_drift.use_cases.process_bundle import process_bundle
 
@@ -36,13 +31,7 @@ def run_uci_adult(bundle_path: Path, output_path: Path) -> None:
     print(f"Writing results to {output_path}")
 
     record = process_bundle(bundle_path)
-    generate_report(
-        record,
-        output_path=output_path,
-        data_summary_maker=plotly_data_summary_maker,
-        drift_summary_maker=plotly_drift_summary_maker,
-        drift_magnitude_maker=plotly_drift_magnitude_maker,
-    )
+    generate_report(record, output_path=output_path)
 
     print("Done.")
 
