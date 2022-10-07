@@ -25,7 +25,7 @@ from raitools.services.data_drift.domain.html_report_builder import (
     basic_drift_summary_maker,
 )
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.services.data_drift.domain.stats.bonferroni_correction import (
+from raitools.stats.bonferroni_correction import (
     bonferroni_correction,
 )
 

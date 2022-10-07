@@ -23,7 +23,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
 )
 from raitools.services.data_drift.domain.job_config import JobConfigFeature
 from raitools.services.data_drift.domain.stats import statistical_tests
-from raitools.services.data_drift.domain.stats.bonferroni_correction import (
+from raitools.stats.bonferroni_correction import (
     bonferroni_correction,
 )
 
