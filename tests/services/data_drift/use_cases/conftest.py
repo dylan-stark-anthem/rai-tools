@@ -85,7 +85,7 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
                     "rank": 1,
                     "statistical_test": {
                         "name": "kolmogorov-smirnov",
-                        "result": {"statistic": 0.0, "p_value": 1.0},
+                        "result": {"test_statistic": 0.0, "p_value": 1.0},
                         "significance_level": 0.05,
                         "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
@@ -98,7 +98,7 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
                     "rank": 2,
                     "statistical_test": {
                         "name": "kolmogorov-smirnov",
-                        "result": {"statistic": 0.0, "p_value": 1.0},
+                        "result": {"test_statistic": 0.0, "p_value": 1.0},
                         "significance_level": 0.05,
                         "adjusted_significance_level": adjusted_significance_level,
                         "outcome": "fail to reject null hypothesis",
@@ -112,7 +112,7 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
                     "statistical_test": {
                         "name": "chi-squared",
                         "result": {
-                            "statistic": 0.0,
+                            "test_statistic": 0.0,
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
@@ -128,7 +128,7 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
                     "statistical_test": {
                         "name": "chi-squared",
                         "result": {
-                            "statistic": 0.0,
+                            "test_statistic": 0.0,
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
@@ -144,7 +144,7 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
                     "statistical_test": {
                         "name": "chi-squared",
                         "result": {
-                            "statistic": 0.0,
+                            "test_statistic": 0.0,
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,

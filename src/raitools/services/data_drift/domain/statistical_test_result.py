@@ -7,5 +7,5 @@ from pydantic import BaseModel
 class StatisticalTestResult(BaseModel):
     """Results of a statistical test."""
 
-    statistic: float
+    test_statistic: float
     p_value: float
