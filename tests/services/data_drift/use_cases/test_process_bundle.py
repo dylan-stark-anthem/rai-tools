@@ -7,13 +7,13 @@ from raitools.services.data_drift.domain.data_drift_record import DataDriftRecor
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
 
-def test_can_process_bundle(
-    simple_bundle_path: Path, simple_record: DataDriftRecord
+def test_can_process_simple_undrifted_bundle(
+    simple_undrifted_bundle_path: Path, simple_undrifted_record: DataDriftRecord
 ) -> None:
     """Tests that we can process a bundle."""
-    record = process_bundle(simple_bundle_path)
+    record = process_bundle(simple_undrifted_bundle_path)
 
-    _assert_equal_dicts(simple_record.dict(), record.dict())
+    _assert_equal_dicts(simple_undrifted_record.dict(), record.dict())
 
 
 def _assert_equal_dicts(expected_dict: Dict, actual_dict: Dict) -> None:
