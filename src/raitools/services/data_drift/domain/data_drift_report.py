@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from pydantic import BaseModel
 
 
-class DataDriftReport(BaseModel):
+class DataDriftReportData(BaseModel):
     """Data drift report data."""
 
     report_name: str

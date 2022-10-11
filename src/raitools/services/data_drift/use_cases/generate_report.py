@@ -1,46 +1,29 @@
 """HTML report generation."""
 
 from collections import defaultdict
-from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 from raitools.services.data_drift.domain.data_drift_record import (
     DataDriftRecord,
     DriftSummaryFeature,
 )
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
-from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
-from raitools.services.data_drift.helpers.plotly import (
-    plotly_data_summary_maker,
-    plotly_drift_magnitude_maker,
-    plotly_drift_summary_maker,
-)
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
 
 
 def generate_report(
-    record: DataDriftRecord,
-    output_path: Path,
-    report_builder: HtmlReportBuilder = None,
-) -> None:
+    record: DataDriftRecord, report_builder: Callable[[DataDriftReportData], Any]
+) -> Any:
     """Generates a report for the given record."""
-    if not report_builder:
-        report_builder = _report_builder()
-
     report_data = compile_report_data(record)
-    report_path = _report_path(record.bundle.job_config.report_name, output_path)
-
-    report_builder.report_data = report_data
-    report_builder.compile()
-    report_html = report_builder.get()
-
-    report_path.write_text(report_html)
+    report = report_builder(report_data)
+    return report
 
 
-def compile_report_data(record: DataDriftRecord) -> DataDriftReport:
+def compile_report_data(record: DataDriftRecord) -> DataDriftReportData:
     """Compiles report data from the given record."""
     features_list = list(record.drift_summary.features.values())
 
-    data_drift_report = DataDriftReport(
+    data_drift_report = DataDriftReportData(
         report_name=record.bundle.job_config.report_name,
         dataset_name=record.bundle.job_config.dataset_name,
         dataset_version=record.bundle.job_config.dataset_version,
@@ -63,20 +46,6 @@ def compile_report_data(record: DataDriftRecord) -> DataDriftReport:
     )
 
     return data_drift_report
-
-
-def _report_builder() -> HtmlReportBuilder:
-    report_builder = HtmlReportBuilder()
-    report_builder.data_summary_maker = plotly_data_summary_maker
-    report_builder.drift_summary_maker = plotly_drift_summary_maker
-    report_builder.drift_magnitude_maker = plotly_drift_magnitude_maker
-    return report_builder
-
-
-def _report_path(report_name: str, output_path: Path) -> Path:
-    report_filename = f"{report_name}.html"
-    report_path = output_path / report_filename
-    return report_path
 
 
 def _thresholds_map(

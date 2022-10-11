@@ -3,7 +3,7 @@
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 from zipfile import ZipFile
 
 import pyarrow as pa
@@ -17,7 +17,7 @@ from raitools.services.data_drift.domain.bundle import (
     get_job_config_from_bundle,
 )
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
 from raitools.services.data_drift.domain.html_report_builder import (
     HtmlReportBuilder,
     basic_data_summary_maker,
@@ -186,19 +186,27 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
     return expected_record
 
 
-@pytest.fixture
-def simple_report_builder() -> HtmlReportBuilder:
+def simple_report_builder_impl(report_data: DataDriftReportData) -> str:
     """Creates a report builder for the simple test case."""
     report_builder = HtmlReportBuilder()
     report_builder.data_summary_maker = basic_data_summary_maker
     report_builder.drift_summary_maker = basic_drift_summary_maker
     report_builder.drift_magnitude_maker = basic_drift_magnitude_maker
-    return report_builder
+    report_builder.report_data = report_data
+    report_builder.compile()
+    return report_builder.get()
+
+
+@pytest.fixture
+def simple_report_builder() -> Callable[[DataDriftReportData], str]:
+    """Returms simple report builder method."""
+    return simple_report_builder_impl
 
 
 @pytest.fixture
 def simple_report_html(
-    simple_record: DataDriftRecord, simple_report_builder: HtmlReportBuilder
+    simple_record: DataDriftRecord,
+    simple_report_builder: Callable[[DataDriftReportData], str],
 ) -> str:
     """Creates expected report html for simple test case."""
     job_config = simple_record.bundle.job_config
@@ -247,7 +255,7 @@ def simple_report_html(
         "drift_status": [feature.drift_status for feature in ranked_features],
     }
 
-    report_data = DataDriftReport(
+    report_data = DataDriftReportData(
         report_name=job_config.report_name,
         dataset_name=job_config.dataset_name,
         dataset_version=job_config.dataset_version,
@@ -271,9 +279,7 @@ def simple_report_html(
         ),
     )
 
-    simple_report_builder.report_data = report_data
-    simple_report_builder.compile()
-    simple_report_html = simple_report_builder.get()
+    simple_report_html = simple_report_builder(report_data)
 
     return simple_report_html
 

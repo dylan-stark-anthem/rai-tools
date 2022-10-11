@@ -3,6 +3,9 @@
 
 from pathlib import Path
 from zipfile import ZipFile
+from raitools.services.data_drift.domain.plotly_report_builder import (
+    plotly_report_builder,
+)
 
 from raitools.services.data_drift.use_cases.generate_report import generate_report
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
@@ -24,15 +27,19 @@ def create_bundle(
     return bundle_path
 
 
-def run_uci_adult(bundle_path: Path, output_path: Path) -> None:
+def run_uci_adult_example(bundle_path: Path, output_path: Path) -> None:
     """Runs UCI Adult data set example."""
     print("Running UCI Adult data set example ...")
+
     print(f"Using bundle at {bundle_path}")
-    print(f"Writing results to {output_path}")
-
     record = process_bundle(bundle_path)
-    generate_report(record, output_path=output_path)
+    report = generate_report(record, report_builder=plotly_report_builder)
 
+    report_filename = f"{record.bundle.job_config.report_name}.html"
+    report_path = output_path / report_filename
+    report_path.write_text(report)
+
+    print(f"Wrote report to {report_path}")
     print("Done.")
 
 
@@ -48,7 +55,7 @@ def main() -> None:
         job_config_path, baseline_data_path, test_data_path, output_path
     )
 
-    run_uci_adult(bundle_path, output_path)
+    run_uci_adult_example(bundle_path, output_path)
 
 
 if __name__ == "__main__":
