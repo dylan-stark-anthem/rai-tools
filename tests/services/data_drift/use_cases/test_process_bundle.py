@@ -16,6 +16,15 @@ def test_can_process_simple_undrifted_bundle(
     _assert_equal_dicts(simple_undrifted_record.dict(), record.dict())
 
 
+def test_can_process_simple_drifted_bundle(
+    simple_drifted_bundle_path: Path, simple_drifted_record: DataDriftRecord
+) -> None:
+    """Tests that we can process a bundle."""
+    record = process_bundle(simple_drifted_bundle_path)
+
+    _assert_equal_dicts(simple_drifted_record.dict(), record.dict())
+
+
 def _assert_equal_dicts(expected_dict: Dict, actual_dict: Dict) -> None:
     """Asserts that two dictionaries have the same members.
 

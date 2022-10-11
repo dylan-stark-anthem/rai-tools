@@ -5,5 +5,7 @@ define fixtures in a module way, scoped close to their use.
 """
 
 pytest_plugins = [
-    "tests.services.data_drift.use_cases.fixtures.simple_undrifted_scenario"
+    "tests.services.data_drift.use_cases.fixtures.simple_scenario",
+    "tests.services.data_drift.use_cases.fixtures.simple_undrifted_scenario",
+    "tests.services.data_drift.use_cases.fixtures.simple_drifted_scenario",
 ]
