@@ -1,5 +1,4 @@
-"""Test configuration for data drift."""
-
+"""Simple non-drifted test scenario."""
 
 from collections import defaultdict
 from pathlib import Path
@@ -25,28 +24,7 @@ from raitools.services.data_drift.domain.html_report_builder import (
     basic_drift_summary_maker,
 )
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.stats.bonferroni_correction import (
-    bonferroni_correction,
-)
-
-
-@pytest.fixture
-def simple_bundle_path(tmp_path: Path) -> Path:
-    """Path to a simple bundle."""
-    num_numerical_features = 2
-    num_categorical_features = 3
-    num_observations = 10
-    job_config_filename = "some_job_config.json"
-
-    bundle_path = _create_bundle(
-        num_numerical_features,
-        num_categorical_features,
-        num_observations,
-        job_config_filename,
-        tmp_path,
-    )
-
-    return bundle_path
+from raitools.stats.bonferroni_correction import bonferroni_correction
 
 
 @pytest.fixture
@@ -186,6 +164,25 @@ def simple_record(simple_bundle_path: Path) -> DataDriftRecord:
     return expected_record
 
 
+@pytest.fixture
+def simple_bundle_path(tmp_path: Path) -> Path:
+    """Path to a simple bundle."""
+    num_numerical_features = 2
+    num_categorical_features = 3
+    num_observations = 10
+    job_config_filename = "some_job_config.json"
+
+    bundle_path = _create_bundle(
+        num_numerical_features,
+        num_categorical_features,
+        num_observations,
+        job_config_filename,
+        tmp_path,
+    )
+
+    return bundle_path
+
+
 def simple_report_builder_impl(report_data: DataDriftReportData) -> str:
     """Creates a report builder for the simple test case."""
     report_builder = HtmlReportBuilder()
@@ -284,6 +281,25 @@ def simple_report_html(
     return simple_report_html
 
 
+def _get_num_features_of_kind(bundle_path: Path, kind: str) -> int:
+    """Gets number of numerical features from the bundle at this path."""
+    job_config = get_job_config_from_bundle(bundle_path)
+    features_of_kind = [
+        name
+        for name, details in job_config.feature_mapping.items()
+        if details.kind == kind
+    ]
+    return len(features_of_kind)
+
+
+def _get_num_observations_in_dataset(bundle_path: Path, dataset: str) -> int:
+    """Gets the number of observations in the specified dataset."""
+    job_config = get_job_config_from_bundle(bundle_path)
+    data_filename = getattr(job_config, f"{dataset}_filename")
+    data = get_data_from_bundle(bundle_path, data_filename)
+    return data.num_rows
+
+
 def _create_bundle(
     num_numerical_features: int,
     num_categorical_features: int,
@@ -358,22 +374,3 @@ def _create_bundle(
         zip_file.write(test_data_path, arcname=job_config.test_data_filename)
 
     return bundle_path
-
-
-def _get_num_features_of_kind(bundle_path: Path, kind: str) -> int:
-    """Gets number of numerical features from the bundle at this path."""
-    job_config = get_job_config_from_bundle(bundle_path)
-    features_of_kind = [
-        name
-        for name, details in job_config.feature_mapping.items()
-        if details.kind == kind
-    ]
-    return len(features_of_kind)
-
-
-def _get_num_observations_in_dataset(bundle_path: Path, dataset: str) -> int:
-    """Gets the number of observations in the specified dataset."""
-    job_config = get_job_config_from_bundle(bundle_path)
-    data_filename = getattr(job_config, f"{dataset}_filename")
-    data = get_data_from_bundle(bundle_path, data_filename)
-    return data.num_rows
