@@ -1,16 +1,18 @@
 """Common helpers for test setup."""
 
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict
 from zipfile import ZipFile
 
 import pyarrow as pa
 from pyarrow.csv import write_csv
+
+from raitools import __version__
 from raitools.services.data_drift.domain.bundle import (
     get_data_from_bundle,
     get_job_config_from_bundle,
 )
-
+from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 
 
@@ -67,3 +69,135 @@ def get_num_observations_in_dataset(bundle_path: Path, dataset: str) -> int:
     data_filename = getattr(job_config, f"{dataset}_filename")
     data = get_data_from_bundle(bundle_path, data_filename)
     return data.num_rows
+
+
+def create_expected_record(**spec: Any) -> DataDriftRecord:
+    """Creates an expected record for given spec.
+
+    Note that we are trading off high cost of maintaining the explicit record
+    dictionary for the high value of having a clear, unambiguous declaration
+    of the true expected record payload.
+    """
+    expected_record_dict = {
+        "apiVersion": "raitools/v1",
+        "kind": "DataDriftRecord",
+        "metadata": {
+            "raitools_version": __version__,
+        },
+        "drift_summary": {
+            "features": {
+                "numerical_feature_0": {
+                    "name": "numerical_feature_0",
+                    "kind": "numerical",
+                    "rank": 1,
+                    "statistical_test": {
+                        "name": "kolmogorov-smirnov",
+                        "result": {"test_statistic": 1.0, "p_value": 0.0},
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
+                        "outcome": "reject null hypothesis",
+                    },
+                    "drift_status": "drifted",
+                },
+                "numerical_feature_1": {
+                    "name": "numerical_feature_1",
+                    "kind": "numerical",
+                    "rank": 2,
+                    "statistical_test": {
+                        "name": "kolmogorov-smirnov",
+                        "result": {"test_statistic": 1.0, "p_value": 0.0},
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
+                        "outcome": "reject null hypothesis",
+                    },
+                    "drift_status": "drifted",
+                },
+                "categorical_feature_0": {
+                    "name": "categorical_feature_0",
+                    "kind": "categorical",
+                    "rank": 3,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "test_statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
+                        "outcome": "fail to reject null hypothesis",
+                    },
+                    "drift_status": "not drifted",
+                },
+                "categorical_feature_1": {
+                    "name": "categorical_feature_1",
+                    "kind": "categorical",
+                    "rank": 4,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "test_statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
+                        "outcome": "fail to reject null hypothesis",
+                    },
+                    "drift_status": "not drifted",
+                },
+                "categorical_feature_2": {
+                    "name": "categorical_feature_2",
+                    "kind": "categorical",
+                    "rank": 5,
+                    "statistical_test": {
+                        "name": "chi-squared",
+                        "result": {
+                            "test_statistic": 0.0,
+                            "p_value": 1.0,
+                        },
+                        "significance_level": 0.05,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
+                        "outcome": "fail to reject null hypothesis",
+                    },
+                    "drift_status": "not drifted",
+                },
+            },
+            "metadata": {
+                "num_numerical_features": spec["num_numerical_features"],
+                "num_categorical_features": spec["num_categorical_features"],
+            },
+        },
+        "bundle": {
+            "job_config": spec["job_config"],
+            "data": {
+                "baseline_data": {
+                    "filename": spec["job_config"]["baseline_data_filename"],
+                    "num_rows": spec["num_baseline_observations"],
+                    "num_columns": spec["num_features"],
+                },
+                "test_data": {
+                    "filename": spec["job_config"]["test_data_filename"],
+                    "num_rows": spec["num_test_observations"],
+                    "num_columns": spec["num_features"],
+                },
+            },
+            "manifest": {
+                "bundle_path": spec["bundle_path"],
+                "job_config_filename": spec["job_config_filename"],
+                "baseline_data_filename": spec["job_config"]["baseline_data_filename"],
+                "test_data_filename": spec["job_config"]["test_data_filename"],
+            },
+        },
+    }
+
+    expected_record = DataDriftRecord(**expected_record_dict)
+    return expected_record
