@@ -7,18 +7,10 @@ import pyarrow as pa
 import pytest
 
 from raitools import __version__
-from raitools.services.data_drift.domain.bundle import (
-    get_job_config_filename_from_bundle,
-    get_job_config_from_bundle,
-)
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.stats.bonferroni_correction import bonferroni_correction
 
-from tests.services.data_drift.use_cases.fixtures.common import (
-    create_bundle,
-    get_num_features_of_kind,
-    get_num_observations_in_dataset,
-)
+from tests.services.data_drift.use_cases.fixtures.common import create_bundle
 
 
 @pytest.fixture
@@ -66,27 +58,66 @@ def simple_drifted_bundle_path(
 
 
 @pytest.fixture
-def simple_drifted_record(simple_drifted_bundle_path: Path) -> DataDriftRecord:
+def simple_drifted_spec(tmp_path: Path) -> Dict:
+    """Spec used to drive system into desired state for test."""
+    spec = {
+        "bundle_path": tmp_path / "bundle.zip",
+        "job_config_filename": "some_job_config.json",
+        "job_config": {
+            "report_name": "Some simple report",
+            "dataset_name": "Some name for this dataset",
+            "dataset_version": "v0.1.0",
+            "baseline_data_filename": "some_baseline_data.csv",
+            "test_data_filename": "some_test_data.csv",
+            "model_catalog_id": "123",
+            "feature_mapping": {
+                "numerical_feature_0": {
+                    "name": "numerical_feature_0",
+                    "kind": "numerical",
+                    "rank": 1,
+                },
+                "numerical_feature_1": {
+                    "name": "numerical_feature_1",
+                    "kind": "numerical",
+                    "rank": 2,
+                },
+                "categorical_feature_0": {
+                    "name": "categorical_feature_0",
+                    "kind": "categorical",
+                    "rank": 3,
+                },
+                "categorical_feature_1": {
+                    "name": "categorical_feature_1",
+                    "kind": "categorical",
+                    "rank": 4,
+                },
+                "categorical_feature_2": {
+                    "name": "categorical_feature_2",
+                    "kind": "categorical",
+                    "rank": 5,
+                },
+            },
+        },
+        "num_numerical_features": 2,
+        "num_categorical_features": 3,
+        "num_baseline_observations": 10,
+        "num_test_observations": 10,
+    }
+    return spec
+
+
+@pytest.fixture
+def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
     """The expected record for the simple request."""
-    job_config_filename = get_job_config_filename_from_bundle(
-        simple_drifted_bundle_path
-    )
-    job_config = get_job_config_from_bundle(simple_drifted_bundle_path)
+    bundle_path = simple_drifted_spec["bundle_path"]
+    job_config_filename = simple_drifted_spec["job_config_filename"]
+    job_config = simple_drifted_spec["job_config"]
+    num_numerical_features = simple_drifted_spec["num_numerical_features"]
+    num_categorical_features = simple_drifted_spec["num_categorical_features"]
+    num_baseline_observations = simple_drifted_spec["num_baseline_observations"]
+    num_test_observations = simple_drifted_spec["num_test_observations"]
 
-    num_numerical_features = get_num_features_of_kind(
-        simple_drifted_bundle_path, "numerical"
-    )
-    num_categorical_features = get_num_features_of_kind(
-        simple_drifted_bundle_path, "categorical"
-    )
     num_features = num_numerical_features + num_categorical_features
-    num_baseline_observations = get_num_observations_in_dataset(
-        simple_drifted_bundle_path, "baseline_data"
-    )
-    num_test_observations = get_num_observations_in_dataset(
-        simple_drifted_bundle_path, "test_data"
-    )
-
     adjusted_significance_level = round(
         bonferroni_correction(num_features, alpha=0.05), ndigits=6
     )
@@ -183,21 +214,21 @@ def simple_drifted_record(simple_drifted_bundle_path: Path) -> DataDriftRecord:
             "job_config": job_config,
             "data": {
                 "baseline_data": {
-                    "filename": job_config.baseline_data_filename,
+                    "filename": job_config["baseline_data_filename"],
                     "num_rows": num_baseline_observations,
                     "num_columns": num_features,
                 },
                 "test_data": {
-                    "filename": job_config.test_data_filename,
+                    "filename": job_config["test_data_filename"],
                     "num_rows": num_test_observations,
                     "num_columns": num_features,
                 },
             },
             "manifest": {
-                "bundle_path": simple_drifted_bundle_path,
+                "bundle_path": bundle_path,
                 "job_config_filename": job_config_filename,
-                "baseline_data_filename": job_config.baseline_data_filename,
-                "test_data_filename": job_config.test_data_filename,
+                "baseline_data_filename": job_config["baseline_data_filename"],
+                "test_data_filename": job_config["test_data_filename"],
             },
         },
     }
