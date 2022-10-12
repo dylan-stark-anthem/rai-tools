@@ -1,7 +1,7 @@
 """Setup for simple drifted test scenario."""
 
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 import pyarrow as pa
 import pytest
@@ -98,6 +98,7 @@ def simple_drifted_spec(tmp_path: Path) -> Dict:
                 },
             },
         },
+        "num_features": 5,
         "num_numerical_features": 2,
         "num_categorical_features": 3,
         "num_baseline_observations": 10,
@@ -108,20 +109,28 @@ def simple_drifted_spec(tmp_path: Path) -> Dict:
 
 @pytest.fixture
 def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
-    """The expected record for the simple request."""
-    bundle_path = simple_drifted_spec["bundle_path"]
-    job_config_filename = simple_drifted_spec["job_config_filename"]
-    job_config = simple_drifted_spec["job_config"]
-    num_numerical_features = simple_drifted_spec["num_numerical_features"]
-    num_categorical_features = simple_drifted_spec["num_categorical_features"]
-    num_baseline_observations = simple_drifted_spec["num_baseline_observations"]
-    num_test_observations = simple_drifted_spec["num_test_observations"]
+    """The expected record for the simple request.
 
-    num_features = num_numerical_features + num_categorical_features
-    adjusted_significance_level = round(
-        bonferroni_correction(num_features, alpha=0.05), ndigits=6
+    The job of this fixture is to take the more general spec for the test
+    scenario and extend it with more specific details.
+    """
+    spec = simple_drifted_spec
+
+    spec["adjusted_significance_level"] = round(
+        bonferroni_correction(spec["num_features"], alpha=0.05), ndigits=6
     )
 
+    expected_record = create_expected_record(**spec)
+    return expected_record
+
+
+def create_expected_record(**spec: Any) -> DataDriftRecord:
+    """Creates an expected record for given spec.
+
+    Note that we are trading off high cost of maintaining the explicit record
+    dictionary for the high value of having a clear, unambiguous declaration
+    of the true expected record payload.
+    """
     expected_record_dict = {
         "apiVersion": "raitools/v1",
         "kind": "DataDriftRecord",
@@ -138,7 +147,9 @@ def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
                         "name": "kolmogorov-smirnov",
                         "result": {"test_statistic": 1.0, "p_value": 0.0},
                         "significance_level": 0.05,
-                        "adjusted_significance_level": adjusted_significance_level,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
                         "outcome": "reject null hypothesis",
                     },
                     "drift_status": "drifted",
@@ -151,7 +162,9 @@ def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
                         "name": "kolmogorov-smirnov",
                         "result": {"test_statistic": 1.0, "p_value": 0.0},
                         "significance_level": 0.05,
-                        "adjusted_significance_level": adjusted_significance_level,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
                         "outcome": "reject null hypothesis",
                     },
                     "drift_status": "drifted",
@@ -167,7 +180,9 @@ def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": adjusted_significance_level,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -183,7 +198,9 @@ def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": adjusted_significance_level,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
@@ -199,36 +216,38 @@ def simple_drifted_record(simple_drifted_spec: Dict) -> DataDriftRecord:
                             "p_value": 1.0,
                         },
                         "significance_level": 0.05,
-                        "adjusted_significance_level": adjusted_significance_level,
+                        "adjusted_significance_level": spec[
+                            "adjusted_significance_level"
+                        ],
                         "outcome": "fail to reject null hypothesis",
                     },
                     "drift_status": "not drifted",
                 },
             },
             "metadata": {
-                "num_numerical_features": num_numerical_features,
-                "num_categorical_features": num_categorical_features,
+                "num_numerical_features": spec["num_numerical_features"],
+                "num_categorical_features": spec["num_categorical_features"],
             },
         },
         "bundle": {
-            "job_config": job_config,
+            "job_config": spec["job_config"],
             "data": {
                 "baseline_data": {
-                    "filename": job_config["baseline_data_filename"],
-                    "num_rows": num_baseline_observations,
-                    "num_columns": num_features,
+                    "filename": spec["job_config"]["baseline_data_filename"],
+                    "num_rows": spec["num_baseline_observations"],
+                    "num_columns": spec["num_features"],
                 },
                 "test_data": {
-                    "filename": job_config["test_data_filename"],
-                    "num_rows": num_test_observations,
-                    "num_columns": num_features,
+                    "filename": spec["job_config"]["test_data_filename"],
+                    "num_rows": spec["num_test_observations"],
+                    "num_columns": spec["num_features"],
                 },
             },
             "manifest": {
-                "bundle_path": bundle_path,
-                "job_config_filename": job_config_filename,
-                "baseline_data_filename": job_config["baseline_data_filename"],
-                "test_data_filename": job_config["test_data_filename"],
+                "bundle_path": spec["bundle_path"],
+                "job_config_filename": spec["job_config_filename"],
+                "baseline_data_filename": spec["job_config"]["baseline_data_filename"],
+                "test_data_filename": spec["job_config"]["test_data_filename"],
             },
         },
     }
