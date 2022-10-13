@@ -1,9 +1,64 @@
 """Setup for simple test scenario."""
 
+from pathlib import Path
 from typing import Dict, List, Union
 
 import pyarrow as pa
 import pytest
+
+from raitools import __version__
+
+
+@pytest.fixture
+def simple_spec(tmp_path: Path) -> Dict:
+    """Spec used to drive system into desired state for test."""
+    spec = {
+        "raitools_version": __version__,
+        "bundle_path": tmp_path / "bundle.zip",
+        "job_config_filename": "some_job_config.json",
+        "job_config": {
+            "report_name": "Some simple report",
+            "dataset_name": "Some name for this dataset",
+            "dataset_version": "v0.1.0",
+            "baseline_data_filename": "some_baseline_data.csv",
+            "test_data_filename": "some_test_data.csv",
+            "model_catalog_id": "123",
+            "feature_mapping": {
+                "numerical_feature_0": {
+                    "name": "numerical_feature_0",
+                    "kind": "numerical",
+                    "rank": 1,
+                },
+                "numerical_feature_1": {
+                    "name": "numerical_feature_1",
+                    "kind": "numerical",
+                    "rank": 2,
+                },
+                "categorical_feature_0": {
+                    "name": "categorical_feature_0",
+                    "kind": "categorical",
+                    "rank": 3,
+                },
+                "categorical_feature_1": {
+                    "name": "categorical_feature_1",
+                    "kind": "categorical",
+                    "rank": 4,
+                },
+                "categorical_feature_2": {
+                    "name": "categorical_feature_2",
+                    "kind": "categorical",
+                    "rank": 5,
+                },
+            },
+        },
+        "num_features": 5,
+        "num_numerical_features": 2,
+        "num_categorical_features": 3,
+        "num_baseline_observations": 10,
+        "num_test_observations": 10,
+        "adjusted_significance_level": 0.01,
+    }
+    return spec
 
 
 @pytest.fixture
