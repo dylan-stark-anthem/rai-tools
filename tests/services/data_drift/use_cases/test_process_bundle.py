@@ -18,6 +18,7 @@ from tests.services.data_drift.use_cases.common import (
     [
         ("simple_undrifted_spec.json", "simple_undrifted_record.json"),
         ("simple_drifted_spec.json", "simple_drifted_record.json"),
+        ("no_numerical_spec.json", "no_numerical_record.json"),
     ],
 )
 def test_can_process_simple_drifted_bundle(

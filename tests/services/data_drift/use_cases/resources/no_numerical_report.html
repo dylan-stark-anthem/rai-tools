@@ -1,0 +1,133 @@
+<html>
+
+<head>
+    <title>
+        Some simple report
+    </title>
+</head>
+
+<body>
+    <h3 style="color: darkred">
+        Timestamp: 1970-01-01 00:00:00
+    </h3>
+    <h3 style="color: darkred">
+        Report name: Some simple report
+    </h3>
+    <h3 style="color: darkred">
+        Dataset name: Some name for this dataset
+    </h3>
+    <h3 style="color: darkred">
+        Dataset Version: v0.1.0
+    </h3>
+    <h3 style="color: darkred">
+        Model Catalog ID: 123
+    </h3>
+    <h3 style="color: darkred">
+        <ul>
+            <li>
+                For categorical features, chi-squared test with a threshold of 0.016667 is used
+            </li>
+        </ul>
+    </h3>
+    <table border="1" class="dataframe">
+        <thead>
+            <tr style="text-align: right;">
+                <th>
+                    Baseline Data Size
+                </th>
+                <th>
+                    Test Data Size
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    10 X 3
+                </td>
+                <td>
+                    10 X 3
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <div>
+        <p>
+            This is the "Data Summary".
+        </p>
+        <p>
+            It contains two data cards: "Numerical features" showing 0 and "Categorical features" showing 3.
+        </p>
+    </div>
+    <br />
+    <div>
+        <p>
+            This is the "Drift Summary".
+        </p>
+        <p>
+            It contains four data cards: "Total Features" showing 3. "Features Drifted" showing 1. "Top 10 Features
+            Drifted" showing 1. "Top 20 Features Drifted" showing 1.
+        </p>
+    </div>
+    <br />
+    <div>
+        <p>
+            This is the "Drift Magnitude" section.
+            There are two visualizations: a heatmap and a table.
+            In the heatmap, "Each cell contains the p-value for the top &lt;= 100 features",
+            there are 10 columns, and each row is labeled with the range
+            of feature ranks displayed (e.g., 1-10, 2-20, ...).
+
+            The table has more detail, such as the "Feature Rank",
+            "Feature Name", "Feature Type", "p-value", and "Drift Status".
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        rank
+                    </th>
+                    <th>
+                        name
+                    </th>
+                    <th>
+                        kind
+                    </th>
+                    <th>
+                        p_value
+                    </th>
+                    <th>
+                        drift_status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>categorical_feature_0</td>
+                    <td>categorical</td>
+                    <td>0.009283244336110639</td>
+                    <td>drifted</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>categorical_feature_1</td>
+                    <td>categorical</td>
+                    <td>1.0</td>
+                    <td>not drifted</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>categorical_feature_2</td>
+                    <td>categorical</td>
+                    <td>1.0</td>
+                    <td>not drifted</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br />
+</body>
+
+</html>

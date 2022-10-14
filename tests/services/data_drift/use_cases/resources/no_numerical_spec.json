@@ -1,0 +1,123 @@
+{
+    "raitools_version": "v0.1.0",
+    "bundle_filename": "bundle.zip",
+    "job_config_filename": "some_job_config.json",
+    "job_config": {
+        "report_name": "Some simple report",
+        "dataset_name": "Some name for this dataset",
+        "dataset_version": "v0.1.0",
+        "baseline_data_filename": "some_baseline_data.csv",
+        "test_data_filename": "some_test_data.csv",
+        "model_catalog_id": "123",
+        "feature_mapping": {
+            "categorical_feature_0": {
+                "name": "categorical_feature_0",
+                "kind": "categorical",
+                "rank": 1
+            },
+            "categorical_feature_1": {
+                "name": "categorical_feature_1",
+                "kind": "categorical",
+                "rank": 2
+            },
+            "categorical_feature_2": {
+                "name": "categorical_feature_2",
+                "kind": "categorical",
+                "rank": 3
+            }
+        }
+    },
+    "num_features": 3,
+    "num_numerical_features": 0,
+    "num_categorical_features": 3,
+    "num_baseline_observations": 10,
+    "num_test_observations": 10,
+    "adjusted_significance_level": 0.016667,
+    "data": {
+        "categorical_feature_0": {
+            "name": "categorical_feature_0",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "categorical_feature_1": {
+            "name": "categorical_feature_1",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "categorical_feature_2": {
+            "name": "categorical_feature_2",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        }
+    }
+}
