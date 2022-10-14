@@ -21,20 +21,27 @@ from tests.services.data_drift.use_cases.common import (
 )
 
 
+@pytest.mark.parametrize(
+    "report_record_filename,report_html_filename",
+    [
+        ("simple_undrifted_report_record.json", "simple_undrifted_report.html"),
+        ("simple_drifted_report_record.json", "simple_drifted_report.html"),
+    ],
+)
 def test_can_generate_report(
-    simple_undrifted_report_builder: Callable[[DataDriftReportRecord], str]
+    report_record_filename: str,
+    report_html_filename: str,
+    simple_undrifted_report_builder: Callable[[DataDriftReportRecord], str],
 ) -> None:
     """Tests that we can generate an HTML report."""
-    simple_undrifted_report_record = prepare_report_record(
-        "simple_undrifted_report_record.json"
-    )
+    simple_undrifted_report_record = prepare_report_record(report_record_filename)
 
     actual_report_html = generate_report(
         simple_undrifted_report_record,
         report_builder=simple_undrifted_report_builder,
     )
 
-    expected_report_html = prepare_report("simple_undrifted_report.html")
+    expected_report_html = prepare_report(report_html_filename)
     _assert_equal_htmls(expected_report_html, actual_report_html)
 
 
