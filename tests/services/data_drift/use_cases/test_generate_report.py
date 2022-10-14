@@ -27,6 +27,7 @@ from tests.services.data_drift.use_cases.common import (
         ("simple_undrifted_report_record.json", "simple_undrifted_report.html"),
         ("simple_drifted_report_record.json", "simple_drifted_report.html"),
         ("no_numerical_report_record.json", "no_numerical_report.html"),
+        ("no_categorical_report_record.json", "no_categorical_report.html"),
     ],
 )
 def test_can_generate_report(
