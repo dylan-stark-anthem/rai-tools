@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
 from raitools.services.data_drift.helpers.plotly import (
     plotly_data_summary_maker,
@@ -11,7 +11,7 @@ from raitools.services.data_drift.helpers.plotly import (
 )
 
 
-def plotly_report_builder(report_data: DataDriftReportData) -> Any:
+def plotly_report_builder(report_data: DataDriftReportRecord) -> Any:
     """Builds an HTML report with fancy plotly diagrams."""
     report_builder = HtmlReportBuilder()
     report_builder.data_summary_maker = plotly_data_summary_maker

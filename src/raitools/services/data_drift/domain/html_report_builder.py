@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List
 
 import bs4
 
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 
 
 class HtmlReportBuilder:
@@ -18,7 +18,7 @@ class HtmlReportBuilder:
         """Initializes report builder."""
         self.timestamp: str = time.strftime("%Y-%m-%d %H:%M:%S")
 
-        self.report_data: DataDriftReportData
+        self.report_data: DataDriftReportRecord
 
         self.thresholds_list_maker: Callable[
             [Dict[str, Dict[str, float]]], str

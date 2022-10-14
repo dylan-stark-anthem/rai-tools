@@ -1,0 +1,73 @@
+{
+    "apiVersion": "raitools/v1",
+    "kind": "DataDriftReportRecord",
+    "metadata": {
+        "raitools_version": "0.1.0"
+    },
+    "report_name": "Some simple report",
+    "dataset_name": "Some name for this dataset",
+    "dataset_version": "v0.1.0",
+    "model_catalog_id": "123",
+    "num_rows_baseline_data": 10,
+    "num_columns_baseline_data": 5,
+    "num_rows_test_data": 10,
+    "num_columns_test_data": 5,
+    "num_numerical_features": 2,
+    "num_categorical_features": 3,
+    "thresholds": {
+        "numerical": {
+            "kolmogorov-smirnov": 0.01
+        },
+        "categorical": {
+            "chi-squared": 0.01
+        }
+    },
+    "num_total_features": 5,
+    "num_features_drifted": 0,
+    "top_10_features_drifted": 0,
+    "top_20_features_drifted": 0,
+    "fields": [
+        "rank",
+        "name",
+        "kind",
+        "p_value",
+        "drift_status"
+    ],
+    "observations": {
+        "rank": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "name": [
+            "numerical_feature_0",
+            "numerical_feature_1",
+            "categorical_feature_0",
+            "categorical_feature_1",
+            "categorical_feature_2"
+        ],
+        "kind": [
+            "numerical",
+            "numerical",
+            "categorical",
+            "categorical",
+            "categorical"
+        ],
+        "p_value": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "drift_status": [
+            "not drifted",
+            "not drifted",
+            "not drifted",
+            "not drifted",
+            "not drifted"
+        ]
+    }
+}

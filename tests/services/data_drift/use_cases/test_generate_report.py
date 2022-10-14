@@ -5,23 +5,42 @@ from typing import Callable
 
 import bs4
 
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 from raitools.services.data_drift.use_cases.generate_report import generate_report
+from raitools.services.data_drift.use_cases.generate_report_record import (
+    generate_report_record,
+)
 
+from tests.asserts import assert_equal_records
 from tests.services.data_drift.use_cases.fixtures.common import (
     prepare_record,
     prepare_report,
+    prepare_report_record,
 )
 
 
-def test_can_generate_report(
-    simple_undrifted_report_builder: Callable[[DataDriftReportData], str]
-) -> None:
-    """Tests that we can generate an HTML report."""
+def test_can_generate_report_record() -> None:
+    """Tests that we can generate a report record."""
     simple_undrifted_record = prepare_record("simple_undrifted_record.json")
 
+    actual_report_record = generate_report_record(simple_undrifted_record)
+
+    expected_report_record = prepare_report_record(
+        "simple_undrifted_report_record.json"
+    )
+    assert_equal_records(expected_report_record, actual_report_record)
+
+
+def test_can_generate_report(
+    simple_undrifted_report_builder: Callable[[DataDriftReportRecord], str]
+) -> None:
+    """Tests that we can generate an HTML report."""
+    simple_undrifted_report_record = prepare_report_record(
+        "simple_undrifted_report_record.json"
+    )
+
     actual_report_html = generate_report(
-        simple_undrifted_record,
+        simple_undrifted_report_record,
         report_builder=simple_undrifted_report_builder,
     )
 

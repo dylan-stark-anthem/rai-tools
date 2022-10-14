@@ -5,9 +5,18 @@ from typing import Any, Dict, List
 from pydantic import BaseModel
 
 
-class DataDriftReportData(BaseModel):
-    """Data drift report data."""
+class ReportRecordMetadata(BaseModel):
+    """Metadata for data drift record."""
 
+    raitools_version: str
+
+
+class DataDriftReportRecord(BaseModel):
+    """Data drift report record."""
+
+    apiVersion: str = "raitools/v1"
+    kind: str = "DataDriftReportRecord"
+    metadata: ReportRecordMetadata
     report_name: str
     dataset_name: str
     dataset_version: str

@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict
 
 import pytest
 
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReportData
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 from raitools.services.data_drift.domain.html_report_builder import (
     HtmlReportBuilder,
     basic_data_summary_maker,
@@ -16,7 +16,7 @@ from raitools.services.data_drift.domain.html_report_builder import (
 from tests.services.data_drift.use_cases.fixtures.common import prepare_record
 
 
-def simple_undrifted_report_builder_impl(report_data: DataDriftReportData) -> str:
+def simple_undrifted_report_builder_impl(report_data: DataDriftReportRecord) -> str:
     """Creates a report builder for the simple test case."""
     report_builder = HtmlReportBuilder()
     report_builder.timestamp = "1970-01-01 00:00:00"
@@ -29,14 +29,14 @@ def simple_undrifted_report_builder_impl(report_data: DataDriftReportData) -> st
 
 
 @pytest.fixture
-def simple_undrifted_report_builder() -> Callable[[DataDriftReportData], str]:
+def simple_undrifted_report_builder() -> Callable[[DataDriftReportRecord], str]:
     """Returms simple report builder method."""
     return simple_undrifted_report_builder_impl
 
 
 @pytest.fixture
 def simple_undrifted_report_html(
-    simple_undrifted_report_builder: Callable[[DataDriftReportData], str],
+    simple_undrifted_report_builder: Callable[[DataDriftReportRecord], str],
 ) -> str:
     """Creates expected report html for simple test case."""
     simple_undrifted_record = prepare_record("simple_undrifted_record.json")
@@ -87,7 +87,7 @@ def simple_undrifted_report_html(
         "drift_status": [feature.drift_status for feature in ranked_features],
     }
 
-    report_data = DataDriftReportData(
+    report_record = DataDriftReportRecord(
         report_name=job_config.report_name,
         dataset_name=job_config.dataset_name,
         dataset_version=job_config.dataset_version,
@@ -111,6 +111,6 @@ def simple_undrifted_report_html(
         ),
     )
 
-    simple_undrifted_report_html = simple_undrifted_report_builder(report_data)
+    simple_undrifted_report_html = simple_undrifted_report_builder(report_record)
 
     return simple_undrifted_report_html

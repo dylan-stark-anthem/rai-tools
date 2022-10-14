@@ -11,6 +11,7 @@ import pyarrow as pa
 from pyarrow.csv import write_csv
 
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 
 
 def write_bundle_zip_to_disk(
@@ -128,8 +129,7 @@ def prepare_bundle(spec_filename: str, tmp_path: Path) -> Path:
 
 def prepare_record(record_filename: str) -> DataDriftRecord:
     """Prepares record based on specified resource and returns it."""
-    resources_path = Path("tests/services/data_drift/use_cases/resources")
-    record_path = resources_path / record_filename
+    record_path = _path_under_resource_for(record_filename)
     expected_record_dict = json.load(record_path.open())
     expected_record = DataDriftRecord(**expected_record_dict)
     return expected_record
@@ -137,7 +137,21 @@ def prepare_record(record_filename: str) -> DataDriftRecord:
 
 def prepare_report(report_filename: str) -> str:
     """Prepares report based on specified resource and returns it."""
-    resources_path = Path("tests/services/data_drift/use_cases/resources")
-    report_path = resources_path / report_filename
+    report_path = _path_under_resource_for(report_filename)
     expected_report = report_path.read_text()
     return expected_report
+
+
+def prepare_report_record(record_filename: str) -> DataDriftReportRecord:
+    """Prepares record based on specified resource and returns it."""
+    record_path = _path_under_resource_for(record_filename)
+    expected_record_dict = json.load(record_path.open())
+    expected_record = DataDriftReportRecord(**expected_record_dict)
+    return expected_record
+
+
+def _path_under_resource_for(filename: str) -> Path:
+    """Constructs full path for file under resources directory."""
+    resources_path = Path("tests/services/data_drift/use_cases/resources")
+    path = resources_path / filename
+    return path
