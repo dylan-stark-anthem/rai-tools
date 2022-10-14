@@ -4,31 +4,21 @@
 from typing import Callable
 
 import bs4
+import pytest
 
 from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
-from raitools.services.data_drift.use_cases.generate_report import generate_report
-from raitools.services.data_drift.use_cases.generate_report_record import (
-    generate_report_record,
+from raitools.services.data_drift.domain.html_report_builder import (
+    HtmlReportBuilder,
+    basic_data_summary_maker,
+    basic_drift_magnitude_maker,
+    basic_drift_summary_maker,
 )
+from raitools.services.data_drift.use_cases.generate_report import generate_report
 
-from tests.asserts import assert_equal_records
-from tests.services.data_drift.use_cases.fixtures.common import (
-    prepare_record,
+from tests.services.data_drift.use_cases.common import (
     prepare_report,
     prepare_report_record,
 )
-
-
-def test_can_generate_report_record() -> None:
-    """Tests that we can generate a report record."""
-    simple_undrifted_record = prepare_record("simple_undrifted_record.json")
-
-    actual_report_record = generate_report_record(simple_undrifted_record)
-
-    expected_report_record = prepare_report_record(
-        "simple_undrifted_report_record.json"
-    )
-    assert_equal_records(expected_report_record, actual_report_record)
 
 
 def test_can_generate_report(
@@ -72,3 +62,21 @@ def _assert_equal_htmls(expected_html: str, actual_html: str) -> None:
     assert expected_soup.prettify(formatter=formatter) == actual_report_soup.prettify(
         formatter=formatter
     )
+
+
+def simple_undrifted_report_builder_impl(report_data: DataDriftReportRecord) -> str:
+    """Creates a report builder for the simple test case."""
+    report_builder = HtmlReportBuilder()
+    report_builder.timestamp = "1970-01-01 00:00:00"
+    report_builder.data_summary_maker = basic_data_summary_maker
+    report_builder.drift_summary_maker = basic_drift_summary_maker
+    report_builder.drift_magnitude_maker = basic_drift_magnitude_maker
+    report_builder.report_data = report_data
+    report_builder.compile()
+    return report_builder.get()
+
+
+@pytest.fixture
+def simple_undrifted_report_builder() -> Callable[[DataDriftReportRecord], str]:
+    """Returms simple report builder method."""
+    return simple_undrifted_report_builder_impl

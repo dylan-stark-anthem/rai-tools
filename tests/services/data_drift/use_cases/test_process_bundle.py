@@ -7,7 +7,7 @@ import pytest
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
 from tests.asserts import assert_equal_records
-from tests.services.data_drift.use_cases.fixtures.common import (
+from tests.services.data_drift.use_cases.common import (
     prepare_bundle,
     prepare_record,
 )
