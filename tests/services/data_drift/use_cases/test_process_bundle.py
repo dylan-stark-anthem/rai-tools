@@ -21,6 +21,7 @@ from tests.services.data_drift.use_cases.common import (
         ("no_numerical_spec.json", "no_numerical_record.json"),
         ("no_categorical_spec.json", "no_categorical_record.json"),
         ("with_113_features_spec.json", "with_113_features_record.json"),
+        ("with_13_features_spec.json", "with_13_features_record.json"),
     ],
 )
 def test_can_process_simple_drifted_bundle(

@@ -29,6 +29,7 @@ from tests.services.data_drift.use_cases.common import (
         ("no_numerical_report_record.json", "no_numerical_report.html"),
         ("no_categorical_report_record.json", "no_categorical_report.html"),
         ("with_113_features_report_record.json", "with_113_features_report.html"),
+        ("with_13_features_report_record.json", "with_13_features_report.html"),
     ],
 )
 def test_can_generate_report(
