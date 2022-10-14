@@ -33,7 +33,7 @@ def process_bundle(bundle_path: Path) -> DataDriftRecord:
     bundle = create_bundle_from_zip(bundle_path)
 
     metadata = _compile_metadata_for_record()
-    record_bundle = _compile_bundle_for_record(bundle, bundle_path)
+    record_bundle = _compile_bundle_for_record(bundle, bundle_path.name)
     drift_summary = _compile_drift_summary_for_record(bundle)
 
     record = DataDriftRecord(
@@ -52,7 +52,7 @@ def _compile_metadata_for_record() -> RecordMetadata:
 
 
 def _compile_bundle_for_record(
-    bundle: DataDriftBundle, bundle_path: Path
+    bundle: DataDriftBundle, bundle_filename: str
 ) -> RecordBundle:
     """Creates record bundle."""
     record_bundle = RecordBundle(
@@ -70,7 +70,7 @@ def _compile_bundle_for_record(
             ),
         },
         manifest=BundleManifest(
-            bundle_path=bundle_path,
+            bundle_filename=bundle_filename,
             job_config_filename=bundle.job_config_filename,
             baseline_data_filename=bundle.baseline_data_filename,
             test_data_filename=bundle.test_data_filename,

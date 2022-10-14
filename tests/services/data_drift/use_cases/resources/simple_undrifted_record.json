@@ -1,0 +1,150 @@
+{
+    "apiVersion": "raitools/v1",
+    "kind": "DataDriftRecord",
+    "metadata": {
+        "raitools_version": "0.1.0"
+    },
+    "drift_summary": {
+        "features": {
+            "numerical_feature_0": {
+                "name": "numerical_feature_0",
+                "kind": "numerical",
+                "rank": 1,
+                "statistical_test": {
+                    "name": "kolmogorov-smirnov",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": 0.01,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            },
+            "numerical_feature_1": {
+                "name": "numerical_feature_1",
+                "kind": "numerical",
+                "rank": 2,
+                "statistical_test": {
+                    "name": "kolmogorov-smirnov",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": 0.01,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            },
+            "categorical_feature_0": {
+                "name": "categorical_feature_0",
+                "kind": "categorical",
+                "rank": 3,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": 0.01,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            },
+            "categorical_feature_1": {
+                "name": "categorical_feature_1",
+                "kind": "categorical",
+                "rank": 4,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": 0.01,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            },
+            "categorical_feature_2": {
+                "name": "categorical_feature_2",
+                "kind": "categorical",
+                "rank": 5,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "adjusted_significance_level": 0.01,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            }
+        },
+        "metadata": {
+            "num_numerical_features": 2,
+            "num_categorical_features": 3
+        }
+    },
+    "bundle": {
+        "job_config": {
+            "report_name": "Some simple report",
+            "dataset_name": "Some name for this dataset",
+            "dataset_version": "v0.1.0",
+            "baseline_data_filename": "some_baseline_data.csv",
+            "test_data_filename": "some_test_data.csv",
+            "model_catalog_id": "123",
+            "feature_mapping": {
+                "numerical_feature_0": {
+                    "name": "numerical_feature_0",
+                    "kind": "numerical",
+                    "rank": 1
+                },
+                "numerical_feature_1": {
+                    "name": "numerical_feature_1",
+                    "kind": "numerical",
+                    "rank": 2
+                },
+                "categorical_feature_0": {
+                    "name": "categorical_feature_0",
+                    "kind": "categorical",
+                    "rank": 3
+                },
+                "categorical_feature_1": {
+                    "name": "categorical_feature_1",
+                    "kind": "categorical",
+                    "rank": 4
+                },
+                "categorical_feature_2": {
+                    "name": "categorical_feature_2",
+                    "kind": "categorical",
+                    "rank": 5
+                }
+            }
+        },
+        "data": {
+            "baseline_data": {
+                "filename": "some_baseline_data.csv",
+                "num_rows": 10,
+                "num_columns": 5
+            },
+            "test_data": {
+                "filename": "some_test_data.csv",
+                "num_rows": 10,
+                "num_columns": 5
+            }
+        },
+        "manifest": {
+            "bundle_filename": "bundle.zip",
+            "job_config_filename": "some_job_config.json",
+            "baseline_data_filename": "some_baseline_data.csv",
+            "test_data_filename": "some_test_data.csv"
+        }
+    }
+}

@@ -1,203 +1,143 @@
 """Common helpers for test setup."""
 
+from importlib import import_module
+import json
 from pathlib import Path
-from typing import Any, Dict
+import random
+from typing import Callable, Dict, List
 from zipfile import ZipFile
 
 import pyarrow as pa
 from pyarrow.csv import write_csv
 
-from raitools import __version__
-from raitools.services.data_drift.domain.bundle import (
-    get_data_from_bundle,
-    get_job_config_from_bundle,
-)
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 
 
-def create_bundle(
+def write_bundle_zip_to_disk(
+    job_config_path: Path,
+    baseline_data_path: Path,
+    test_data_path: Path,
     job_config_filename: str,
-    feature_mapping: Dict,
-    baseline_data_table: pa.Table,
-    test_data_table: pa.Table,
+    baseline_data_filename: str,
+    test_data_filename: str,
+    bundle_filename: str,
     tmp_path: Path,
 ) -> Path:
     """Creates a "physical" bundle on disk."""
-    job_config_json = {
-        "report_name": "Some simple report",
-        "dataset_name": "Some name for this dataset",
-        "dataset_version": "v0.1.0",
-        "baseline_data_filename": "some_baseline_data.csv",
-        "test_data_filename": "some_test_data.csv",
-        "model_catalog_id": "123",
-        "feature_mapping": feature_mapping,
-    }
-    job_config = DataDriftJobConfig(**job_config_json)
-    job_config_path = tmp_path / job_config_filename
-    job_config_path.write_text(job_config.json())
-
-    baseline_data_path = tmp_path / job_config.baseline_data_filename
-    write_csv(baseline_data_table, baseline_data_path)
-
-    test_data_path = tmp_path / job_config.test_data_filename
-    write_csv(test_data_table, test_data_path)
-
-    bundle_path = tmp_path / "bundle.zip"
+    bundle_path = tmp_path / bundle_filename
     with ZipFile(bundle_path, "w") as zip_file:
         zip_file.write(job_config_path, arcname=job_config_filename)
-        zip_file.write(baseline_data_path, arcname=job_config.baseline_data_filename)
-        zip_file.write(test_data_path, arcname=job_config.test_data_filename)
+        zip_file.write(baseline_data_path, arcname=baseline_data_filename)
+        zip_file.write(test_data_path, arcname=test_data_filename)
 
     return bundle_path
 
 
-def get_num_features_of_kind(bundle_path: Path, kind: str) -> int:
-    """Gets number of numerical features from the bundle at this path."""
-    job_config = get_job_config_from_bundle(bundle_path)
-    features_of_kind = [
-        name
-        for name, details in job_config.feature_mapping.items()
-        if details.kind == kind
-    ]
-    return len(features_of_kind)
+def write_job_config_to_disk(
+    job_config: Dict, job_config_filename: str, output_path: Path
+) -> Path:
+    """Writes job config to disk."""
+    job_config_path = output_path / job_config_filename
+    job_config_path.write_text(json.dumps(job_config))
+    return job_config_path
 
 
-def get_num_observations_in_dataset(bundle_path: Path, dataset: str) -> int:
-    """Gets the number of observations in the specified dataset."""
-    job_config = get_job_config_from_bundle(bundle_path)
-    data_filename = getattr(job_config, f"{dataset}_filename")
-    data = get_data_from_bundle(bundle_path, data_filename)
-    return data.num_rows
+def write_data_to_disk(data: pa.Table, data_filename: str, output_path: Path) -> Path:
+    """Writes data to disk."""
+    data_path = output_path / data_filename
+    write_csv(data, data_path)
+    return data_path
 
 
-def create_expected_record(**spec: Any) -> DataDriftRecord:
-    """Creates an expected record for given spec.
+def data_generator(method: str, seed: int, kwargs: Dict) -> Callable:
+    """Creates a method to reproducibly generate data."""
+    module_path, method_name = method.rsplit(".", 1)
+    fn = getattr(import_module(module_path), method_name)
 
-    Note that we are trading off high cost of maintaining the explicit record
-    dictionary for the high value of having a clear, unambiguous declaration
-    of the true expected record payload.
-    """
-    expected_record_dict = {
-        "apiVersion": "raitools/v1",
-        "kind": "DataDriftRecord",
-        "metadata": {
-            "raitools_version": __version__,
-        },
-        "drift_summary": {
-            "features": {
-                "numerical_feature_0": {
-                    "name": "numerical_feature_0",
-                    "kind": "numerical",
-                    "rank": 1,
-                    "statistical_test": {
-                        "name": "kolmogorov-smirnov",
-                        "result": {"test_statistic": 1.0, "p_value": 0.0},
-                        "significance_level": 0.05,
-                        "adjusted_significance_level": spec[
-                            "adjusted_significance_level"
-                        ],
-                        "outcome": "reject null hypothesis",
-                    },
-                    "drift_status": "drifted",
-                },
-                "numerical_feature_1": {
-                    "name": "numerical_feature_1",
-                    "kind": "numerical",
-                    "rank": 2,
-                    "statistical_test": {
-                        "name": "kolmogorov-smirnov",
-                        "result": {"test_statistic": 1.0, "p_value": 0.0},
-                        "significance_level": 0.05,
-                        "adjusted_significance_level": spec[
-                            "adjusted_significance_level"
-                        ],
-                        "outcome": "reject null hypothesis",
-                    },
-                    "drift_status": "drifted",
-                },
-                "categorical_feature_0": {
-                    "name": "categorical_feature_0",
-                    "kind": "categorical",
-                    "rank": 3,
-                    "statistical_test": {
-                        "name": "chi-squared",
-                        "result": {
-                            "test_statistic": 0.0,
-                            "p_value": 1.0,
-                        },
-                        "significance_level": 0.05,
-                        "adjusted_significance_level": spec[
-                            "adjusted_significance_level"
-                        ],
-                        "outcome": "fail to reject null hypothesis",
-                    },
-                    "drift_status": "not drifted",
-                },
-                "categorical_feature_1": {
-                    "name": "categorical_feature_1",
-                    "kind": "categorical",
-                    "rank": 4,
-                    "statistical_test": {
-                        "name": "chi-squared",
-                        "result": {
-                            "test_statistic": 0.0,
-                            "p_value": 1.0,
-                        },
-                        "significance_level": 0.05,
-                        "adjusted_significance_level": spec[
-                            "adjusted_significance_level"
-                        ],
-                        "outcome": "fail to reject null hypothesis",
-                    },
-                    "drift_status": "not drifted",
-                },
-                "categorical_feature_2": {
-                    "name": "categorical_feature_2",
-                    "kind": "categorical",
-                    "rank": 5,
-                    "statistical_test": {
-                        "name": "chi-squared",
-                        "result": {
-                            "test_statistic": 0.0,
-                            "p_value": 1.0,
-                        },
-                        "significance_level": 0.05,
-                        "adjusted_significance_level": spec[
-                            "adjusted_significance_level"
-                        ],
-                        "outcome": "fail to reject null hypothesis",
-                    },
-                    "drift_status": "not drifted",
-                },
-            },
-            "metadata": {
-                "num_numerical_features": spec["num_numerical_features"],
-                "num_categorical_features": spec["num_categorical_features"],
-            },
-        },
-        "bundle": {
-            "job_config": spec["job_config"],
-            "data": {
-                "baseline_data": {
-                    "filename": spec["job_config"]["baseline_data_filename"],
-                    "num_rows": spec["num_baseline_observations"],
-                    "num_columns": spec["num_features"],
-                },
-                "test_data": {
-                    "filename": spec["job_config"]["test_data_filename"],
-                    "num_rows": spec["num_test_observations"],
-                    "num_columns": spec["num_features"],
-                },
-            },
-            "manifest": {
-                "bundle_path": spec["bundle_path"],
-                "job_config_filename": spec["job_config_filename"],
-                "baseline_data_filename": spec["job_config"]["baseline_data_filename"],
-                "test_data_filename": spec["job_config"]["test_data_filename"],
-            },
-        },
+    def data_generator_impl(count: int) -> List:
+        random.seed(seed)
+        return [fn(**kwargs) for _ in range(count)]
+
+    return data_generator_impl
+
+
+def create_data_table(data_spec: Dict, dataset: str, count: int) -> pa.Table:
+    """Creates a data table based on given spec."""
+    PA_TYPE = {
+        "int64": pa.int64(),
+        "string": pa.string(),
     }
 
+    data = {}
+    schema = pa.schema([])
+
+    for feature in data_spec.values():
+        values = data_generator(**feature[dataset])(count)
+        data[feature["name"]] = values
+
+        field = pa.field(feature["name"], PA_TYPE[feature["kind"]])
+        schema = schema.append(field)
+
+    table = pa.Table.from_pydict(data, schema=schema)
+    return table
+
+
+def load_spec(spec_path: Path) -> Dict:
+    """Loads specified spec from test resources."""
+    spec = json.load(spec_path.open())
+    return spec
+
+
+def prepare_bundle(spec_filename: str, tmp_path: Path) -> Path:
+    """Prepares bundle based on spec and returns path to it."""
+    resources_path = Path("tests/services/data_drift/use_cases/resources")
+    spec_path = resources_path / spec_filename
+    spec = load_spec(spec_path)
+
+    job_config_path = write_job_config_to_disk(
+        spec["job_config"], spec["job_config_filename"], tmp_path
+    )
+
+    baseline_data = create_data_table(
+        spec["data"], "baseline_data", spec["num_baseline_observations"]
+    )
+    baseline_data_path = write_data_to_disk(
+        baseline_data, spec["job_config"]["baseline_data_filename"], tmp_path
+    )
+
+    test_data = create_data_table(
+        spec["data"], "test_data", spec["num_test_observations"]
+    )
+    test_data_path = write_data_to_disk(
+        test_data, spec["job_config"]["test_data_filename"], tmp_path
+    )
+
+    bundle_path = write_bundle_zip_to_disk(
+        job_config_path,
+        baseline_data_path,
+        test_data_path,
+        spec["job_config_filename"],
+        spec["job_config"]["baseline_data_filename"],
+        spec["job_config"]["test_data_filename"],
+        spec["bundle_filename"],
+        tmp_path,
+    )
+
+    return bundle_path
+
+
+def prepare_record(record_filename: str) -> DataDriftRecord:
+    """Prepares record based on specified resource and returns it."""
+    resources_path = Path("tests/services/data_drift/use_cases/resources")
+    record_path = resources_path / record_filename
+    expected_record_dict = json.load(record_path.open())
     expected_record = DataDriftRecord(**expected_record_dict)
     return expected_record
+
+
+def prepare_report(report_filename: str) -> str:
+    """Prepares report based on specified resource and returns it."""
+    resources_path = Path("tests/services/data_drift/use_cases/resources")
+    report_path = resources_path / report_filename
+    expected_report = report_path.read_text()
+    return expected_report

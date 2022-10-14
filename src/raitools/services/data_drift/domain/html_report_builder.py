@@ -50,11 +50,11 @@ class HtmlReportBuilder:
                     <title>{self.report_data.report_name}</title>
                 </head>
                 <body>
-                    <h3 style ='color: darkred'>Timestamp : {self.timestamp}</h3>
-                    <h3 style ='color: darkred'> Report name  : {self.report_data.report_name} </h3>
-                    <h3 style ='color: darkred'> Dataset name  : {self.report_data.dataset_name} </h3>
-                    <h3 style ='color: darkred'> Dataset Version : {self.report_data.dataset_version} </h3>
-                    <h3 style ='color: darkred'> Model Catalog ID : {self.report_data.model_catalog_id} </h3>
+                    <h3 style ='color: darkred'>Timestamp: {self.timestamp}</h3>
+                    <h3 style ='color: darkred'> Report name: {self.report_data.report_name} </h3>
+                    <h3 style ='color: darkred'> Dataset name: {self.report_data.dataset_name} </h3>
+                    <h3 style ='color: darkred'> Dataset Version: {self.report_data.dataset_version} </h3>
+                    <h3 style ='color: darkred'> Model Catalog ID: {self.report_data.model_catalog_id} </h3>
                     <h3 style ='color: darkred'>
                         {thresholds_list_html}
                     </h3>
@@ -151,7 +151,7 @@ def basic_drift_magnitude_maker(
     for row in range(num_observations):
         tr = soup.new_tag("tr")
         for column in fields:
-            td = soup.new_tag("")
+            td = soup.new_tag("td")
             td.string = str(observations[column][row])
             tr.append(td)
         soup.table.tbody.append(tr)

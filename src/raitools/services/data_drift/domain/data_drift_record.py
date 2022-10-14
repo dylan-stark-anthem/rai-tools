@@ -1,6 +1,5 @@
 """The data drift record."""
 
-from pathlib import Path
 from typing import Dict
 
 from pydantic import BaseModel
@@ -14,7 +13,7 @@ from raitools.services.data_drift.domain.statistical_test_result import (
 class BundleManifest(BaseModel):
     """A bundle manifest."""
 
-    bundle_path: Path
+    bundle_filename: str
     job_config_filename: str
     baseline_data_filename: str
     test_data_filename: str
