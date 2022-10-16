@@ -10,7 +10,10 @@ from pyarrow.csv import read_csv
 from pydantic import BaseModel
 
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.services.data_drift.exceptions import BadPathToBundleError
+from raitools.services.data_drift.exceptions import (
+    BadBundleZipFileError,
+    BadPathToBundleError,
+)
 
 
 class DataDriftBundle(BaseModel):
@@ -60,10 +63,8 @@ def get_job_config_filename_from_bundle(bundle_path: Path) -> str:
 
 def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     """Gets the job config from the bundle at this path."""
-    if not zipfile.is_zipfile(bundle_path):
-        raise BadPathToBundleError(
-            f"Path to bundle does not reference a valid zip file: `{bundle_path}`"
-        )
+    _validate_is_zip_file(bundle_path)
+    _validate_is_not_empty_zip_file(bundle_path)
 
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
@@ -83,3 +84,17 @@ def get_data_from_bundle(bundle_path: Path, data_filename: str) -> pa.Table:
         with zip_file.open(data_filename) as data_file:
             data = read_csv(data_file)
     return data
+
+
+def _validate_is_zip_file(bundle_path: Path) -> None:
+    if not zipfile.is_zipfile(bundle_path):
+        raise BadPathToBundleError(
+            f"Path to bundle does not reference a valid zip file: `{bundle_path}`"
+        )
+
+
+def _validate_is_not_empty_zip_file(bundle_path: Path) -> None:
+    with zipfile.ZipFile(bundle_path, "r") as zip_file:
+        files = zip_file.namelist()
+        if len(files) == 0:
+            raise BadBundleZipFileError(f"Bundle zip file is empty: `{bundle_path}`")

@@ -31,10 +31,7 @@ from raitools.stats.bonferroni_correction import (
 
 def process_bundle(bundle_path: Path) -> DataDriftRecord:
     """Processes a data drift bundle."""
-    if not isinstance(bundle_path, Path):
-        raise BadPathToBundleError(
-            f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{str(type(bundle_path))}`."
-        )
+    _validate_is_pathlib_path(bundle_path)
 
     bundle = create_bundle_from_zip(bundle_path)
 
@@ -163,3 +160,10 @@ def _compute_num_feature_kind(
     return len(
         [feature for feature in feature_mapping.values() if feature.kind == kind]
     )
+
+
+def _validate_is_pathlib_path(bundle_path: Path) -> None:
+    if not isinstance(bundle_path, Path):
+        raise BadPathToBundleError(
+            f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{type(bundle_path)}`."
+        )

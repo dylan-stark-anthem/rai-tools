@@ -2,9 +2,13 @@
 
 from pathlib import Path
 from typing import Any
+from zipfile import ZipFile
 
 import pytest
-from raitools.services.data_drift.exceptions import BadPathToBundleError
+from raitools.services.data_drift.exceptions import (
+    BadBundleZipFileError,
+    BadPathToBundleError,
+)
 
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
@@ -86,4 +90,17 @@ def test_path_to_bundle_not_a_zip(bundle_path: Path, error_message: str) -> None
     """Tests that we raise appropriate error if path not a zip file."""
     with pytest.raises(BadPathToBundleError) as excinfo:
         process_bundle(bundle_path)
+    assert error_message in str(excinfo.value)
+
+
+def test_bundle_zip_empty(tmp_path: Path) -> None:
+    """Tests that we raise appropriate error if zip file is empty."""
+    path_to_empty_zip = tmp_path / "empty.zip"
+    ZipFile(path_to_empty_zip, "w").close()
+    bundle_path = path_to_empty_zip
+    error_message = f"Bundle zip file is empty: `{bundle_path}`"
+
+    with pytest.raises(BadBundleZipFileError) as excinfo:
+        process_bundle(bundle_path)
+
     assert error_message in str(excinfo.value)
