@@ -7,6 +7,7 @@ from zipfile import ZipFile
 import pytest
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
+    BadJobConfigError,
     BadPathToBundleError,
 )
 
@@ -117,6 +118,42 @@ def test_bundle_zip_without_json(tmp_path: Path) -> None:
     error_message = f"Bundle zip file does not have any `.json` files: `{bundle_path}`"
 
     with pytest.raises(BadBundleZipFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert error_message in str(excinfo.value)
+
+
+def test_bundle_zip_with_too_many_json(tmp_path: Path) -> None:
+    """Tests that we raise error if more than one JSON in zip."""
+    path_to_no_json_zip = tmp_path / "no_json.zip"
+    with ZipFile(path_to_no_json_zip, "w") as zip_file:
+        one_json = tmp_path / "one.json"
+        one_json.touch()
+        zip_file.write(one_json)
+        two_json = tmp_path / "two.json"
+        two_json.touch()
+        zip_file.write(two_json)
+    bundle_path = path_to_no_json_zip
+    error_message = f"Bundle zip file has too many `.json` files: `{bundle_path}`"
+
+    with pytest.raises(BadBundleZipFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert error_message in str(excinfo.value)
+
+
+def test_job_config_not_well_formed(tmp_path: Path) -> None:
+    """Tests that we raise error if job config is empty."""
+    bundle_path = tmp_path / "bundle.zip"
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.touch()
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+    error_message = (
+        f"Job config `{job_config_path.name}` in `{bundle_path}` is not well-formed."
+    )
+
+    with pytest.raises(BadJobConfigError) as excinfo:
         process_bundle(bundle_path)
 
     assert error_message in str(excinfo.value)

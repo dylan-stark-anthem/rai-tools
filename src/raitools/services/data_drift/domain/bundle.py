@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
+    BadJobConfigError,
     BadPathToBundleError,
 )
 
@@ -66,6 +67,7 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     _validate_is_zip_file(bundle_path)
     _validate_is_not_empty_zip_file(bundle_path)
     _validate_json_in_zip_file(bundle_path)
+    _validate_job_config_is_well_formed(bundle_path)
 
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
@@ -109,3 +111,21 @@ def _validate_json_in_zip_file(bundle_path: Path) -> None:
             raise BadBundleZipFileError(
                 f"Bundle zip file does not have any `.json` files: `{bundle_path}`"
             )
+        elif len(json_files) > 1:
+            raise BadBundleZipFileError(
+                f"Bundle zip file has too many `.json` files: `{bundle_path}`"
+            )
+
+
+def _validate_job_config_is_well_formed(bundle_path: Path) -> None:
+    with zipfile.ZipFile(bundle_path, "r") as zip_file:
+        filenames = zip_file.namelist()
+        json_files = [filename for filename in filenames if filename.endswith(".json")]
+        job_config_filename = json_files[0]
+        job_config_text = zipfile.Path(zip_file, at=job_config_filename).read_text()
+    try:
+        json.loads(job_config_text)
+    except json.JSONDecodeError as exc:
+        raise BadJobConfigError(
+            f"Job config `{job_config_filename}` in `{bundle_path}` is not well-formed."
+        ) from exc

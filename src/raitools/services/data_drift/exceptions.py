@@ -20,3 +20,12 @@ class BadBundleZipFileError(Exception):
         """Initializes exception and sets extra info if provided."""
         super().__init__(message)
         self.info = info if info else {}
+
+
+class BadJobConfigError(Exception):
+    """Bad job config error."""
+
+    def __init__(self, message: str, info: Optional[Dict] = None) -> None:
+        """Initializes exception and sets extra info if provided."""
+        super().__init__(message)
+        self.info = info if info else {}
