@@ -81,16 +81,9 @@ def _compile_bundle_for_record(
 
 def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSummary:
     """Creates drift summary for record."""
-    features = {
-        name: JobConfigFeature(**feature.dict())
-        for name, feature in bundle.job_config.feature_mapping.items()
-    }
-    num_numerical_features = _compute_num_feature_kind(
-        bundle.job_config.feature_mapping, "numerical"
-    )
-    num_categorical_features = _compute_num_feature_kind(
-        bundle.job_config.feature_mapping, "categorical"
-    )
+    features = bundle.job_config.feature_mapping
+    num_numerical_features = _compute_num_feature_kind(features, "numerical")
+    num_categorical_features = _compute_num_feature_kind(features, "categorical")
 
     drift_summary_features = _compile_features_for_drift_summary(
         bundle.baseline_data,
