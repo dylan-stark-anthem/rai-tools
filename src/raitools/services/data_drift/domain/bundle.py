@@ -65,6 +65,7 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     """Gets the job config from the bundle at this path."""
     _validate_is_zip_file(bundle_path)
     _validate_is_not_empty_zip_file(bundle_path)
+    _validate_json_in_zip_file(bundle_path)
 
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
@@ -98,3 +99,13 @@ def _validate_is_not_empty_zip_file(bundle_path: Path) -> None:
         files = zip_file.namelist()
         if len(files) == 0:
             raise BadBundleZipFileError(f"Bundle zip file is empty: `{bundle_path}`")
+
+
+def _validate_json_in_zip_file(bundle_path: Path) -> None:
+    with zipfile.ZipFile(bundle_path, "r") as zip_file:
+        filenames = zip_file.namelist()
+        json_files = [filename for filename in filenames if filename.endswith(".json")]
+        if len(json_files) == 0:
+            raise BadBundleZipFileError(
+                f"Bundle zip file does not have any `.json` files: `{bundle_path}`"
+            )

@@ -104,3 +104,19 @@ def test_bundle_zip_empty(tmp_path: Path) -> None:
         process_bundle(bundle_path)
 
     assert error_message in str(excinfo.value)
+
+
+def test_bundle_zip_without_json(tmp_path: Path) -> None:
+    """Tests that we raise error if no JSON in zip."""
+    path_to_no_json_zip = tmp_path / "no_json.zip"
+    with ZipFile(path_to_no_json_zip, "w") as zip_file:
+        some_file = tmp_path / "some_file.txt"
+        some_file.touch()
+        zip_file.write(some_file)
+    bundle_path = path_to_no_json_zip
+    error_message = f"Bundle zip file does not have any `.json` files: `{bundle_path}`"
+
+    with pytest.raises(BadBundleZipFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert error_message in str(excinfo.value)
