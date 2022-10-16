@@ -1,8 +1,10 @@
 """Tests for process bundle use case."""
 
 from pathlib import Path
+from typing import Any
 
 import pytest
+from raitools.services.data_drift.exceptions import BadPathToBundleError
 
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
@@ -34,3 +36,27 @@ def test_can_process_simple_drifted_bundle(
 
     expected_record = prepare_record(record_filename)
     assert_equal_records(expected_record, actual_record)
+
+
+@pytest.mark.parametrize(
+    "bundle_path,error_message",
+    [
+        (
+            "/some/str/path",
+            "Path to bundle is not a valid `pathlib.Path`, it's a(n) `<class 'str'>`.",
+        ),
+        (
+            42,
+            "Path to bundle is not a valid `pathlib.Path`, it's a(n) `<class 'int'>`.",
+        ),
+        (
+            4.2,
+            "Path to bundle is not a valid `pathlib.Path`, it's a(n) `<class 'float'>`.",
+        ),
+    ],
+)
+def test_path_to_bundle_not_a_path(bundle_path: Any, error_message: str) -> None:
+    """Tests that we raise appropriate error if path to bundle is not a Path."""
+    with pytest.raises(BadPathToBundleError) as excinfo:
+        process_bundle(bundle_path)
+    assert error_message in str(excinfo.value)

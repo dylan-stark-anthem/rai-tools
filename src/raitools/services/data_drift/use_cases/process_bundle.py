@@ -23,6 +23,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
 )
 from raitools.services.data_drift.domain.job_config import JobConfigFeature
 from raitools.services.data_drift.domain.stats import statistical_tests
+from raitools.services.data_drift.exceptions import BadPathToBundleError
 from raitools.stats.bonferroni_correction import (
     bonferroni_correction,
 )
@@ -30,6 +31,11 @@ from raitools.stats.bonferroni_correction import (
 
 def process_bundle(bundle_path: Path) -> DataDriftRecord:
     """Processes a data drift bundle."""
+    if not isinstance(bundle_path, Path):
+        raise BadPathToBundleError(
+            f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{str(type(bundle_path))}`."
+        )
+
     bundle = create_bundle_from_zip(bundle_path)
 
     metadata = _compile_metadata_for_record()
