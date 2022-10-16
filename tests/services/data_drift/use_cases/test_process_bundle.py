@@ -60,3 +60,30 @@ def test_path_to_bundle_not_a_path(bundle_path: Any, error_message: str) -> None
     with pytest.raises(BadPathToBundleError) as excinfo:
         process_bundle(bundle_path)
     assert error_message in str(excinfo.value)
+
+
+@pytest.mark.parametrize(
+    "bundle_path,error_message",
+    [
+        (
+            Path("some/path/that/does/not/exist"),
+            "Path to bundle does not reference a valid zip file: `some/path/that/does/not/exist`",
+        ),
+        (
+            Path("tests/services/data_drift/use_cases/resources"),
+            "Path to bundle does not reference a valid zip file: `tests/services/data_drift/use_cases/resources`",
+        ),
+        (
+            Path(
+                "tests/services/data_drift/use_cases/resources/no_categorical_record.json"
+            ),
+            "Path to bundle does not reference a valid zip file: "
+            "`tests/services/data_drift/use_cases/resources/no_categorical_record.json`",
+        ),
+    ],
+)
+def test_path_to_bundle_not_a_zip(bundle_path: Path, error_message: str) -> None:
+    """Tests that we raise appropriate error if path not a zip file."""
+    with pytest.raises(BadPathToBundleError) as excinfo:
+        process_bundle(bundle_path)
+    assert error_message in str(excinfo.value)

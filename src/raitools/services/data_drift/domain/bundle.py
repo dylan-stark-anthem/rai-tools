@@ -10,6 +10,7 @@ from pyarrow.csv import read_csv
 from pydantic import BaseModel
 
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.exceptions import BadPathToBundleError
 
 
 class DataDriftBundle(BaseModel):
@@ -59,6 +60,11 @@ def get_job_config_filename_from_bundle(bundle_path: Path) -> str:
 
 def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     """Gets the job config from the bundle at this path."""
+    if not zipfile.is_zipfile(bundle_path):
+        raise BadPathToBundleError(
+            f"Path to bundle does not reference a valid zip file: `{bundle_path}`"
+        )
+
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
         job_config_path = Path(
