@@ -1,5 +1,6 @@
 """Tests for process bundle use case."""
 
+import json
 from pathlib import Path
 from typing import Any
 from zipfile import ZipFile
@@ -152,6 +153,54 @@ def test_job_config_not_well_formed(tmp_path: Path) -> None:
     error_message = (
         f"Job config `{job_config_path.name}` in `{bundle_path}` is not well-formed."
     )
+
+    with pytest.raises(BadJobConfigError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert error_message in str(excinfo.value)
+
+
+def test_baseline_data_filename_not_in_zip(tmp_path: Path) -> None:
+    """Tests that we raise error if baseline data filename in config is not in zip."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "file_not_in_zip.csv"
+    test_data_filename = "file_in_zip.csv"
+    job_config = {
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.touch()
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    error_message = f"Baseline data file `{baseline_data_filename}` referenced in `{job_config_path.name}` not in `{bundle_path}`."
+
+    with pytest.raises(BadJobConfigError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert error_message in str(excinfo.value)
+
+
+def test_test_data_filename_not_in_zip(tmp_path: Path) -> None:
+    """Tests that we raise error if baseline data filename in config is not in zip."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "file_in_zip.csv"
+    test_data_filename = "file_not_in_zip.csv"
+    job_config = {
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.touch()
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+    error_message = f"Test data file `{test_data_filename}` referenced in `{job_config_path.name}` not in `{bundle_path}`."
 
     with pytest.raises(BadJobConfigError) as excinfo:
         process_bundle(bundle_path)

@@ -68,6 +68,7 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     _validate_is_not_empty_zip_file(bundle_path)
     _validate_json_in_zip_file(bundle_path)
     _validate_job_config_is_well_formed(bundle_path)
+    _validate_data_in_zip_file(bundle_path)
 
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         files = zip_file.namelist()
@@ -129,3 +130,23 @@ def _validate_job_config_is_well_formed(bundle_path: Path) -> None:
         raise BadJobConfigError(
             f"Job config `{job_config_filename}` in `{bundle_path}` is not well-formed."
         ) from exc
+
+
+def _validate_data_in_zip_file(bundle_path: Path) -> None:
+    with zipfile.ZipFile(bundle_path, "r") as zip_file:
+        filenames = zip_file.namelist()
+        json_files = [filename for filename in filenames if filename.endswith(".json")]
+        job_config_filename = json_files[0]
+        job_config_json = json.loads(
+            zipfile.Path(zip_file, at=job_config_filename).read_text()
+        )
+        baseline_data_filename = job_config_json["baseline_data_filename"]
+        test_data_filename = job_config_json["test_data_filename"]
+    if baseline_data_filename not in filenames:
+        raise BadJobConfigError(
+            f"Baseline data file `{baseline_data_filename}` referenced in `{job_config_filename}` not in `{bundle_path}`."
+        )
+    if test_data_filename not in filenames:
+        raise BadJobConfigError(
+            f"Test data file `{test_data_filename}` referenced in `{job_config_filename}` not in `{bundle_path}`."
+        )
