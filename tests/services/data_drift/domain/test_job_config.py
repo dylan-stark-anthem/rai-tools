@@ -82,6 +82,81 @@ def test_job_config_feature_without_field(
 
 
 @pytest.mark.parametrize(
+    "bad_kind",
+    [("Numerical"), ("Categorical"), ("some-other-thing"), (42), (4.2), (True)],
+)
+def test_job_config_feature_kind_not_supported(
+    bad_kind: Any, full_job_config_dict: Dict
+) -> None:
+    """Tests that we raise error if required field not supported."""
+    full_job_config_dict["feature_mapping"]["numerical_feature_0"]["kind"] = bad_kind
+    expected_error = BadJobConfigError(
+        f"Feature kind '{bad_kind}' is not supported. "
+        "Supported feature kinds are 'numerical' and 'categorical."
+    )
+
+    with pytest.raises(BadJobConfigError) as excinfo:
+        DataDriftJobConfig(**full_job_config_dict)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+@pytest.mark.parametrize(
+    "bad_rank,expected_error",
+    [
+        (
+            0,
+            {
+                "ctx": {"limit_value": 1},
+                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
+                "msg": "ensure this value is greater than or equal to 1",
+                "type": "value_error.number.not_ge",
+            },
+        ),
+        (
+            "forty-two",
+            {
+                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
+                "msg": "value is not a valid integer",
+                "type": "type_error.integer",
+            },
+        ),
+        (
+            True,
+            {
+                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
+                "msg": "value is not a valid integer",
+                "type": "type_error.integer",
+            },
+        ),
+        (
+            None,
+            {
+                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
+                "msg": "none is not an allowed value",
+                "type": "type_error.none.not_allowed",
+            },
+        ),
+    ],
+)
+def test_feature_rank_not_valid(
+    bad_rank: Any,
+    expected_error: Dict,
+    full_job_config_dict: Dict,
+) -> None:
+    """Tests that we raise error if rank not valid."""
+    full_job_config_dict["feature_mapping"]["numerical_feature_0"]["rank"] = bad_rank
+
+    with pytest.raises(ValidationError) as excinfo:
+        DataDriftJobConfig(**full_job_config_dict)
+
+    assert expected_error in excinfo.value.errors()
+
+
+@pytest.mark.parametrize(
     "report_name,error",
     [
         ("", BadJobConfigError("Report name is empty.")),

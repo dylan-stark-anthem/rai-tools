@@ -2,9 +2,16 @@
 
 import re
 from typing import Dict
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, ConstrainedInt, validator
 
 from raitools.services.data_drift.exceptions import BadJobConfigError
+
+
+class Rank(ConstrainedInt):
+    """Rank as a constrained int."""
+
+    ge = 1
+    strict = True
 
 
 class JobConfigFeature(BaseModel):
@@ -12,7 +19,19 @@ class JobConfigFeature(BaseModel):
 
     name: str
     kind: str
-    rank: int
+    rank: Rank
+
+    @validator("kind")
+    def check_kind_supported(cls, value: str) -> str:
+        """Checks whether provided kind is supported."""
+        supported_kinds = ["numerical", "categorical"]
+        if value not in supported_kinds:
+            raise BadJobConfigError(
+                f"Feature kind '{value}' is not supported. "
+                "Supported feature kinds are 'numerical' and 'categorical."
+            )
+
+        return value
 
 
 class DataDriftJobConfig(BaseModel):
