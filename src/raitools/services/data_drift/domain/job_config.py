@@ -47,6 +47,29 @@ class DataDriftJobConfig(BaseModel):
 
         return value
 
+    @validator("feature_mapping")
+    def check_feature_mapping_is_not_empty(
+        cls, value: Dict[str, JobConfigFeature]
+    ) -> Dict[str, JobConfigFeature]:
+        """Checks that keys in feature map match names in associated features."""
+        if len(value) == 0:
+            raise BadJobConfigError("Feature mapping is empty.")
+
+        return value
+
+    @validator("feature_mapping")
+    def check_keys_match_feature_name(
+        cls, value: Dict[str, JobConfigFeature]
+    ) -> Dict[str, JobConfigFeature]:
+        """Checks that keys in feature map match names in associated features."""
+        for key, feature in value.items():
+            if key != feature.name:
+                raise BadJobConfigError(
+                    f"Feature mapping key '{key}' does not match feature name '{feature.name}'"
+                )
+
+        return value
+
 
 def find_unsupported_characters(value_string: str, search_string: str) -> bool:
     """Matches invalid characters.
