@@ -5,6 +5,7 @@ from pydantic import ValidationError
 import pytest
 
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.exceptions import BadJobConfigError
 
 
 @pytest.fixture
@@ -78,3 +79,33 @@ def test_job_config_feature_without_field(
         "msg": "field required",
         "type": "value_error.missing",
     } in excinfo.value.errors()
+
+
+@pytest.mark.parametrize(
+    "report_name,error",
+    [
+        ("", BadJobConfigError("Report name is empty.")),
+        (".", BadJobConfigError("Report name '.' does not start with `[a-zA-Z]`.")),
+        ("_", BadJobConfigError("Report name '_' does not start with `[a-zA-Z]`.")),
+        ("*", BadJobConfigError("Report name '*' does not start with `[a-zA-Z]`.")),
+        (" ", BadJobConfigError("Report name ' ' does not start with `[a-zA-Z]`.")),
+        ("a*", BadJobConfigError("Report name 'a*' contains unsupported characters.")),
+        (
+            "abc, DEF, and 123",
+            BadJobConfigError(
+                "Report name 'abc, DEF, and 123' contains unsupported characters."
+            ),
+        ),
+        ("a ", BadJobConfigError("Report name 'a ' ends with a space.")),
+    ],
+)
+def test_report_name_with_special_characters(
+    report_name: str, error: BadJobConfigError, full_job_config_dict: Dict
+) -> None:
+    """Tests that we raise error if report name has unsupported characters."""
+    full_job_config_dict["report_name"] = report_name
+
+    with pytest.raises(BadJobConfigError) as excinfo:
+        DataDriftJobConfig(**full_job_config_dict)
+
+    assert type(excinfo.value) == type(error) and excinfo.value.args == error.args

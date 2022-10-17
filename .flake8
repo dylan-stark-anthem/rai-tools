@@ -5,3 +5,8 @@ max-complexity = 20
 max-line-length = 128
 import-order-style = google
 docstring-convention= google
+per-file-ignores =
+    # https://pydantic-docs.helpmanual.io/usage/validators/
+    # > validators are "class methods", so the first argument value they
+    #   receive is the UserModel class, not an instance of UserModel
+    src/raitools/services/data_drift/domain/job_config.py: B902
