@@ -3,15 +3,20 @@
 
 import json
 from pathlib import Path
+from typing import IO, List
 import zipfile
 
 import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel
 
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.job_config import (
+    DataDriftJobConfig,
+    JobConfigFeature,
+)
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
+    BadDataFileError,
     BadJobConfigError,
     BadPathToBundleError,
 )
@@ -37,8 +42,18 @@ def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
     """Creates a bundle."""
     job_config = get_job_config_from_bundle(bundle_path)
     job_config_filename = get_job_config_filename_from_bundle(bundle_path)
-    baseline_data = get_data_from_bundle(bundle_path, job_config.baseline_data_filename)
-    test_data = get_data_from_bundle(bundle_path, job_config.test_data_filename)
+    baseline_data = get_data_from_bundle(
+        bundle_path,
+        job_config.baseline_data_filename,
+        list(job_config.feature_mapping.keys()),
+        list(job_config.feature_mapping.values()),
+    )
+    test_data = get_data_from_bundle(
+        bundle_path,
+        job_config.test_data_filename,
+        list(job_config.feature_mapping.keys()),
+        list(job_config.feature_mapping.values()),
+    )
 
     bundle = DataDriftBundle(
         job_config_filename=job_config_filename,
@@ -82,12 +97,72 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     return job_config
 
 
-def get_data_from_bundle(bundle_path: Path, data_filename: str) -> pa.Table:
+def get_data_from_bundle(
+    bundle_path: Path,
+    data_filename: str,
+    required_fields: List[str],
+    features: List[JobConfigFeature],
+) -> pa.Table:
     """Gets specified dataset from the bundle."""
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         with zip_file.open(data_filename) as data_file:
-            data = read_csv(data_file)
+            data = read_data_file(data_file, data_filename)
+
+    _validate_data_file_has_observations(data, data_filename)
+    _validate_data_file_has_required_fields(data, data_filename, required_fields)
+    _validate_fields_compatible_with_features(data, data_filename, features)
     return data
+
+
+def read_data_file(data_file: IO[bytes], data_filename: str) -> pa.Table:
+    """Reads user-provided data file."""
+    try:
+        return read_csv(data_file)
+    except pa.lib.ArrowInvalid as err:
+        if "Empty CSV file" in err.args:
+            raise BadDataFileError(f"Data file `{data_filename}` is empty.") from err
+        raise
+
+
+def _validate_data_file_has_observations(data: pa.Table, data_filename: str) -> None:
+    if data.num_rows == 0:
+        raise BadDataFileError(
+            f"Data file `{data_filename}` does not contain any observations (only header)."
+        )
+
+
+def _validate_data_file_has_required_fields(
+    data: pa.Table, data_filename: str, required_fields: List[str]
+) -> None:
+    for required_field in required_fields:
+        if required_field not in data.column_names:
+            raise BadDataFileError(
+                f"Data file `{data_filename}` does not contain feature '{required_field}' from feature mapping."
+            )
+
+    return data
+
+
+def _validate_fields_compatible_with_features(
+    data: pa.Table, data_filename: str, features: List[JobConfigFeature]
+) -> None:
+    def _check_compatibility_with_numeric(field_type: pa.DataType) -> bool:
+        return pa.types.is_integer(field_type) or pa.types.is_floating(field_type)
+
+    def _check_compatibility_with_categorical(field_type: pa.DataType) -> bool:
+        return pa.types.is_string(field_type)
+
+    compatible_kind = {
+        "numerical": _check_compatibility_with_numeric,
+        "categorical": _check_compatibility_with_categorical,
+    }
+
+    for feature in features:
+        field_type = data.schema.field(feature.name).type
+        if not compatible_kind[feature.kind](field_type):
+            raise BadDataFileError(
+                f"{feature.kind.capitalize()} feature `f0` in `{data_filename}` parsed as `{field_type}`."
+            )
 
 
 def _validate_is_zip_file(bundle_path: Path) -> None:

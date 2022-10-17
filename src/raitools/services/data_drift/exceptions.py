@@ -9,5 +9,9 @@ class BadBundleZipFileError(Exception):
     """Bad bundle zip file error."""
 
 
+class BadDataFileError(Exception):
+    """Bad data file error."""
+
+
 class BadJobConfigError(Exception):
     """Bad job config error."""

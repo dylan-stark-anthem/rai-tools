@@ -8,6 +8,7 @@ from zipfile import ZipFile
 import pytest
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
+    BadDataFileError,
     BadJobConfigError,
     BadPathToBundleError,
 )
@@ -206,3 +207,269 @@ def test_test_data_filename_not_in_zip(tmp_path: Path) -> None:
         process_bundle(bundle_path)
 
     assert error_message in str(excinfo.value)
+
+
+def test_baseline_data_file_empty(tmp_path: Path) -> None:
+    """Tests that error raised if given empty data file."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.touch()
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(f"Data file `{baseline_data_filename}` is empty.")
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+def test_test_data_file_empty(tmp_path: Path) -> None:
+    """Tests that error raised if given empty data file."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text("f0\n0.1\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.touch()
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(f"Data file `{test_data_filename}` is empty.")
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+def test_test_data_file_has_no_observations(tmp_path: Path) -> None:
+    """Tests that error raised if data file has no observations."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text("f0\n1.0\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(
+        f"Data file `{test_data_filename}` does not contain any observations (only header)."
+    )
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+def test_baseline_data_file_has_no_observations(tmp_path: Path) -> None:
+    """Tests that error raised if data file has no observations."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text("f0\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f0\n1.0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(
+        f"Data file `{baseline_data_filename}` does not contain any observations (only header)."
+    )
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+def test_baseline_data_file_missing_required_field(tmp_path: Path) -> None:
+    """Tests that error raised if data file missing required field."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text("f1\n1.0\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f0\n1.0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(
+        f"Data file `{baseline_data_filename}` does not contain feature 'f0' from feature mapping."
+    )
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+def test_test_data_file_missing_required_field(tmp_path: Path) -> None:
+    """Tests that error raised if data file missing required field."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": "numerical", "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text("f0\n1.0\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f1\n1.0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(
+        f"Data file `{test_data_filename}` does not contain feature 'f0' from feature mapping."
+    )
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
+
+
+@pytest.mark.parametrize(
+    "feature_kind,field_value,field_type",
+    [
+        ("numerical", "'1.0'", "string"),
+        ("numerical", "True", "bool"),
+        ("categorical", "10", "int64"),
+        ("categorical", "1.0", "double"),
+    ],
+)
+def test_baseline_data_incompatible_field_type(
+    feature_kind: str, field_value: str, field_type: str, tmp_path: Path
+) -> None:
+    """Tests that error raised if data file has incompatible field type."""
+    bundle_path = tmp_path / "bundle.zip"
+    baseline_data_filename = "baseline_data.csv"
+    test_data_filename = "test_data.csv"
+    job_config = {
+        "report_name": "report_name",
+        "dataset_name": "dataset_name",
+        "dataset_version": "dataset_version",
+        "model_catalog_id": "model_catalog_id",
+        "feature_mapping": {"f0": {"name": "f0", "kind": feature_kind, "rank": 1}},
+        "baseline_data_filename": baseline_data_filename,
+        "test_data_filename": test_data_filename,
+    }
+    with ZipFile(bundle_path, "w") as zip_file:
+        job_config_path = tmp_path / "job_config.json"
+        job_config_path.write_text(json.dumps(job_config))
+        zip_file.write(job_config_path, arcname=job_config_path.name)
+        baseline_data_path = tmp_path / baseline_data_filename
+        baseline_data_path.write_text(f"f0\n{field_value}\n")
+        test_data_path = tmp_path / test_data_filename
+        test_data_path.write_text("f0\n1.0\n")
+        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
+        zip_file.write(test_data_path, arcname=test_data_path.name)
+    expected_error = BadDataFileError(
+        f"{feature_kind.capitalize()} feature `f0` in `{baseline_data_filename}` parsed as `{field_type}`."
+    )
+
+    with pytest.raises(BadDataFileError) as excinfo:
+        process_bundle(bundle_path)
+
+    assert (
+        type(excinfo.value) == type(expected_error)
+        and excinfo.value.args == expected_error.args
+    )
