@@ -2,29 +2,41 @@
 
 from typing import Dict
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+import raitools
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.services.data_drift.domain.statistical_test_result import (
     StatisticalTestResult,
+)
+from raitools.services.data_drift.domain.types import (
+    DriftStatus,
+    FeatureKind,
+    FeatureName,
+    FileName,
+    Name,
+    NonNegativeCount,
+    PositiveCount,
+    Probability,
+    StatisticalTestOutcome,
 )
 
 
 class BundleManifest(BaseModel):
     """A bundle manifest."""
 
-    bundle_filename: str
-    job_config_filename: str
-    baseline_data_filename: str
-    test_data_filename: str
+    bundle_filename: FileName
+    job_config_filename: FileName
+    baseline_data_filename: FileName
+    test_data_filename: FileName
 
 
 class BundleData(BaseModel):
     """Bundle data."""
 
-    filename: str
-    num_rows: int
-    num_columns: int
+    filename: FileName
+    num_rows: PositiveCount
+    num_columns: PositiveCount
 
 
 class RecordBundle(BaseModel):
@@ -38,34 +50,34 @@ class RecordBundle(BaseModel):
 class RecordMetadata(BaseModel):
     """Metadata for data drift record."""
 
-    raitools_version: str
+    raitools_version: str = Field(raitools.__version__, const=True)
 
 
 class DriftSummaryMetadata(BaseModel):
     """Summary statistics for data."""
 
-    num_numerical_features: int
-    num_categorical_features: int
+    num_numerical_features: NonNegativeCount
+    num_categorical_features: NonNegativeCount
 
 
 class FeatureStatisticalTest(BaseModel):
     """Drift summary."""
 
-    name: str
+    name: Name
     result: StatisticalTestResult
-    significance_level: float
-    adjusted_significance_level: float
-    outcome: str
+    significance_level: Probability
+    adjusted_significance_level: Probability
+    outcome: StatisticalTestOutcome
 
 
 class DriftSummaryFeature(BaseModel):
     """Feature summary."""
 
-    name: str
-    kind: str
-    rank: int
+    name: FeatureName
+    kind: FeatureKind
+    rank: PositiveCount
     statistical_test: FeatureStatisticalTest
-    drift_status: str
+    drift_status: DriftStatus
 
 
 class RecordDriftSummary(BaseModel):
@@ -78,8 +90,8 @@ class RecordDriftSummary(BaseModel):
 class DataDriftRecord(BaseModel):
     """A Data Drift record."""
 
-    apiVersion: str = "raitools/v1"
-    kind: str = "DataDriftRecord"
+    apiVersion: str = Field("raitools/v1", const=True)
+    kind: str = Field("DataDriftRecord", const=True)
     metadata: RecordMetadata
     bundle: RecordBundle
     drift_summary: RecordDriftSummary

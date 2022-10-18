@@ -1,7 +1,8 @@
 """Types of data drift."""
 
+from enum import Enum
 import re
-from pydantic import ConstrainedInt, ConstrainedStr, StrictStr
+from pydantic import ConstrainedFloat, ConstrainedInt, ConstrainedStr, StrictStr
 
 
 class Rank(ConstrainedInt):
@@ -32,6 +33,17 @@ class FeatureName(Name):
     """A feature name."""
 
 
+class FileName(Name):
+    """A file name."""
+
+
+class FeatureKind(str, Enum):
+    """A kind of feature."""
+
+    numerical = "numerical"
+    categorical = "categorical"
+
+
 class DatasetVersion(ConstrainedStr):
     """A dataset version.
 
@@ -60,3 +72,25 @@ class NonNegativeCount(ConstrainedInt):
 
     ge = 0
     strict = True
+
+
+class Probability(ConstrainedFloat):
+    """A probability value in [0, 1]."""
+
+    ge = 0.0
+    le = 1.0
+    strict = True
+
+
+class StatisticalTestOutcome(str, Enum):
+    """A statistical test outcome."""
+
+    reject_null_hypothesis = "reject null hypothesis"
+    fail_to_reject_null_hypothesis = "fail to reject null hypothesis"
+
+
+class DriftStatus(str, Enum):
+    """A drift status."""
+
+    drifted = "drifted"
+    not_drifted = "not drifted"
