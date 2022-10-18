@@ -2,16 +2,10 @@
 
 import re
 from typing import Dict
-from pydantic import BaseModel, ConstrainedInt, validator
+from pydantic import BaseModel, validator
+from raitools.services.data_drift.domain.types import Rank
 
 from raitools.services.data_drift.exceptions import BadJobConfigError
-
-
-class Rank(ConstrainedInt):
-    """Rank as a constrained int."""
-
-    ge = 1
-    strict = True
 
 
 class JobConfigFeature(BaseModel):
