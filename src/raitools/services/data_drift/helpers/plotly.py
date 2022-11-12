@@ -2,7 +2,6 @@
 
 from typing import Any, Dict, List
 
-import bs4
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
@@ -10,7 +9,7 @@ from plotly.subplots import make_subplots
 def plotly_data_summary_maker(
     num_numerical_features: int, num_categorical_features: int
 ) -> str:
-    """Creates an easy-to-test version of a data summary."""
+    """Creates an plotly version of a data summary."""
     fig = make_subplots(
         rows=1,
         cols=2,
@@ -78,7 +77,7 @@ def plotly_drift_summary_maker(
     num_top_10_features_drifted: int,
     num_top_20_features_drifted: int,
 ) -> str:
-    """Creates an easy-to-test version of a drift summary."""
+    """Creates an plotly version of a drift summary."""
     fig = make_subplots(
         rows=1,
         cols=4,
@@ -237,19 +236,76 @@ def plotly_drift_summary_maker(
 def plotly_drift_magnitude_maker(
     fields: List[str], observations: Dict[str, List[Any]]
 ) -> str:
-    """Creates an easy-to-test version of drift magnitude section."""
-    soup = bs4.BeautifulSoup("")
-    soup.append(soup.new_tag("table"))
-    soup.table.append(soup.new_tag("thead"))
-    soup.table.thead.append(soup.new_tag("tr"))
-    for field in fields:
-        th = soup.new_tag("th")
-        th.string = field
-        soup.table.thead.tr.append(th)
+    """Creates an plotly version of drift magnitude section."""
+    num_observations = len(observations[fields[0]])
+    heatmap_data = [
+        {field: observations[field][index] for field in fields}
+        for index in range(num_observations)
+    ]
 
-    cell_values = [values for values in observations.values()]
+    num_columns_in_heatmap = 10
+    chunked_data = []
+    for start in range(0, num_observations, num_columns_in_heatmap):
+        stop = start + num_columns_in_heatmap
+        if stop > num_observations:
+            chunk = heatmap_data[start:num_observations]
+            chunk.extend([None] * (num_columns_in_heatmap - len(chunk)))
+        else:
+            chunk = heatmap_data[start:stop]
+        chunked_data.append(chunk)
+    chunked_data.reverse()
 
-    fig = go.Figure(
+    def hover_text(element: Dict[str, Any]) -> str:
+        text = ""
+        if element:
+            text = f"Status: {element['drift_status'].capitalize()}"
+
+        return text
+
+    def display_text(element: Dict[str, Any]) -> str:
+        text = ""
+        if element:
+            text = f"{element['p_value']:.6f}"
+
+        return text
+
+    def z(element):
+        z = None
+        if element:
+            z = element["p_value"]
+        return z
+
+    z_data = [[z(element) for element in chunk if element] for chunk in chunked_data]
+    hover_text_data = [
+        [hover_text(element) for element in chunk] for chunk in chunked_data
+    ]
+    display_text_data = [
+        [display_text(element) for element in chunk] for chunk in chunked_data
+    ]
+
+    heatmap_fig = go.Figure(
+        data=go.Heatmap(
+            z=z_data,
+            text=display_text_data,
+            hoverongaps=False,
+            hovertemplate="%{hovertext}",
+            hovertext=hover_text_data,
+            name="",
+            showscale=False,
+            texttemplate="%{text}",
+            layout={
+                "xaxis": {"title": "x-label", "visible": True, "showticklabels": True},
+                "yaxis": {
+                    "title": "y-label",
+                    "visible": False,
+                    "showticklabels": False,
+                },
+            },
+        )
+    )
+
+    cell_values = [observations[field] for field in fields]
+    table_fig = go.Figure(
         data=[
             go.Table(
                 header=dict(values=fields, fill_color="grey", align="left"),
@@ -261,7 +317,7 @@ def plotly_drift_magnitude_maker(
             )
         ]
     )
-    fig.update_traces(
+    table_fig.update_traces(
         header_line_color="black",
         header_fill_color="#AFEEEE",
         header_align="left",
@@ -275,7 +331,20 @@ def plotly_drift_magnitude_maker(
         cells_font_color="black",
         cells_height=30,
     )
-    fig.update_layout(
+
+    combined_fig = make_subplots(
+        rows=2, cols=1, specs=[[{"type": "heatmap"}], [{"type": "domain"}]]
+    )
+    for trace in heatmap_fig["data"]:
+        combined_fig.add_trace(trace=trace, row=1, col=1)
+    for trace in table_fig["data"]:
+        combined_fig.add_trace(trace=trace, row=2, col=1)
+    combined_fig.update_layout(
+        # width=1775,
+        # height=530,
+        template="plotly_dark",
+    )
+    combined_fig.update_layout(
         {
             "title": {
                 "text": "Drift details",
@@ -288,11 +357,6 @@ def plotly_drift_magnitude_maker(
             "margin": {"l": 155, "r": 130, "b": 90, "t": 150},
         }
     )
-    fig.update_layout(
-        width=1775,
-        height=530,
-        template="plotly_dark",
-    )
 
-    html = fig.to_html(include_plotlyjs=False, full_html=False)
+    html = combined_fig.to_html(include_plotlyjs=False, full_html=False)
     return html
