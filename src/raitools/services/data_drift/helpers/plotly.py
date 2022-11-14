@@ -293,14 +293,6 @@ def plotly_drift_magnitude_maker(
             name="",
             showscale=False,
             texttemplate="%{text}",
-            layout={
-                "xaxis": {"title": "x-label", "visible": True, "showticklabels": True},
-                "yaxis": {
-                    "title": "y-label",
-                    "visible": False,
-                    "showticklabels": False,
-                },
-            },
         )
     )
 
@@ -354,7 +346,17 @@ def plotly_drift_magnitude_maker(
             },
             "title_x": 0.49,
             "title_y": 0.87,
-            "margin": {"l": 155, "r": 130, "b": 90, "t": 150},
+            "margin": {"l": 155, "r": 130, "b": 90, "t": 250},
+        }
+    )
+    combined_fig.update_layout(
+        {
+            "xaxis": {"title": "x-label", "visible": False, "showticklabels": False},
+            "yaxis": {
+                "title": "y-label",
+                "visible": False,
+                "showticklabels": False,
+            },
         }
     )
 
