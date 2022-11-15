@@ -310,19 +310,33 @@ def plotly_drift_magnitude_maker(
         }
     )
 
+    def create_table_trace(fields, cell_values):
+        table = go.Table(
+            header=dict(values=fields, fill_color="grey", align="left"),
+            cells=dict(
+                values=cell_values,
+                fill_color="lightgrey",
+                align="left",
+            ),
+            visible=False,
+        )
+        return table
+
     cell_values = [observations[field] for field in fields]
-    table_fig = go.Figure(
-        data=[
-            go.Table(
-                header=dict(values=fields, fill_color="grey", align="left"),
-                cells=dict(
-                    values=cell_values,
-                    fill_color="lightgrey",
-                    align="left",
-                ),
-            )
-        ]
-    )
+    table_fig = go.Figure()
+
+    num_observations_in_view = 10
+    for start in range(0, num_observations, num_observations_in_view):
+        stop = start + num_observations_in_view
+        if stop > num_observations:
+            view_values = [values[start:num_observations] for values in cell_values]
+        else:
+            view_values = [values[start:stop] for values in cell_values]
+        step_trace = create_table_trace(fields, view_values)
+        table_fig.add_trace(step_trace)
+
+    table_fig.data[0].visible = True
+
     table_fig.update_traces(
         header_line_color="black",
         header_fill_color="#AFEEEE",
@@ -346,8 +360,8 @@ def plotly_drift_magnitude_maker(
     for trace in table_fig["data"]:
         combined_fig.add_trace(trace=trace, row=2, col=1)
     combined_fig.update_layout(
-        # width=1775,
-        # height=530,
+        width=1775,
+        height=1280,
         template="plotly_dark",
     )
     combined_fig.update_layout(
@@ -373,6 +387,31 @@ def plotly_drift_magnitude_maker(
             },
         }
     )
+
+    steps = []
+    for index in range(len(table_fig.data)):
+        print(f"=== Step {index}")
+        step = dict(
+            # method="update",
+            method="restyle",
+            args=[
+                {"visible": [False] * len(combined_fig.data)},
+            ],
+        )
+        step["args"][0]["visible"][0] = True  # Keep heatmap visible
+        step["args"][0]["visible"][1 + index] = True
+        steps.append(step)
+
+    sliders = [
+        dict(
+            active=0,
+            currentvalue={"prefix": "Frequency: "},
+            pad={"t": 50},
+            steps=steps,
+        )
+    ]
+
+    combined_fig.update_layout(sliders=sliders)
 
     html = combined_fig.to_html(include_plotlyjs=False, full_html=False)
     return html
