@@ -1,6 +1,6 @@
 """Plotly helpers for data drift."""
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
@@ -238,7 +238,7 @@ def plotly_drift_magnitude_maker(
 ) -> str:
     """Creates an plotly version of drift magnitude section."""
     num_observations = len(observations[fields[0]])
-    heatmap_data = [
+    heatmap_data: List[Optional[Dict[str, Any]]] = [
         {field: observations[field][index] for field in fields}
         for index in range(num_observations)
     ]
@@ -255,7 +255,7 @@ def plotly_drift_magnitude_maker(
         chunked_data.append(chunk)
     chunked_data.reverse()
 
-    def hover_text(element: Dict[str, Any]) -> str:
+    def hover_text(element: Optional[Dict[str, Any]]) -> str:
         text = []
         if element:
             text.append(f"Rank: {element['rank']}")
@@ -266,14 +266,14 @@ def plotly_drift_magnitude_maker(
 
         return "<br>".join(text)
 
-    def display_text(element: Dict[str, Any]) -> str:
+    def display_text(element: Optional[Dict[str, Any]]) -> str:
         text = ""
         if element:
             text = f"{element['p_value']:.6f}"
 
         return text
 
-    def z(element):
+    def z(element: Dict[str, Any]) -> Optional[Any]:
         z = None
         if element:
             z = element["p_value"]
@@ -312,7 +312,7 @@ def plotly_drift_magnitude_maker(
         }
     )
 
-    def create_table_trace(fields, cell_values):
+    def create_table_trace(fields: List[str], cell_values: List[List]) -> go.Table:
         table = go.Table(
             header=dict(values=fields, fill_color="grey", align="left"),
             cells=dict(
@@ -392,7 +392,7 @@ def plotly_drift_magnitude_maker(
 
     steps = []
     for index in range(len(table_fig.data)):
-        step = dict(
+        step: Dict = dict(
             # method="update",
             method="restyle",
             args=[
