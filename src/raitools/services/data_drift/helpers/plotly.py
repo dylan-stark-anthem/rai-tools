@@ -256,11 +256,15 @@ def plotly_drift_magnitude_maker(
     chunked_data.reverse()
 
     def hover_text(element: Dict[str, Any]) -> str:
-        text = ""
+        text = []
         if element:
-            text = f"Status: {element['drift_status'].capitalize()}"
+            text.append(f"Rank: {element['rank']}")
+            text.append(f"Name: {element['name']}")
+            text.append(f"Kind: {element['kind'].capitalize()}")
+            text.append(f"P-value: {element['p_value']}")
+            text.append(f"Status: {element['drift_status'].capitalize()}")
 
-        return text
+        return "<br>".join(text)
 
     def display_text(element: Dict[str, Any]) -> str:
         text = ""
@@ -294,6 +298,16 @@ def plotly_drift_magnitude_maker(
             showscale=False,
             texttemplate="%{text}",
         )
+    )
+    heatmap_fig.update_layout(
+        {
+            "title": {
+                "text": "(Each cell contains the p-value for the top <= 100 features)",
+                "font": {
+                    "size": 20,
+                },
+            },
+        }
     )
 
     cell_values = [observations[field] for field in fields]
@@ -339,7 +353,7 @@ def plotly_drift_magnitude_maker(
     combined_fig.update_layout(
         {
             "title": {
-                "text": "Drift details",
+                "text": "Drift details<br><br><sup>(Each cell contains the p-value for the top <= 100 features)</sup>",
                 "font": {
                     "size": 40,
                 },
