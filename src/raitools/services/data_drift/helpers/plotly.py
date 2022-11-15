@@ -297,6 +297,8 @@ def plotly_drift_magnitude_maker(
             name="",
             showscale=False,
             texttemplate="%{text}",
+            zmin=0,
+            zmax=1,
         )
     )
     heatmap_fig.update_layout(
@@ -390,13 +392,13 @@ def plotly_drift_magnitude_maker(
 
     steps = []
     for index in range(len(table_fig.data)):
-        print(f"=== Step {index}")
         step = dict(
             # method="update",
             method="restyle",
             args=[
                 {"visible": [False] * len(combined_fig.data)},
             ],
+            label=f"{index}",
         )
         step["args"][0]["visible"][0] = True  # Keep heatmap visible
         step["args"][0]["visible"][1 + index] = True
@@ -405,7 +407,7 @@ def plotly_drift_magnitude_maker(
     sliders = [
         dict(
             active=0,
-            currentvalue={"prefix": "Frequency: "},
+            currentvalue={"prefix": "Table page: "},
             pad={"t": 50},
             steps=steps,
         )
