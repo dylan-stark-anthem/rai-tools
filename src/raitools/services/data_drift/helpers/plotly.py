@@ -361,7 +361,7 @@ def plotly_drift_magnitude_maker(
         combined_fig.add_trace(trace=trace, row=2, col=1)
     combined_fig.update_layout(
         width=1775,
-        height=1280,
+        height=1152,
         template="plotly_dark",
     )
     combined_fig.update_layout(
