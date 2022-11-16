@@ -297,8 +297,6 @@ def plotly_drift_magnitude_maker(
             name="",
             showscale=False,
             texttemplate="%{text}",
-            zmin=0,
-            zmax=1,
         )
     )
     heatmap_fig.update_layout(
