@@ -66,6 +66,36 @@ def plotly_data_summary_maker(
             "margin": {"l": 100, "r": 100, "b": 50, "t": 160},
         }
     )
+    fig.update_layout(
+        shapes=[
+            {
+                "type": "rect",
+                "xref": "paper",
+                "yref": "paper",
+                "x0": 0.15,
+                "y0": 0.02,
+                "x1": 0.33,
+                "y1": 1.35,
+                "fillcolor": "#1f2c56",
+                "opacity": 0.5,
+                "layer": "below",
+                "line_width": 0,
+            },
+            {
+                "type": "rect",
+                "xref": "paper",
+                "yref": "paper",
+                "x0": 0.67,
+                "y0": 0.02,
+                "x1": 0.86,
+                "y1": 1.35,
+                "fillcolor": "#1f2c56",
+                "opacity": 0.5,
+                "layer": "below",
+                "line_width": 0,
+            },
+        ]
+    )
     html = fig.to_html()
 
     return html
