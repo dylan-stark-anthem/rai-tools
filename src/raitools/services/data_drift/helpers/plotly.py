@@ -385,11 +385,7 @@ def plotly_drift_magnitude_maker(
         combined_fig.add_trace(trace=trace, row=1, col=1)
     for trace in table_fig["data"]:
         combined_fig.add_trace(trace=trace, row=2, col=1)
-    combined_fig.update_layout(
-        width=1775,
-        height=1152,
-        template="plotly_dark",
-    )
+    sliders = _create_sliders(len(table_fig.data), len(combined_fig.data))
     combined_fig.update_layout(
         {
             "title": {
@@ -400,27 +396,32 @@ def plotly_drift_magnitude_maker(
             },
             "title_x": 0.49,
             "title_y": 0.87,
+            "width": 1775,
+            "height": 1152,
+            "template": "plotly_dark",
             "margin": {"l": 155, "r": 130, "b": 90, "t": 250},
-        }
-    )
-    combined_fig.update_layout(
-        {
             "xaxis": {"title": "x-label", "visible": False, "showticklabels": False},
             "yaxis": {
                 "title": "y-label",
                 "visible": False,
                 "showticklabels": False,
             },
+            "sliders": sliders,
         }
     )
 
+    html = combined_fig.to_html(include_plotlyjs=False, full_html=False)
+    return html
+
+
+def _create_sliders(num_pages: int, num_figs: int) -> List:
+    """Creates sliders for paginated table."""
     steps = []
-    for index in range(len(table_fig.data)):
+    for index in range(num_pages):
         step: Dict = dict(
-            # method="update",
             method="restyle",
             args=[
-                {"visible": [False] * len(combined_fig.data)},
+                {"visible": [False] * num_figs},
             ],
             label=f"{index}",
         )
@@ -437,7 +438,4 @@ def plotly_drift_magnitude_maker(
         )
     ]
 
-    combined_fig.update_layout(sliders=sliders)
-
-    html = combined_fig.to_html(include_plotlyjs=False, full_html=False)
-    return html
+    return sliders
