@@ -16,16 +16,16 @@
     "num_categorical_features": 7,
     "thresholds": {
         "numerical": {
-            "kolmogorov-smirnov": 0.003846
+            "kolmogorov-smirnov": 0.05
         },
         "categorical": {
-            "chi-squared": 0.003846
+            "chi-squared": 0.05
         }
     },
     "num_total_features": 13,
-    "num_features_drifted": 3,
-    "top_10_features_drifted": 3,
-    "top_20_features_drifted": 3,
+    "num_features_drifted": 6,
+    "top_10_features_drifted": 6,
+    "top_20_features_drifted": 6,
     "fields": [
         "rank",
         "name",
@@ -80,9 +80,9 @@
             "categorical"
         ],
         "p_value": [
-            1.9999999999999978e-05,
-            1.9999999999999978e-05,
-            1.9999999999999978e-05,
+            0.0,
+            0.0,
+            0.0,
             1.0,
             1.0,
             1.0,
@@ -101,9 +101,9 @@
             "not drifted",
             "not drifted",
             "not drifted",
-            "not drifted",
-            "not drifted",
-            "not drifted",
+            "drifted",
+            "drifted",
+            "drifted",
             "not drifted",
             "not drifted",
             "not drifted",

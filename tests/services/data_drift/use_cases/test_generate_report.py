@@ -59,6 +59,12 @@ def _assert_equal_htmls(expected_html: str, actual_html: str) -> None:
 
     def strip_extra_space(string: str) -> str:
         string = string.replace("\n", "")
+        string = string.replace(
+            '" ,', '",'
+        )  # because VSCODE keeps adding spaces when updating
+        string = string.replace(
+            '" .', '".'
+        )  # because VSCODE keeps adding spaces when updating
         tokens = string.split()
         return " ".join(tokens)
 

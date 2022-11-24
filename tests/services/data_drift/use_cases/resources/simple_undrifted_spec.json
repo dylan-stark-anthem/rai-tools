@@ -42,7 +42,6 @@
     "num_categorical_features": 3,
     "num_baseline_observations": 10,
     "num_test_observations": 10,
-    "adjusted_significance_level": 0.01,
     "data": {
         "numerical_feature_0": {
             "name": "numerical_feature_0",

@@ -24,9 +24,6 @@ from raitools.services.data_drift.domain.data_drift_record import (
 from raitools.services.data_drift.domain.job_config import JobConfigFeature
 from raitools.services.data_drift.domain.stats import statistical_tests
 from raitools.services.data_drift.exceptions import BadPathToBundleError
-from raitools.stats.bonferroni_correction import (
-    bonferroni_correction,
-)
 
 
 def process_bundle(bundle_path: Path) -> DataDriftRecord:
@@ -113,10 +110,6 @@ def _compile_features_for_drift_summary(
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
     significance_level = 0.05
-    adjusted_significance_level = round(
-        bonferroni_correction(baseline_data.num_columns, alpha=significance_level),
-        ndigits=6,
-    )
 
     results: Dict[str, DriftSummaryFeature] = {}
     for feature_name, feature_details in feature.items():
@@ -127,7 +120,7 @@ def _compile_features_for_drift_summary(
                 baseline_data.column(feature_name).to_pylist(),
                 test_data.column(feature_name).to_pylist(),
             )
-            if result.p_value <= adjusted_significance_level:
+            if result.p_value <= significance_level:
                 outcome = "reject null hypothesis"
             else:
                 outcome = "fail to reject null hypothesis"
@@ -135,7 +128,6 @@ def _compile_features_for_drift_summary(
                 name=test_name,
                 result=result,
                 significance_level=significance_level,
-                adjusted_significance_level=adjusted_significance_level,
                 outcome=outcome,
             )
             if outcome == "reject null hypothesis":

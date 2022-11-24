@@ -16,7 +16,7 @@
     "num_categorical_features": 3,
     "thresholds": {
         "categorical": {
-            "chi-squared": 0.016667
+            "chi-squared": 0.05
         }
     },
     "num_total_features": 3,

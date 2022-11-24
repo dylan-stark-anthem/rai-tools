@@ -66,7 +66,6 @@ class FeatureStatisticalTest(BaseModel):
     name: Name
     result: StatisticalTestResult
     significance_level: Probability
-    adjusted_significance_level: Probability
     outcome: StatisticalTestOutcome
 
 

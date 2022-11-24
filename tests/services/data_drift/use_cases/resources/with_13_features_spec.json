@@ -1,1 +1,403 @@
-{"raitools_version": "v0.1.0", "bundle_filename": "bundle.zip", "job_config_filename": "some_job_config.json", "job_config": {"report_name": "Some simple report", "dataset_name": "Some name for this dataset", "dataset_version": "v0.1.0", "baseline_data_filename": "some_baseline_data.csv", "test_data_filename": "some_test_data.csv", "model_catalog_id": "123", "feature_mapping": {"numerical_feature_0": {"name": "numerical_feature_0", "kind": "numerical", "rank": 1}, "numerical_feature_1": {"name": "numerical_feature_1", "kind": "numerical", "rank": 2}, "numerical_feature_2": {"name": "numerical_feature_2", "kind": "numerical", "rank": 3}, "numerical_feature_3": {"name": "numerical_feature_3", "kind": "numerical", "rank": 4}, "numerical_feature_4": {"name": "numerical_feature_4", "kind": "numerical", "rank": 5}, "numerical_feature_5": {"name": "numerical_feature_5", "kind": "numerical", "rank": 6}, "numerical_feature_6": {"name": "numerical_feature_6", "kind": "categorical", "rank": 7}, "numerical_feature_7": {"name": "numerical_feature_7", "kind": "categorical", "rank": 8}, "numerical_feature_8": {"name": "numerical_feature_8", "kind": "categorical", "rank": 9}, "numerical_feature_9": {"name": "numerical_feature_9", "kind": "categorical", "rank": 10}, "numerical_feature_10": {"name": "numerical_feature_10", "kind": "categorical", "rank": 11}, "numerical_feature_11": {"name": "numerical_feature_11", "kind": "categorical", "rank": 12}, "numerical_feature_12": {"name": "numerical_feature_12", "kind": "categorical", "rank": 13}}}, "num_features": 13, "num_numerical_features": 6, "num_categorical_features": 7, "num_baseline_observations": 10, "num_test_observations": 10, "adjusted_significance_level": 0.0038461538461538464, "data": {"numerical_feature_0": {"name": "numerical_feature_0", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 5, "stop": 15}, "seed": 0}}, "numerical_feature_1": {"name": "numerical_feature_1", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 5, "stop": 15}, "seed": 0}}, "numerical_feature_2": {"name": "numerical_feature_2", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 5, "stop": 15}, "seed": 0}}, "numerical_feature_3": {"name": "numerical_feature_3", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}}, "numerical_feature_4": {"name": "numerical_feature_4", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}}, "numerical_feature_5": {"name": "numerical_feature_5", "kind": "int64", "baseline_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}, "test_data": {"method": "random.randrange", "kwargs": {"start": 0, "stop": 10}, "seed": 0}}, "numerical_feature_6": {"name": "numerical_feature_6", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["J", "K", "L", "M"]}, "seed": 0}}, "numerical_feature_7": {"name": "numerical_feature_7", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["J", "K", "L", "M"]}, "seed": 0}}, "numerical_feature_8": {"name": "numerical_feature_8", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["J", "K", "L", "M"]}, "seed": 0}}, "numerical_feature_9": {"name": "numerical_feature_9", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}}, "numerical_feature_10": {"name": "numerical_feature_10", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}}, "numerical_feature_11": {"name": "numerical_feature_11", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}}, "numerical_feature_12": {"name": "numerical_feature_12", "kind": "string", "baseline_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}, "test_data": {"method": "random.choice", "kwargs": {"seq": ["A", "B", "C", "D"]}, "seed": 0}}}}
+{
+    "raitools_version": "v0.1.0",
+    "bundle_filename": "bundle.zip",
+    "job_config_filename": "some_job_config.json",
+    "job_config": {
+        "report_name": "Some simple report",
+        "dataset_name": "Some name for this dataset",
+        "dataset_version": "v0.1.0",
+        "baseline_data_filename": "some_baseline_data.csv",
+        "test_data_filename": "some_test_data.csv",
+        "model_catalog_id": "123",
+        "feature_mapping": {
+            "numerical_feature_0": {
+                "name": "numerical_feature_0",
+                "kind": "numerical",
+                "rank": 1
+            },
+            "numerical_feature_1": {
+                "name": "numerical_feature_1",
+                "kind": "numerical",
+                "rank": 2
+            },
+            "numerical_feature_2": {
+                "name": "numerical_feature_2",
+                "kind": "numerical",
+                "rank": 3
+            },
+            "numerical_feature_3": {
+                "name": "numerical_feature_3",
+                "kind": "numerical",
+                "rank": 4
+            },
+            "numerical_feature_4": {
+                "name": "numerical_feature_4",
+                "kind": "numerical",
+                "rank": 5
+            },
+            "numerical_feature_5": {
+                "name": "numerical_feature_5",
+                "kind": "numerical",
+                "rank": 6
+            },
+            "numerical_feature_6": {
+                "name": "numerical_feature_6",
+                "kind": "categorical",
+                "rank": 7
+            },
+            "numerical_feature_7": {
+                "name": "numerical_feature_7",
+                "kind": "categorical",
+                "rank": 8
+            },
+            "numerical_feature_8": {
+                "name": "numerical_feature_8",
+                "kind": "categorical",
+                "rank": 9
+            },
+            "numerical_feature_9": {
+                "name": "numerical_feature_9",
+                "kind": "categorical",
+                "rank": 10
+            },
+            "numerical_feature_10": {
+                "name": "numerical_feature_10",
+                "kind": "categorical",
+                "rank": 11
+            },
+            "numerical_feature_11": {
+                "name": "numerical_feature_11",
+                "kind": "categorical",
+                "rank": 12
+            },
+            "numerical_feature_12": {
+                "name": "numerical_feature_12",
+                "kind": "categorical",
+                "rank": 13
+            }
+        }
+    },
+    "num_features": 13,
+    "num_numerical_features": 6,
+    "num_categorical_features": 7,
+    "num_baseline_observations": 10,
+    "num_test_observations": 10,
+    "data": {
+        "numerical_feature_0": {
+            "name": "numerical_feature_0",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 9,
+                    "stop": 15
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_1": {
+            "name": "numerical_feature_1",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 9,
+                    "stop": 15
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_2": {
+            "name": "numerical_feature_2",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 9,
+                    "stop": 15
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_3": {
+            "name": "numerical_feature_3",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_4": {
+            "name": "numerical_feature_4",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_5": {
+            "name": "numerical_feature_5",
+            "kind": "int64",
+            "baseline_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.randrange",
+                "kwargs": {
+                    "start": 0,
+                    "stop": 10
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_6": {
+            "name": "numerical_feature_6",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "J",
+                        "K",
+                        "L",
+                        "M"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_7": {
+            "name": "numerical_feature_7",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "J",
+                        "K",
+                        "L",
+                        "M"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_8": {
+            "name": "numerical_feature_8",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "J",
+                        "K",
+                        "L",
+                        "M"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_9": {
+            "name": "numerical_feature_9",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_10": {
+            "name": "numerical_feature_10",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_11": {
+            "name": "numerical_feature_11",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        },
+        "numerical_feature_12": {
+            "name": "numerical_feature_12",
+            "kind": "string",
+            "baseline_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            },
+            "test_data": {
+                "method": "random.choice",
+                "kwargs": {
+                    "seq": [
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ]
+                },
+                "seed": 0
+            }
+        }
+    }
+}

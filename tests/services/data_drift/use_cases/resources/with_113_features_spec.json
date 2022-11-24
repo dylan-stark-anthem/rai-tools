@@ -582,7 +582,6 @@
     "num_categorical_features": 57,
     "num_baseline_observations": 10,
     "num_test_observations": 10,
-    "adjusted_significance_level": 0.00044247787610619474,
     "data": {
         "numerical_feature_0": {
             "name": "numerical_feature_0",

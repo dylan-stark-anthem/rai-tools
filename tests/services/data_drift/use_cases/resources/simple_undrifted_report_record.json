@@ -16,10 +16,10 @@
     "num_categorical_features": 3,
     "thresholds": {
         "numerical": {
-            "kolmogorov-smirnov": 0.01
+            "kolmogorov-smirnov": 0.05
         },
         "categorical": {
-            "chi-squared": 0.01
+            "chi-squared": 0.05
         }
     },
     "num_total_features": 5,

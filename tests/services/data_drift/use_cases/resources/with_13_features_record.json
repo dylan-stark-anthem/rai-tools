@@ -108,11 +108,10 @@
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
-                        "test_statistic": 0.9,
-                        "p_value": 1.9999999999999978e-05
+                        "test_statistic": 1.0,
+                        "p_value": 0.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "reject null hypothesis"
                 },
                 "drift_status": "drifted"
@@ -124,11 +123,10 @@
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
-                        "test_statistic": 0.9,
-                        "p_value": 1.9999999999999978e-05
+                        "test_statistic": 1.0,
+                        "p_value": 0.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "reject null hypothesis"
                 },
                 "drift_status": "drifted"
@@ -140,11 +138,10 @@
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
-                        "test_statistic": 0.9,
-                        "p_value": 1.9999999999999978e-05
+                        "test_statistic": 1.0,
+                        "p_value": 0.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "reject null hypothesis"
                 },
                 "drift_status": "drifted"
@@ -160,7 +157,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -176,7 +172,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -192,7 +187,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -208,10 +202,9 @@
                         "p_value": 0.0055696830729455755
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
-                    "outcome": "fail to reject null hypothesis"
+                    "outcome": "reject null hypothesis"
                 },
-                "drift_status": "not drifted"
+                "drift_status": "drifted"
             },
             "numerical_feature_7": {
                 "name": "numerical_feature_7",
@@ -224,10 +217,9 @@
                         "p_value": 0.0055696830729455755
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
-                    "outcome": "fail to reject null hypothesis"
+                    "outcome": "reject null hypothesis"
                 },
-                "drift_status": "not drifted"
+                "drift_status": "drifted"
             },
             "numerical_feature_8": {
                 "name": "numerical_feature_8",
@@ -240,10 +232,9 @@
                         "p_value": 0.0055696830729455755
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
-                    "outcome": "fail to reject null hypothesis"
+                    "outcome": "reject null hypothesis"
                 },
-                "drift_status": "not drifted"
+                "drift_status": "drifted"
             },
             "numerical_feature_9": {
                 "name": "numerical_feature_9",
@@ -256,7 +247,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -272,7 +262,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -288,7 +277,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -304,7 +292,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.003846,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"

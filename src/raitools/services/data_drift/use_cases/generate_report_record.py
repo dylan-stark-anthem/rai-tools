@@ -52,7 +52,7 @@ def _thresholds_map(
     for feature in features.values():
         kind = feature.kind
         test_name = feature.statistical_test.name
-        threshold = feature.statistical_test.adjusted_significance_level
+        threshold = feature.statistical_test.significance_level
         thresholds[kind][test_name] = threshold
     return thresholds
 

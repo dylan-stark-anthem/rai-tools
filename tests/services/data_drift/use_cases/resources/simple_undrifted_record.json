@@ -17,7 +17,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.01,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -33,7 +32,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.01,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -49,7 +47,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.01,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -65,7 +62,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.01,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
@@ -81,7 +77,6 @@
                         "p_value": 1.0
                     },
                     "significance_level": 0.05,
-                    "adjusted_significance_level": 0.01,
                     "outcome": "fail to reject null hypothesis"
                 },
                 "drift_status": "not drifted"
