@@ -11,33 +11,6 @@
         "test_data_filename": "some_test_data.csv",
         "model_catalog_id": "123"
     },
-    "feature_mapping": {
-        "numerical_feature_0": {
-            "name": "numerical_feature_0",
-            "kind": "numerical",
-            "importance_score": 0.9
-        },
-        "numerical_feature_1": {
-            "name": "numerical_feature_1",
-            "kind": "numerical",
-            "importance_score": 0.8
-        },
-        "categorical_feature_0": {
-            "name": "categorical_feature_0",
-            "kind": "categorical",
-            "importance_score": 0.7
-        },
-        "categorical_feature_1": {
-            "name": "categorical_feature_1",
-            "kind": "categorical",
-            "importance_score": 0.6
-        },
-        "categorical_feature_2": {
-            "name": "categorical_feature_2",
-            "kind": "categorical",
-            "importance_score": 0.5
-        }
-    },
     "num_features": 5,
     "num_numerical_features": 2,
     "num_categorical_features": 3,
