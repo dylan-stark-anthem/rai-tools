@@ -9,76 +9,10 @@
             "report_name": "Some simple report",
             "dataset_name": "Some name for this dataset",
             "dataset_version": "v0.1.0",
+            "feature_mapping_filename": "some_feature_mapping.csv",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv",
-            "model_catalog_id": "123",
-            "feature_mapping": {
-                "numerical_feature_0": {
-                    "name": "numerical_feature_0",
-                    "kind": "numerical",
-                    "rank": 1
-                },
-                "numerical_feature_1": {
-                    "name": "numerical_feature_1",
-                    "kind": "numerical",
-                    "rank": 2
-                },
-                "numerical_feature_2": {
-                    "name": "numerical_feature_2",
-                    "kind": "numerical",
-                    "rank": 3
-                },
-                "numerical_feature_3": {
-                    "name": "numerical_feature_3",
-                    "kind": "numerical",
-                    "rank": 4
-                },
-                "numerical_feature_4": {
-                    "name": "numerical_feature_4",
-                    "kind": "numerical",
-                    "rank": 5
-                },
-                "numerical_feature_5": {
-                    "name": "numerical_feature_5",
-                    "kind": "numerical",
-                    "rank": 6
-                },
-                "numerical_feature_6": {
-                    "name": "numerical_feature_6",
-                    "kind": "categorical",
-                    "rank": 7
-                },
-                "numerical_feature_7": {
-                    "name": "numerical_feature_7",
-                    "kind": "categorical",
-                    "rank": 8
-                },
-                "numerical_feature_8": {
-                    "name": "numerical_feature_8",
-                    "kind": "categorical",
-                    "rank": 9
-                },
-                "numerical_feature_9": {
-                    "name": "numerical_feature_9",
-                    "kind": "categorical",
-                    "rank": 10
-                },
-                "numerical_feature_10": {
-                    "name": "numerical_feature_10",
-                    "kind": "categorical",
-                    "rank": 11
-                },
-                "numerical_feature_11": {
-                    "name": "numerical_feature_11",
-                    "kind": "categorical",
-                    "rank": 12
-                },
-                "numerical_feature_12": {
-                    "name": "numerical_feature_12",
-                    "kind": "categorical",
-                    "rank": 13
-                }
-            }
+            "model_catalog_id": "123"
         },
         "data": {
             "baseline_data": {
@@ -104,7 +38,8 @@
             "numerical_feature_0": {
                 "name": "numerical_feature_0",
                 "kind": "numerical",
-                "rank": 1,
+                "rank": 2,
+                "importance_score": 0.84442186,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -119,7 +54,8 @@
             "numerical_feature_1": {
                 "name": "numerical_feature_1",
                 "kind": "numerical",
-                "rank": 2,
+                "rank": 4,
+                "importance_score": 0.7579544,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -134,7 +70,8 @@
             "numerical_feature_2": {
                 "name": "numerical_feature_2",
                 "kind": "numerical",
-                "rank": 3,
+                "rank": 9,
+                "importance_score": 0.4205716,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -149,7 +86,8 @@
             "numerical_feature_3": {
                 "name": "numerical_feature_3",
                 "kind": "numerical",
-                "rank": 4,
+                "rank": 13,
+                "importance_score": 0.25891674,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -164,7 +102,8 @@
             "numerical_feature_4": {
                 "name": "numerical_feature_4",
                 "kind": "numerical",
-                "rank": 5,
+                "rank": 6,
+                "importance_score": 0.5112747,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -179,7 +118,8 @@
             "numerical_feature_5": {
                 "name": "numerical_feature_5",
                 "kind": "numerical",
-                "rank": 6,
+                "rank": 10,
+                "importance_score": 0.40493414,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -194,7 +134,8 @@
             "numerical_feature_6": {
                 "name": "numerical_feature_6",
                 "kind": "categorical",
-                "rank": 7,
+                "rank": 3,
+                "importance_score": 0.7837986,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -209,7 +150,8 @@
             "numerical_feature_7": {
                 "name": "numerical_feature_7",
                 "kind": "categorical",
-                "rank": 8,
+                "rank": 11,
+                "importance_score": 0.30331272,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -224,7 +166,8 @@
             "numerical_feature_8": {
                 "name": "numerical_feature_8",
                 "kind": "categorical",
-                "rank": 9,
+                "rank": 8,
+                "importance_score": 0.47659695,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -239,7 +182,8 @@
             "numerical_feature_9": {
                 "name": "numerical_feature_9",
                 "kind": "categorical",
-                "rank": 10,
+                "rank": 5,
+                "importance_score": 0.583382,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -254,7 +198,8 @@
             "numerical_feature_10": {
                 "name": "numerical_feature_10",
                 "kind": "categorical",
-                "rank": 11,
+                "rank": 1,
+                "importance_score": 0.9081129,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -269,7 +214,8 @@
             "numerical_feature_11": {
                 "name": "numerical_feature_11",
                 "kind": "categorical",
-                "rank": 12,
+                "rank": 7,
+                "importance_score": 0.50468683,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -284,7 +230,8 @@
             "numerical_feature_12": {
                 "name": "numerical_feature_12",
                 "kind": "categorical",
-                "rank": 13,
+                "rank": 12,
+                "importance_score": 0.28183785,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
