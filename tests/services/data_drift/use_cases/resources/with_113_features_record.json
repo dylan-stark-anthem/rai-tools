@@ -9,576 +9,10 @@
             "report_name": "Some simple report",
             "dataset_name": "Some name for this dataset",
             "dataset_version": "v0.1.0",
+            "feature_mapping_filename": "some_feature_mapping.csv",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv",
-            "model_catalog_id": "123",
-            "feature_mapping": {
-                "numerical_feature_0": {
-                    "name": "numerical_feature_0",
-                    "kind": "numerical",
-                    "rank": 1
-                },
-                "numerical_feature_1": {
-                    "name": "numerical_feature_1",
-                    "kind": "numerical",
-                    "rank": 2
-                },
-                "numerical_feature_2": {
-                    "name": "numerical_feature_2",
-                    "kind": "numerical",
-                    "rank": 3
-                },
-                "numerical_feature_3": {
-                    "name": "numerical_feature_3",
-                    "kind": "numerical",
-                    "rank": 4
-                },
-                "numerical_feature_4": {
-                    "name": "numerical_feature_4",
-                    "kind": "numerical",
-                    "rank": 5
-                },
-                "numerical_feature_5": {
-                    "name": "numerical_feature_5",
-                    "kind": "numerical",
-                    "rank": 6
-                },
-                "numerical_feature_6": {
-                    "name": "numerical_feature_6",
-                    "kind": "numerical",
-                    "rank": 7
-                },
-                "numerical_feature_7": {
-                    "name": "numerical_feature_7",
-                    "kind": "numerical",
-                    "rank": 8
-                },
-                "numerical_feature_8": {
-                    "name": "numerical_feature_8",
-                    "kind": "numerical",
-                    "rank": 9
-                },
-                "numerical_feature_9": {
-                    "name": "numerical_feature_9",
-                    "kind": "numerical",
-                    "rank": 10
-                },
-                "numerical_feature_10": {
-                    "name": "numerical_feature_10",
-                    "kind": "numerical",
-                    "rank": 11
-                },
-                "numerical_feature_11": {
-                    "name": "numerical_feature_11",
-                    "kind": "numerical",
-                    "rank": 12
-                },
-                "numerical_feature_12": {
-                    "name": "numerical_feature_12",
-                    "kind": "numerical",
-                    "rank": 13
-                },
-                "numerical_feature_13": {
-                    "name": "numerical_feature_13",
-                    "kind": "numerical",
-                    "rank": 14
-                },
-                "numerical_feature_14": {
-                    "name": "numerical_feature_14",
-                    "kind": "numerical",
-                    "rank": 15
-                },
-                "numerical_feature_15": {
-                    "name": "numerical_feature_15",
-                    "kind": "numerical",
-                    "rank": 16
-                },
-                "numerical_feature_16": {
-                    "name": "numerical_feature_16",
-                    "kind": "numerical",
-                    "rank": 17
-                },
-                "numerical_feature_17": {
-                    "name": "numerical_feature_17",
-                    "kind": "numerical",
-                    "rank": 18
-                },
-                "numerical_feature_18": {
-                    "name": "numerical_feature_18",
-                    "kind": "numerical",
-                    "rank": 19
-                },
-                "numerical_feature_19": {
-                    "name": "numerical_feature_19",
-                    "kind": "numerical",
-                    "rank": 20
-                },
-                "numerical_feature_20": {
-                    "name": "numerical_feature_20",
-                    "kind": "numerical",
-                    "rank": 21
-                },
-                "numerical_feature_21": {
-                    "name": "numerical_feature_21",
-                    "kind": "numerical",
-                    "rank": 22
-                },
-                "numerical_feature_22": {
-                    "name": "numerical_feature_22",
-                    "kind": "numerical",
-                    "rank": 23
-                },
-                "numerical_feature_23": {
-                    "name": "numerical_feature_23",
-                    "kind": "numerical",
-                    "rank": 24
-                },
-                "numerical_feature_24": {
-                    "name": "numerical_feature_24",
-                    "kind": "numerical",
-                    "rank": 25
-                },
-                "numerical_feature_25": {
-                    "name": "numerical_feature_25",
-                    "kind": "numerical",
-                    "rank": 26
-                },
-                "numerical_feature_26": {
-                    "name": "numerical_feature_26",
-                    "kind": "numerical",
-                    "rank": 27
-                },
-                "numerical_feature_27": {
-                    "name": "numerical_feature_27",
-                    "kind": "numerical",
-                    "rank": 28
-                },
-                "numerical_feature_28": {
-                    "name": "numerical_feature_28",
-                    "kind": "numerical",
-                    "rank": 29
-                },
-                "numerical_feature_29": {
-                    "name": "numerical_feature_29",
-                    "kind": "numerical",
-                    "rank": 30
-                },
-                "numerical_feature_30": {
-                    "name": "numerical_feature_30",
-                    "kind": "numerical",
-                    "rank": 31
-                },
-                "numerical_feature_31": {
-                    "name": "numerical_feature_31",
-                    "kind": "numerical",
-                    "rank": 32
-                },
-                "numerical_feature_32": {
-                    "name": "numerical_feature_32",
-                    "kind": "numerical",
-                    "rank": 33
-                },
-                "numerical_feature_33": {
-                    "name": "numerical_feature_33",
-                    "kind": "numerical",
-                    "rank": 34
-                },
-                "numerical_feature_34": {
-                    "name": "numerical_feature_34",
-                    "kind": "numerical",
-                    "rank": 35
-                },
-                "numerical_feature_35": {
-                    "name": "numerical_feature_35",
-                    "kind": "numerical",
-                    "rank": 36
-                },
-                "numerical_feature_36": {
-                    "name": "numerical_feature_36",
-                    "kind": "numerical",
-                    "rank": 37
-                },
-                "numerical_feature_37": {
-                    "name": "numerical_feature_37",
-                    "kind": "numerical",
-                    "rank": 38
-                },
-                "numerical_feature_38": {
-                    "name": "numerical_feature_38",
-                    "kind": "numerical",
-                    "rank": 39
-                },
-                "numerical_feature_39": {
-                    "name": "numerical_feature_39",
-                    "kind": "numerical",
-                    "rank": 40
-                },
-                "numerical_feature_40": {
-                    "name": "numerical_feature_40",
-                    "kind": "numerical",
-                    "rank": 41
-                },
-                "numerical_feature_41": {
-                    "name": "numerical_feature_41",
-                    "kind": "numerical",
-                    "rank": 42
-                },
-                "numerical_feature_42": {
-                    "name": "numerical_feature_42",
-                    "kind": "numerical",
-                    "rank": 43
-                },
-                "numerical_feature_43": {
-                    "name": "numerical_feature_43",
-                    "kind": "numerical",
-                    "rank": 44
-                },
-                "numerical_feature_44": {
-                    "name": "numerical_feature_44",
-                    "kind": "numerical",
-                    "rank": 45
-                },
-                "numerical_feature_45": {
-                    "name": "numerical_feature_45",
-                    "kind": "numerical",
-                    "rank": 46
-                },
-                "numerical_feature_46": {
-                    "name": "numerical_feature_46",
-                    "kind": "numerical",
-                    "rank": 47
-                },
-                "numerical_feature_47": {
-                    "name": "numerical_feature_47",
-                    "kind": "numerical",
-                    "rank": 48
-                },
-                "numerical_feature_48": {
-                    "name": "numerical_feature_48",
-                    "kind": "numerical",
-                    "rank": 49
-                },
-                "numerical_feature_49": {
-                    "name": "numerical_feature_49",
-                    "kind": "numerical",
-                    "rank": 50
-                },
-                "numerical_feature_50": {
-                    "name": "numerical_feature_50",
-                    "kind": "numerical",
-                    "rank": 51
-                },
-                "numerical_feature_51": {
-                    "name": "numerical_feature_51",
-                    "kind": "numerical",
-                    "rank": 52
-                },
-                "numerical_feature_52": {
-                    "name": "numerical_feature_52",
-                    "kind": "numerical",
-                    "rank": 53
-                },
-                "numerical_feature_53": {
-                    "name": "numerical_feature_53",
-                    "kind": "numerical",
-                    "rank": 54
-                },
-                "numerical_feature_54": {
-                    "name": "numerical_feature_54",
-                    "kind": "numerical",
-                    "rank": 55
-                },
-                "numerical_feature_55": {
-                    "name": "numerical_feature_55",
-                    "kind": "numerical",
-                    "rank": 56
-                },
-                "numerical_feature_56": {
-                    "name": "numerical_feature_56",
-                    "kind": "categorical",
-                    "rank": 57
-                },
-                "numerical_feature_57": {
-                    "name": "numerical_feature_57",
-                    "kind": "categorical",
-                    "rank": 58
-                },
-                "numerical_feature_58": {
-                    "name": "numerical_feature_58",
-                    "kind": "categorical",
-                    "rank": 59
-                },
-                "numerical_feature_59": {
-                    "name": "numerical_feature_59",
-                    "kind": "categorical",
-                    "rank": 60
-                },
-                "numerical_feature_60": {
-                    "name": "numerical_feature_60",
-                    "kind": "categorical",
-                    "rank": 61
-                },
-                "numerical_feature_61": {
-                    "name": "numerical_feature_61",
-                    "kind": "categorical",
-                    "rank": 62
-                },
-                "numerical_feature_62": {
-                    "name": "numerical_feature_62",
-                    "kind": "categorical",
-                    "rank": 63
-                },
-                "numerical_feature_63": {
-                    "name": "numerical_feature_63",
-                    "kind": "categorical",
-                    "rank": 64
-                },
-                "numerical_feature_64": {
-                    "name": "numerical_feature_64",
-                    "kind": "categorical",
-                    "rank": 65
-                },
-                "numerical_feature_65": {
-                    "name": "numerical_feature_65",
-                    "kind": "categorical",
-                    "rank": 66
-                },
-                "numerical_feature_66": {
-                    "name": "numerical_feature_66",
-                    "kind": "categorical",
-                    "rank": 67
-                },
-                "numerical_feature_67": {
-                    "name": "numerical_feature_67",
-                    "kind": "categorical",
-                    "rank": 68
-                },
-                "numerical_feature_68": {
-                    "name": "numerical_feature_68",
-                    "kind": "categorical",
-                    "rank": 69
-                },
-                "numerical_feature_69": {
-                    "name": "numerical_feature_69",
-                    "kind": "categorical",
-                    "rank": 70
-                },
-                "numerical_feature_70": {
-                    "name": "numerical_feature_70",
-                    "kind": "categorical",
-                    "rank": 71
-                },
-                "numerical_feature_71": {
-                    "name": "numerical_feature_71",
-                    "kind": "categorical",
-                    "rank": 72
-                },
-                "numerical_feature_72": {
-                    "name": "numerical_feature_72",
-                    "kind": "categorical",
-                    "rank": 73
-                },
-                "numerical_feature_73": {
-                    "name": "numerical_feature_73",
-                    "kind": "categorical",
-                    "rank": 74
-                },
-                "numerical_feature_74": {
-                    "name": "numerical_feature_74",
-                    "kind": "categorical",
-                    "rank": 75
-                },
-                "numerical_feature_75": {
-                    "name": "numerical_feature_75",
-                    "kind": "categorical",
-                    "rank": 76
-                },
-                "numerical_feature_76": {
-                    "name": "numerical_feature_76",
-                    "kind": "categorical",
-                    "rank": 77
-                },
-                "numerical_feature_77": {
-                    "name": "numerical_feature_77",
-                    "kind": "categorical",
-                    "rank": 78
-                },
-                "numerical_feature_78": {
-                    "name": "numerical_feature_78",
-                    "kind": "categorical",
-                    "rank": 79
-                },
-                "numerical_feature_79": {
-                    "name": "numerical_feature_79",
-                    "kind": "categorical",
-                    "rank": 80
-                },
-                "numerical_feature_80": {
-                    "name": "numerical_feature_80",
-                    "kind": "categorical",
-                    "rank": 81
-                },
-                "numerical_feature_81": {
-                    "name": "numerical_feature_81",
-                    "kind": "categorical",
-                    "rank": 82
-                },
-                "numerical_feature_82": {
-                    "name": "numerical_feature_82",
-                    "kind": "categorical",
-                    "rank": 83
-                },
-                "numerical_feature_83": {
-                    "name": "numerical_feature_83",
-                    "kind": "categorical",
-                    "rank": 84
-                },
-                "numerical_feature_84": {
-                    "name": "numerical_feature_84",
-                    "kind": "categorical",
-                    "rank": 85
-                },
-                "numerical_feature_85": {
-                    "name": "numerical_feature_85",
-                    "kind": "categorical",
-                    "rank": 86
-                },
-                "numerical_feature_86": {
-                    "name": "numerical_feature_86",
-                    "kind": "categorical",
-                    "rank": 87
-                },
-                "numerical_feature_87": {
-                    "name": "numerical_feature_87",
-                    "kind": "categorical",
-                    "rank": 88
-                },
-                "numerical_feature_88": {
-                    "name": "numerical_feature_88",
-                    "kind": "categorical",
-                    "rank": 89
-                },
-                "numerical_feature_89": {
-                    "name": "numerical_feature_89",
-                    "kind": "categorical",
-                    "rank": 90
-                },
-                "numerical_feature_90": {
-                    "name": "numerical_feature_90",
-                    "kind": "categorical",
-                    "rank": 91
-                },
-                "numerical_feature_91": {
-                    "name": "numerical_feature_91",
-                    "kind": "categorical",
-                    "rank": 92
-                },
-                "numerical_feature_92": {
-                    "name": "numerical_feature_92",
-                    "kind": "categorical",
-                    "rank": 93
-                },
-                "numerical_feature_93": {
-                    "name": "numerical_feature_93",
-                    "kind": "categorical",
-                    "rank": 94
-                },
-                "numerical_feature_94": {
-                    "name": "numerical_feature_94",
-                    "kind": "categorical",
-                    "rank": 95
-                },
-                "numerical_feature_95": {
-                    "name": "numerical_feature_95",
-                    "kind": "categorical",
-                    "rank": 96
-                },
-                "numerical_feature_96": {
-                    "name": "numerical_feature_96",
-                    "kind": "categorical",
-                    "rank": 97
-                },
-                "numerical_feature_97": {
-                    "name": "numerical_feature_97",
-                    "kind": "categorical",
-                    "rank": 98
-                },
-                "numerical_feature_98": {
-                    "name": "numerical_feature_98",
-                    "kind": "categorical",
-                    "rank": 99
-                },
-                "numerical_feature_99": {
-                    "name": "numerical_feature_99",
-                    "kind": "categorical",
-                    "rank": 100
-                },
-                "numerical_feature_100": {
-                    "name": "numerical_feature_100",
-                    "kind": "categorical",
-                    "rank": 101
-                },
-                "numerical_feature_101": {
-                    "name": "numerical_feature_101",
-                    "kind": "categorical",
-                    "rank": 102
-                },
-                "numerical_feature_102": {
-                    "name": "numerical_feature_102",
-                    "kind": "categorical",
-                    "rank": 103
-                },
-                "numerical_feature_103": {
-                    "name": "numerical_feature_103",
-                    "kind": "categorical",
-                    "rank": 104
-                },
-                "numerical_feature_104": {
-                    "name": "numerical_feature_104",
-                    "kind": "categorical",
-                    "rank": 105
-                },
-                "numerical_feature_105": {
-                    "name": "numerical_feature_105",
-                    "kind": "categorical",
-                    "rank": 106
-                },
-                "numerical_feature_106": {
-                    "name": "numerical_feature_106",
-                    "kind": "categorical",
-                    "rank": 107
-                },
-                "numerical_feature_107": {
-                    "name": "numerical_feature_107",
-                    "kind": "categorical",
-                    "rank": 108
-                },
-                "numerical_feature_108": {
-                    "name": "numerical_feature_108",
-                    "kind": "categorical",
-                    "rank": 109
-                },
-                "numerical_feature_109": {
-                    "name": "numerical_feature_109",
-                    "kind": "categorical",
-                    "rank": 110
-                },
-                "numerical_feature_110": {
-                    "name": "numerical_feature_110",
-                    "kind": "categorical",
-                    "rank": 111
-                },
-                "numerical_feature_111": {
-                    "name": "numerical_feature_111",
-                    "kind": "categorical",
-                    "rank": 112
-                },
-                "numerical_feature_112": {
-                    "name": "numerical_feature_112",
-                    "kind": "categorical",
-                    "rank": 113
-                }
-            }
+            "model_catalog_id": "123"
         },
         "data": {
             "baseline_data": {
@@ -604,7 +38,8 @@
             "numerical_feature_0": {
                 "name": "numerical_feature_0",
                 "kind": "numerical",
-                "rank": 1,
+                "rank": 24,
+                "importance_score": 0.84442186,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -619,7 +54,8 @@
             "numerical_feature_1": {
                 "name": "numerical_feature_1",
                 "kind": "numerical",
-                "rank": 2,
+                "rank": 36,
+                "importance_score": 0.7579544,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -634,7 +70,8 @@
             "numerical_feature_2": {
                 "name": "numerical_feature_2",
                 "kind": "numerical",
-                "rank": 3,
+                "rank": 80,
+                "importance_score": 0.4205716,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -649,7 +86,8 @@
             "numerical_feature_3": {
                 "name": "numerical_feature_3",
                 "kind": "numerical",
-                "rank": 4,
+                "rank": 94,
+                "importance_score": 0.25891674,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -664,7 +102,8 @@
             "numerical_feature_4": {
                 "name": "numerical_feature_4",
                 "kind": "numerical",
-                "rank": 5,
+                "rank": 67,
+                "importance_score": 0.5112747,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -679,7 +118,8 @@
             "numerical_feature_5": {
                 "name": "numerical_feature_5",
                 "kind": "numerical",
-                "rank": 6,
+                "rank": 81,
+                "importance_score": 0.40493414,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -694,7 +134,8 @@
             "numerical_feature_6": {
                 "name": "numerical_feature_6",
                 "kind": "numerical",
-                "rank": 7,
+                "rank": 35,
+                "importance_score": 0.7837986,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -709,7 +150,8 @@
             "numerical_feature_7": {
                 "name": "numerical_feature_7",
                 "kind": "numerical",
-                "rank": 8,
+                "rank": 89,
+                "importance_score": 0.30331272,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -724,7 +166,8 @@
             "numerical_feature_8": {
                 "name": "numerical_feature_8",
                 "kind": "numerical",
-                "rank": 9,
+                "rank": 73,
+                "importance_score": 0.47659695,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -739,7 +182,8 @@
             "numerical_feature_9": {
                 "name": "numerical_feature_9",
                 "kind": "numerical",
-                "rank": 10,
+                "rank": 58,
+                "importance_score": 0.583382,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -754,7 +198,8 @@
             "numerical_feature_10": {
                 "name": "numerical_feature_10",
                 "kind": "numerical",
-                "rank": 11,
+                "rank": 13,
+                "importance_score": 0.9081129,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -769,7 +214,8 @@
             "numerical_feature_11": {
                 "name": "numerical_feature_11",
                 "kind": "numerical",
-                "rank": 12,
+                "rank": 69,
+                "importance_score": 0.50468683,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -784,7 +230,8 @@
             "numerical_feature_12": {
                 "name": "numerical_feature_12",
                 "kind": "numerical",
-                "rank": 13,
+                "rank": 91,
+                "importance_score": 0.28183785,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -799,7 +246,8 @@
             "numerical_feature_13": {
                 "name": "numerical_feature_13",
                 "kind": "numerical",
-                "rank": 14,
+                "rank": 38,
+                "importance_score": 0.7558042,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -814,7 +262,8 @@
             "numerical_feature_14": {
                 "name": "numerical_feature_14",
                 "kind": "numerical",
-                "rank": 15,
+                "rank": 50,
+                "importance_score": 0.618369,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -829,7 +278,8 @@
             "numerical_feature_15": {
                 "name": "numerical_feature_15",
                 "kind": "numerical",
-                "rank": 16,
+                "rank": 95,
+                "importance_score": 0.25050634,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -844,7 +294,8 @@
             "numerical_feature_16": {
                 "name": "numerical_feature_16",
                 "kind": "numerical",
-                "rank": 17,
+                "rank": 12,
+                "importance_score": 0.9097462,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -859,7 +310,8 @@
             "numerical_feature_17": {
                 "name": "numerical_feature_17",
                 "kind": "numerical",
-                "rank": 18,
+                "rank": 2,
+                "importance_score": 0.98278546,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -874,7 +326,8 @@
             "numerical_feature_18": {
                 "name": "numerical_feature_18",
                 "kind": "numerical",
-                "rank": 19,
+                "rank": 30,
+                "importance_score": 0.81021726,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -889,7 +342,8 @@
             "numerical_feature_19": {
                 "name": "numerical_feature_19",
                 "kind": "numerical",
-                "rank": 20,
+                "rank": 14,
+                "importance_score": 0.90216595,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -904,7 +358,8 @@
             "numerical_feature_20": {
                 "name": "numerical_feature_20",
                 "kind": "numerical",
-                "rank": 21,
+                "rank": 88,
+                "importance_score": 0.31014758,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -919,7 +374,8 @@
             "numerical_feature_21": {
                 "name": "numerical_feature_21",
                 "kind": "numerical",
-                "rank": 22,
+                "rank": 40,
+                "importance_score": 0.72983176,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -934,7 +390,8 @@
             "numerical_feature_22": {
                 "name": "numerical_feature_22",
                 "kind": "numerical",
-                "rank": 23,
+                "rank": 15,
+                "importance_score": 0.8988383,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -949,7 +406,8 @@
             "numerical_feature_23": {
                 "name": "numerical_feature_23",
                 "kind": "numerical",
-                "rank": 24,
+                "rank": 45,
+                "importance_score": 0.6839839,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -964,7 +422,8 @@
             "numerical_feature_24": {
                 "name": "numerical_feature_24",
                 "kind": "numerical",
-                "rank": 25,
+                "rank": 75,
+                "importance_score": 0.47214273,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -979,7 +438,8 @@
             "numerical_feature_25": {
                 "name": "numerical_feature_25",
                 "kind": "numerical",
-                "rank": 26,
+                "rank": 106,
+                "importance_score": 0.100701205,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -994,7 +454,8 @@
             "numerical_feature_26": {
                 "name": "numerical_feature_26",
                 "kind": "numerical",
-                "rank": 27,
+                "rank": 79,
+                "importance_score": 0.43417183,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1009,7 +470,8 @@
             "numerical_feature_27": {
                 "name": "numerical_feature_27",
                 "kind": "numerical",
-                "rank": 28,
+                "rank": 53,
+                "importance_score": 0.610887,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1024,7 +486,8 @@
             "numerical_feature_28": {
                 "name": "numerical_feature_28",
                 "kind": "numerical",
-                "rank": 29,
+                "rank": 11,
+                "importance_score": 0.9130111,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1039,7 +502,8 @@
             "numerical_feature_29": {
                 "name": "numerical_feature_29",
                 "kind": "numerical",
-                "rank": 30,
+                "rank": 4,
+                "importance_score": 0.9666064,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1054,7 +518,8 @@
             "numerical_feature_30": {
                 "name": "numerical_feature_30",
                 "kind": "numerical",
-                "rank": 31,
+                "rank": 72,
+                "importance_score": 0.47700977,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1069,7 +534,8 @@
             "numerical_feature_31": {
                 "name": "numerical_feature_31",
                 "kind": "numerical",
-                "rank": 32,
+                "rank": 21,
+                "importance_score": 0.86530995,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1084,7 +550,8 @@
             "numerical_feature_32": {
                 "name": "numerical_feature_32",
                 "kind": "numerical",
-                "rank": 33,
+                "rank": 93,
+                "importance_score": 0.26049232,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1099,7 +566,8 @@
             "numerical_feature_33": {
                 "name": "numerical_feature_33",
                 "kind": "numerical",
-                "rank": 34,
+                "rank": 31,
+                "importance_score": 0.80502784,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1114,7 +582,8 @@
             "numerical_feature_34": {
                 "name": "numerical_feature_34",
                 "kind": "numerical",
-                "rank": 35,
+                "rank": 63,
+                "importance_score": 0.5486993,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1129,7 +598,8 @@
             "numerical_feature_35": {
                 "name": "numerical_feature_35",
                 "kind": "numerical",
-                "rank": 36,
+                "rank": 112,
+                "importance_score": 0.0140417,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1144,7 +614,8 @@
             "numerical_feature_36": {
                 "name": "numerical_feature_36",
                 "kind": "numerical",
-                "rank": 37,
+                "rank": 41,
+                "importance_score": 0.7197047,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1159,7 +630,8 @@
             "numerical_feature_37": {
                 "name": "numerical_feature_37",
                 "kind": "numerical",
-                "rank": 38,
+                "rank": 82,
+                "importance_score": 0.39882353,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1174,7 +646,8 @@
             "numerical_feature_38": {
                 "name": "numerical_feature_38",
                 "kind": "numerical",
-                "rank": 39,
+                "rank": 26,
+                "importance_score": 0.82484496,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1189,7 +662,8 @@
             "numerical_feature_39": {
                 "name": "numerical_feature_39",
                 "kind": "numerical",
-                "rank": 40,
+                "rank": 46,
+                "importance_score": 0.6681532,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1204,7 +678,8 @@
             "numerical_feature_40": {
                 "name": "numerical_feature_40",
                 "kind": "numerical",
-                "rank": 41,
+                "rank": 113,
+                "importance_score": 0.0011428193,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1219,7 +694,8 @@
             "numerical_feature_41": {
                 "name": "numerical_feature_41",
                 "kind": "numerical",
-                "rank": 42,
+                "rank": 70,
+                "importance_score": 0.49357787,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1234,7 +710,8 @@
             "numerical_feature_42": {
                 "name": "numerical_feature_42",
                 "kind": "numerical",
-                "rank": 43,
+                "rank": 20,
+                "importance_score": 0.86760277,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1249,7 +726,8 @@
             "numerical_feature_43": {
                 "name": "numerical_feature_43",
                 "kind": "numerical",
-                "rank": 44,
+                "rank": 96,
+                "importance_score": 0.24391088,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1264,7 +742,8 @@
             "numerical_feature_44": {
                 "name": "numerical_feature_44",
                 "kind": "numerical",
-                "rank": 45,
+                "rank": 86,
+                "importance_score": 0.32520437,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1279,7 +758,8 @@
             "numerical_feature_45": {
                 "name": "numerical_feature_45",
                 "kind": "numerical",
-                "rank": 46,
+                "rank": 19,
+                "importance_score": 0.87047124,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1294,7 +774,8 @@
             "numerical_feature_46": {
                 "name": "numerical_feature_46",
                 "kind": "numerical",
-                "rank": 47,
+                "rank": 100,
+                "importance_score": 0.19106708,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1309,7 +790,8 @@
             "numerical_feature_47": {
                 "name": "numerical_feature_47",
                 "kind": "numerical",
-                "rank": 48,
+                "rank": 61,
+                "importance_score": 0.5675107,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1324,7 +806,8 @@
             "numerical_feature_48": {
                 "name": "numerical_feature_48",
                 "kind": "numerical",
-                "rank": 49,
+                "rank": 98,
+                "importance_score": 0.23861593,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1339,7 +822,8 @@
             "numerical_feature_49": {
                 "name": "numerical_feature_49",
                 "kind": "numerical",
-                "rank": 50,
+                "rank": 3,
+                "importance_score": 0.96754026,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1354,7 +838,8 @@
             "numerical_feature_50": {
                 "name": "numerical_feature_50",
                 "kind": "numerical",
-                "rank": 51,
+                "rank": 32,
+                "importance_score": 0.80317944,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1369,7 +854,8 @@
             "numerical_feature_51": {
                 "name": "numerical_feature_51",
                 "kind": "numerical",
-                "rank": 52,
+                "rank": 77,
+                "importance_score": 0.4479696,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1384,7 +870,8 @@
             "numerical_feature_52": {
                 "name": "numerical_feature_52",
                 "kind": "numerical",
-                "rank": 53,
+                "rank": 110,
+                "importance_score": 0.08044582,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1399,7 +886,8 @@
             "numerical_feature_53": {
                 "name": "numerical_feature_53",
                 "kind": "numerical",
-                "rank": 54,
+                "rank": 87,
+                "importance_score": 0.3200546,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1414,7 +902,8 @@
             "numerical_feature_54": {
                 "name": "numerical_feature_54",
                 "kind": "numerical",
-                "rank": 55,
+                "rank": 68,
+                "importance_score": 0.50794065,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1429,7 +918,8 @@
             "numerical_feature_55": {
                 "name": "numerical_feature_55",
                 "kind": "numerical",
-                "rank": 56,
+                "rank": 7,
+                "importance_score": 0.93283385,
                 "statistical_test": {
                     "name": "kolmogorov-smirnov",
                     "result": {
@@ -1444,7 +934,8 @@
             "numerical_feature_56": {
                 "name": "numerical_feature_56",
                 "kind": "categorical",
-                "rank": 57,
+                "rank": 105,
+                "importance_score": 0.10905784,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1459,7 +950,8 @@
             "numerical_feature_57": {
                 "name": "numerical_feature_57",
                 "kind": "categorical",
-                "rank": 58,
+                "rank": 62,
+                "importance_score": 0.55126727,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1474,7 +966,8 @@
             "numerical_feature_58": {
                 "name": "numerical_feature_58",
                 "kind": "categorical",
-                "rank": 59,
+                "rank": 42,
+                "importance_score": 0.7065614,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1489,7 +982,8 @@
             "numerical_feature_59": {
                 "name": "numerical_feature_59",
                 "kind": "categorical",
-                "rank": 60,
+                "rank": 64,
+                "importance_score": 0.5474409,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1504,7 +998,8 @@
             "numerical_feature_60": {
                 "name": "numerical_feature_60",
                 "kind": "categorical",
-                "rank": 61,
+                "rank": 28,
+                "importance_score": 0.81446683,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1519,7 +1014,8 @@
             "numerical_feature_61": {
                 "name": "numerical_feature_61",
                 "kind": "categorical",
-                "rank": 62,
+                "rank": 66,
+                "importance_score": 0.5402836,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1534,7 +1030,8 @@
             "numerical_feature_62": {
                 "name": "numerical_feature_62",
                 "kind": "categorical",
-                "rank": 63,
+                "rank": 5,
+                "importance_score": 0.9638385,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1549,7 +1046,8 @@
             "numerical_feature_63": {
                 "name": "numerical_feature_63",
                 "kind": "categorical",
-                "rank": 64,
+                "rank": 54,
+                "importance_score": 0.60318565,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1564,7 +1062,8 @@
             "numerical_feature_64": {
                 "name": "numerical_feature_64",
                 "kind": "categorical",
-                "rank": 65,
+                "rank": 57,
+                "importance_score": 0.58761704,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1579,7 +1078,8 @@
             "numerical_feature_65": {
                 "name": "numerical_feature_65",
                 "kind": "categorical",
-                "rank": 66,
+                "rank": 78,
+                "importance_score": 0.44498903,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1594,7 +1094,8 @@
             "numerical_feature_66": {
                 "name": "numerical_feature_66",
                 "kind": "categorical",
-                "rank": 67,
+                "rank": 55,
+                "importance_score": 0.59628683,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1609,7 +1110,8 @@
             "numerical_feature_67": {
                 "name": "numerical_feature_67",
                 "kind": "categorical",
-                "rank": 68,
+                "rank": 84,
+                "importance_score": 0.38490114,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1624,7 +1126,8 @@
             "numerical_feature_68": {
                 "name": "numerical_feature_68",
                 "kind": "categorical",
-                "rank": 69,
+                "rank": 60,
+                "importance_score": 0.575651,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1639,7 +1142,8 @@
             "numerical_feature_69": {
                 "name": "numerical_feature_69",
                 "kind": "categorical",
-                "rank": 70,
+                "rank": 90,
+                "importance_score": 0.29032952,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1654,7 +1158,8 @@
             "numerical_feature_70": {
                 "name": "numerical_feature_70",
                 "kind": "categorical",
-                "rank": 71,
+                "rank": 101,
+                "importance_score": 0.18939133,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1669,7 +1174,8 @@
             "numerical_feature_71": {
                 "name": "numerical_feature_71",
                 "kind": "categorical",
-                "rank": 72,
+                "rank": 102,
+                "importance_score": 0.18672954,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1684,7 +1190,8 @@
             "numerical_feature_72": {
                 "name": "numerical_feature_72",
                 "kind": "categorical",
-                "rank": 73,
+                "rank": 52,
+                "importance_score": 0.6127732,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1699,7 +1206,8 @@
             "numerical_feature_73": {
                 "name": "numerical_feature_73",
                 "kind": "categorical",
-                "rank": 74,
+                "rank": 48,
+                "importance_score": 0.65665936,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1714,7 +1222,8 @@
             "numerical_feature_74": {
                 "name": "numerical_feature_74",
                 "kind": "categorical",
-                "rank": 75,
+                "rank": 74,
+                "importance_score": 0.476531,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1729,7 +1238,8 @@
             "numerical_feature_75": {
                 "name": "numerical_feature_75",
                 "kind": "categorical",
-                "rank": 76,
+                "rank": 108,
+                "importance_score": 0.08982436,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1744,7 +1254,8 @@
             "numerical_feature_76": {
                 "name": "numerical_feature_76",
                 "kind": "categorical",
-                "rank": 77,
+                "rank": 37,
+                "importance_score": 0.75760394,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1759,7 +1270,8 @@
             "numerical_feature_77": {
                 "name": "numerical_feature_77",
                 "kind": "categorical",
-                "rank": 78,
+                "rank": 18,
+                "importance_score": 0.8767704,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1774,7 +1286,8 @@
             "numerical_feature_78": {
                 "name": "numerical_feature_78",
                 "kind": "categorical",
-                "rank": 79,
+                "rank": 8,
+                "importance_score": 0.92338103,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1789,7 +1302,8 @@
             "numerical_feature_79": {
                 "name": "numerical_feature_79",
                 "kind": "categorical",
-                "rank": 80,
+                "rank": 25,
+                "importance_score": 0.8424602,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1804,7 +1318,8 @@
             "numerical_feature_80": {
                 "name": "numerical_feature_80",
                 "kind": "categorical",
-                "rank": 81,
+                "rank": 16,
+                "importance_score": 0.8981731,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1819,7 +1334,8 @@
             "numerical_feature_81": {
                 "name": "numerical_feature_81",
                 "kind": "categorical",
-                "rank": 82,
+                "rank": 9,
+                "importance_score": 0.9230824,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1834,7 +1350,8 @@
             "numerical_feature_82": {
                 "name": "numerical_feature_82",
                 "kind": "categorical",
-                "rank": 83,
+                "rank": 65,
+                "importance_score": 0.54059994,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1849,7 +1366,8 @@
             "numerical_feature_83": {
                 "name": "numerical_feature_83",
                 "kind": "categorical",
-                "rank": 84,
+                "rank": 83,
+                "importance_score": 0.39129606,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1864,7 +1382,8 @@
             "numerical_feature_84": {
                 "name": "numerical_feature_84",
                 "kind": "categorical",
-                "rank": 85,
+                "rank": 43,
+                "importance_score": 0.7052834,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1879,7 +1398,8 @@
             "numerical_feature_85": {
                 "name": "numerical_feature_85",
                 "kind": "categorical",
-                "rank": 86,
+                "rank": 92,
+                "importance_score": 0.2756341,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1894,7 +1414,8 @@
             "numerical_feature_86": {
                 "name": "numerical_feature_86",
                 "kind": "categorical",
-                "rank": 87,
+                "rank": 29,
+                "importance_score": 0.8116287,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1909,7 +1430,8 @@
             "numerical_feature_87": {
                 "name": "numerical_feature_87",
                 "kind": "categorical",
-                "rank": 88,
+                "rank": 22,
+                "importance_score": 0.849486,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1924,7 +1446,8 @@
             "numerical_feature_88": {
                 "name": "numerical_feature_88",
                 "kind": "categorical",
-                "rank": 89,
+                "rank": 17,
+                "importance_score": 0.89503896,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1939,7 +1462,8 @@
             "numerical_feature_89": {
                 "name": "numerical_feature_89",
                 "kind": "categorical",
-                "rank": 90,
+                "rank": 56,
+                "importance_score": 0.5898012,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1954,7 +1478,8 @@
             "numerical_feature_90": {
                 "name": "numerical_feature_90",
                 "kind": "categorical",
-                "rank": 91,
+                "rank": 6,
+                "importance_score": 0.94976485,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1969,7 +1494,8 @@
             "numerical_feature_91": {
                 "name": "numerical_feature_91",
                 "kind": "categorical",
-                "rank": 92,
+                "rank": 59,
+                "importance_score": 0.579695,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1984,7 +1510,8 @@
             "numerical_feature_92": {
                 "name": "numerical_feature_92",
                 "kind": "categorical",
-                "rank": 93,
+                "rank": 76,
+                "importance_score": 0.4505631,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -1999,7 +1526,8 @@
             "numerical_feature_93": {
                 "name": "numerical_feature_93",
                 "kind": "categorical",
-                "rank": 94,
+                "rank": 47,
+                "importance_score": 0.66024536,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2014,7 +1542,8 @@
             "numerical_feature_94": {
                 "name": "numerical_feature_94",
                 "kind": "categorical",
-                "rank": 95,
+                "rank": 1,
+                "importance_score": 0.99625784,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2029,7 +1558,8 @@
             "numerical_feature_95": {
                 "name": "numerical_feature_95",
                 "kind": "categorical",
-                "rank": 96,
+                "rank": 10,
+                "importance_score": 0.9169412,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2044,7 +1574,8 @@
             "numerical_feature_96": {
                 "name": "numerical_feature_96",
                 "kind": "categorical",
-                "rank": 97,
+                "rank": 34,
+                "importance_score": 0.79332507,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2059,7 +1590,8 @@
             "numerical_feature_97": {
                 "name": "numerical_feature_97",
                 "kind": "categorical",
-                "rank": 98,
+                "rank": 109,
+                "importance_score": 0.082372986,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2074,7 +1606,8 @@
             "numerical_feature_98": {
                 "name": "numerical_feature_98",
                 "kind": "categorical",
-                "rank": 99,
+                "rank": 51,
+                "importance_score": 0.61278313,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2089,7 +1622,8 @@
             "numerical_feature_99": {
                 "name": "numerical_feature_99",
                 "kind": "categorical",
-                "rank": 100,
+                "rank": 71,
+                "importance_score": 0.4864442,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2104,7 +1638,8 @@
             "numerical_feature_100": {
                 "name": "numerical_feature_100",
                 "kind": "categorical",
-                "rank": 101,
+                "rank": 49,
+                "importance_score": 0.63014734,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2119,7 +1654,8 @@
             "numerical_feature_101": {
                 "name": "numerical_feature_101",
                 "kind": "categorical",
-                "rank": 102,
+                "rank": 23,
+                "importance_score": 0.8450776,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2134,7 +1670,8 @@
             "numerical_feature_102": {
                 "name": "numerical_feature_102",
                 "kind": "categorical",
-                "rank": 103,
+                "rank": 97,
+                "importance_score": 0.24303563,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2149,7 +1686,8 @@
             "numerical_feature_103": {
                 "name": "numerical_feature_103",
                 "kind": "categorical",
-                "rank": 104,
+                "rank": 39,
+                "importance_score": 0.73148924,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2164,7 +1702,8 @@
             "numerical_feature_104": {
                 "name": "numerical_feature_104",
                 "kind": "categorical",
-                "rank": 105,
+                "rank": 104,
+                "importance_score": 0.117134295,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2179,7 +1718,8 @@
             "numerical_feature_105": {
                 "name": "numerical_feature_105",
                 "kind": "categorical",
-                "rank": 106,
+                "rank": 99,
+                "importance_score": 0.22046053,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2194,7 +1734,8 @@
             "numerical_feature_106": {
                 "name": "numerical_feature_106",
                 "kind": "categorical",
-                "rank": 107,
+                "rank": 33,
+                "importance_score": 0.79458296,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2209,7 +1750,8 @@
             "numerical_feature_107": {
                 "name": "numerical_feature_107",
                 "kind": "categorical",
-                "rank": 108,
+                "rank": 85,
+                "importance_score": 0.33253616,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2224,7 +1766,8 @@
             "numerical_feature_108": {
                 "name": "numerical_feature_108",
                 "kind": "categorical",
-                "rank": 109,
+                "rank": 27,
+                "importance_score": 0.8159131,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2239,7 +1782,8 @@
             "numerical_feature_109": {
                 "name": "numerical_feature_109",
                 "kind": "categorical",
-                "rank": 110,
+                "rank": 107,
+                "importance_score": 0.10060752,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2254,7 +1798,8 @@
             "numerical_feature_110": {
                 "name": "numerical_feature_110",
                 "kind": "categorical",
-                "rank": 111,
+                "rank": 103,
+                "importance_score": 0.14635849,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2269,7 +1814,8 @@
             "numerical_feature_111": {
                 "name": "numerical_feature_111",
                 "kind": "categorical",
-                "rank": 112,
+                "rank": 44,
+                "importance_score": 0.69767064,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
@@ -2284,7 +1830,8 @@
             "numerical_feature_112": {
                 "name": "numerical_feature_112",
                 "kind": "categorical",
-                "rank": 113,
+                "rank": 111,
+                "importance_score": 0.04523407,
                 "statistical_test": {
                     "name": "chi-squared",
                     "result": {
