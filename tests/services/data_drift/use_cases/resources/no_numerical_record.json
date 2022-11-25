@@ -4,61 +4,6 @@
     "metadata": {
         "raitools_version": "0.1.0"
     },
-    "drift_summary": {
-        "features": {
-            "categorical_feature_0": {
-                "name": "categorical_feature_0",
-                "kind": "categorical",
-                "importance_score": 0.42,
-                "rank": 1,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "test_statistic": 17.0,
-                        "p_value": 0.009283244336110639
-                    },
-                    "significance_level": 0.05,
-                    "outcome": "reject null hypothesis"
-                },
-                "drift_status": "drifted"
-            },
-            "categorical_feature_1": {
-                "name": "categorical_feature_1",
-                "kind": "categorical",
-                "importance_score": 0.11,
-                "rank": 2,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "test_statistic": 0.0,
-                        "p_value": 1.0
-                    },
-                    "significance_level": 0.05,
-                    "outcome": "fail to reject null hypothesis"
-                },
-                "drift_status": "not drifted"
-            },
-            "categorical_feature_2": {
-                "name": "categorical_feature_2",
-                "kind": "categorical",
-                "rank": 3,
-                "statistical_test": {
-                    "name": "chi-squared",
-                    "result": {
-                        "test_statistic": 0.0,
-                        "p_value": 1.0
-                    },
-                    "significance_level": 0.05,
-                    "outcome": "fail to reject null hypothesis"
-                },
-                "drift_status": "not drifted"
-            }
-        },
-        "metadata": {
-            "num_numerical_features": 0,
-            "num_categorical_features": 3
-        }
-    },
     "bundle": {
         "job_config": {
             "report_name": "Some simple report",
@@ -67,24 +12,7 @@
             "feature_mapping_filename": "some_feature_mapping.csv",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv",
-            "model_catalog_id": "123",
-            "feature_mapping": {
-                "categorical_feature_0": {
-                    "name": "categorical_feature_0",
-                    "kind": "categorical",
-                    "rank": 1
-                },
-                "categorical_feature_1": {
-                    "name": "categorical_feature_1",
-                    "kind": "categorical",
-                    "rank": 2
-                },
-                "categorical_feature_2": {
-                    "name": "categorical_feature_2",
-                    "kind": "categorical",
-                    "rank": 3
-                }
-            }
+            "model_catalog_id": "123"
         },
         "data": {
             "baseline_data": {
@@ -103,6 +31,62 @@
             "job_config_filename": "some_job_config.json",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv"
+        }
+    },
+    "drift_summary": {
+        "features": {
+            "categorical_feature_0": {
+                "name": "categorical_feature_0",
+                "kind": "categorical",
+                "rank": 1,
+                "importance_score": 0.84442186,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 17.0,
+                        "p_value": 0.009283244336110639
+                    },
+                    "significance_level": 0.05,
+                    "outcome": "reject null hypothesis"
+                },
+                "drift_status": "drifted"
+            },
+            "categorical_feature_1": {
+                "name": "categorical_feature_1",
+                "kind": "categorical",
+                "rank": 2,
+                "importance_score": 0.7579544,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            },
+            "categorical_feature_2": {
+                "name": "categorical_feature_2",
+                "kind": "categorical",
+                "rank": 3,
+                "importance_score": 0.4205716,
+                "statistical_test": {
+                    "name": "chi-squared",
+                    "result": {
+                        "test_statistic": 0.0,
+                        "p_value": 1.0
+                    },
+                    "significance_level": 0.05,
+                    "outcome": "fail to reject null hypothesis"
+                },
+                "drift_status": "not drifted"
+            }
+        },
+        "metadata": {
+            "num_numerical_features": 0,
+            "num_categorical_features": 3
         }
     }
 }

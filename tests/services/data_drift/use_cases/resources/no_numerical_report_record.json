@@ -25,6 +25,7 @@
     "top_20_features_drifted": 1,
     "fields": [
         "rank",
+        "importance_score",
         "name",
         "kind",
         "p_value",
@@ -35,6 +36,11 @@
             1,
             2,
             3
+        ],
+        "importance_score": [
+            0.84442186,
+            0.7579544,
+            0.4205716
         ],
         "name": [
             "categorical_feature_0",
