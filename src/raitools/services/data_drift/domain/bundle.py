@@ -15,6 +15,7 @@ from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
     BadDataFileError,
+    BadFeatureMappingError,
     BadJobConfigError,
     BadPathToBundleError,
 )
@@ -106,9 +107,14 @@ def get_feature_mapping_from_bundle(
     """Gets specified feature mapping from the bundle."""
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
         with zip_file.open(feature_mapping_filename) as feature_mapping_file:
-            feature_mapping_table = read_data_file(
+            feature_mapping_table = read_feature_mapping_file(
                 feature_mapping_file, feature_mapping_filename
             )
+
+    _validate_feature_mapping_file_has_observations(
+        feature_mapping_table, feature_mapping_filename
+    )
+
     feature_mapping_values = {
         feature["name"]: feature for feature in feature_mapping_table.to_pylist()
     }
@@ -133,6 +139,18 @@ def get_data_from_bundle(
     return data
 
 
+def read_feature_mapping_file(data_file: IO[bytes], data_filename: str) -> pa.Table:
+    """Reads user-provided data file."""
+    try:
+        return read_csv(data_file)
+    except pa.lib.ArrowInvalid as err:
+        if "Empty CSV file" in err.args:
+            raise BadFeatureMappingError(
+                f"Feature mapping file `{data_filename}` is empty."
+            ) from err
+        raise
+
+
 def read_data_file(data_file: IO[bytes], data_filename: str) -> pa.Table:
     """Reads user-provided data file."""
     try:
@@ -147,6 +165,15 @@ def _validate_data_file_has_observations(data: pa.Table, data_filename: str) -> 
     if data.num_rows == 0:
         raise BadDataFileError(
             f"Data file `{data_filename}` does not contain any observations (only header)."
+        )
+
+
+def _validate_feature_mapping_file_has_observations(
+    data: pa.Table, data_filename: str
+) -> None:
+    if data.num_rows == 0:
+        raise BadFeatureMappingError(
+            f"Feature mapping file `{data_filename}` does not contain any observations (only header)."
         )
 
 
