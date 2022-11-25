@@ -278,6 +278,32 @@ def non_empty_feature_mapping_file_path(job_config: Dict, tmp_path: Path) -> Pat
 
 
 @pytest.fixture
+def numerical_feature_feature_mapping_file_path(
+    job_config: Dict, tmp_path: Path
+) -> Path:
+    """A path to feature mapping file for single numerical feature."""
+    feature_mapping_filename = job_config["feature_mapping_filename"]
+    feature_mapping_path = tmp_path / feature_mapping_filename
+    feature_mapping_path.write_text(
+        "\n".join(["name,kind,importance_score", "f0,numerical,0.9"])
+    )
+    return feature_mapping_path
+
+
+@pytest.fixture
+def categorical_feature_feature_mapping_file_path(
+    job_config: Dict, tmp_path: Path
+) -> Path:
+    """A path to feature mapping file for single categorical feature."""
+    feature_mapping_filename = job_config["feature_mapping_filename"]
+    feature_mapping_path = tmp_path / feature_mapping_filename
+    feature_mapping_path.write_text(
+        "\n".join(["name,kind,importance_score", "f0,categorical,0.9"])
+    )
+    return feature_mapping_path
+
+
+@pytest.fixture
 def empty_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
     """A path to a non-empty baseline data file."""
     baseline_data_filename = job_config["baseline_data_filename"]
@@ -338,6 +364,42 @@ def non_empty_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
     baseline_data_filename = job_config["baseline_data_filename"]
     baseline_data_path = tmp_path / baseline_data_filename
     baseline_data_path.write_text("f0\n0.1\n")
+    return baseline_data_path
+
+
+@pytest.fixture
+def string_feature_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to baseline data file with single string-valued feature."""
+    baseline_data_filename = job_config["baseline_data_filename"]
+    baseline_data_path = tmp_path / baseline_data_filename
+    baseline_data_path.write_text("f0\n'0.1'\n")
+    return baseline_data_path
+
+
+@pytest.fixture
+def bool_feature_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to baseline data file with single bool-valued feature."""
+    baseline_data_filename = job_config["baseline_data_filename"]
+    baseline_data_path = tmp_path / baseline_data_filename
+    baseline_data_path.write_text("f0\nTrue\n")
+    return baseline_data_path
+
+
+@pytest.fixture
+def int64_feature_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to baseline data file with single int64-valued feature."""
+    baseline_data_filename = job_config["baseline_data_filename"]
+    baseline_data_path = tmp_path / baseline_data_filename
+    baseline_data_path.write_text("f0\n10\n")
+    return baseline_data_path
+
+
+@pytest.fixture
+def double_feature_baseline_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to baseline data file with single double-valued feature."""
+    baseline_data_filename = job_config["baseline_data_filename"]
+    baseline_data_path = tmp_path / baseline_data_filename
+    baseline_data_path.write_text("f0\n1.0\n")
     return baseline_data_path
 
 
@@ -405,14 +467,76 @@ def non_empty_test_data_path(job_config: Dict, tmp_path: Path) -> Path:
     return test_data_path
 
 
+@pytest.fixture
+def numerical_test_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to test data file with valid numerical feature."""
+    test_data_filename = job_config["test_data_filename"]
+    test_data_path = tmp_path / test_data_filename
+    test_data_path.write_text("f0\n0.2\n")
+    return test_data_path
+
+
+@pytest.fixture
+def categorical_test_data_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to test data file with valid categorical feature."""
+    test_data_filename = job_config["test_data_filename"]
+    test_data_path = tmp_path / test_data_filename
+    test_data_path.write_text("f0\nB\n")
+    return test_data_path
+
+
+@pytest.fixture
+def string_numerical_field_error(
+    string_feature_baseline_data_path: Path,
+) -> Exception:
+    """The error raised when the feature mapping has different fields."""
+    return BadDataFileError(
+        f"Numerical feature `f0` in `{string_feature_baseline_data_path.name}` parsed as `string`."
+    )
+
+
+@pytest.fixture
+def bool_numerical_field_error(
+    bool_feature_baseline_data_path: Path,
+) -> Exception:
+    """The error raised when the feature mapping has different fields."""
+    return BadDataFileError(
+        f"Numerical feature `f0` in `{bool_feature_baseline_data_path.name}` parsed as `bool`."
+    )
+
+
+@pytest.fixture
+def int64_categorical_field_error(
+    int64_feature_baseline_data_path: Path,
+) -> Exception:
+    """The error raised when the feature mapping has different fields."""
+    return BadDataFileError(
+        f"Categorical feature `f0` in `{int64_feature_baseline_data_path.name}` parsed as `int64`."
+    )
+
+
+@pytest.fixture
+def double_categorical_field_error(
+    double_feature_baseline_data_path: Path,
+) -> Exception:
+    """The error raised when the feature mapping has different fields."""
+    return BadDataFileError(
+        f"Categorical feature `f0` in `{double_feature_baseline_data_path.name}` parsed as `double`."
+    )
+
+
 def _create_bundle(
     job_config: Dict,
-    feature_mapping_path: Path,
-    baseline_data_path: Path,
-    test_data_path: Path,
+    feature_mapping_path_fixture: str,
+    baseline_data_path_fixture: str,
+    test_data_path_fixture: str,
     tmp_path: Path,
+    request: pytest.FixtureRequest,
 ) -> Path:
     """A path to a bundle with an empty feature mapping file."""
+    feature_mapping_path = request.getfixturevalue(feature_mapping_path_fixture)
+    baseline_data_path = request.getfixturevalue(baseline_data_path_fixture)
+    test_data_path = request.getfixturevalue(test_data_path_fixture)
     bundle_path = tmp_path / "bundle.zip"
     with ZipFile(bundle_path, "w") as zip_file:
         job_config_path = tmp_path / "job_config.json"
@@ -430,9 +554,9 @@ def _create_bundle(
 @pytest.mark.parametrize(
     ",".join(
         [
-            "feature_mapping_file_path_str",
-            "baseline_data_path_str",
-            "test_data_path_str",
+            "feature_mapping_path_fixture",
+            "baseline_data_path_fixture",
+            "test_data_path_fixture",
             "expected_error_fixture",
         ]
     ),
@@ -488,79 +612,54 @@ def _create_bundle(
             "different_fields_test_data_file_path",
             "different_fields_test_data_file_error",
         ),
+        # Cases in which data file features are parsed as incompatible types
+        (
+            "numerical_feature_feature_mapping_file_path",
+            "string_feature_baseline_data_path",
+            "numerical_test_data_path",
+            "string_numerical_field_error",
+        ),
+        (
+            "numerical_feature_feature_mapping_file_path",
+            "bool_feature_baseline_data_path",
+            "numerical_test_data_path",
+            "bool_numerical_field_error",
+        ),
+        (
+            "categorical_feature_feature_mapping_file_path",
+            "int64_feature_baseline_data_path",
+            "categorical_test_data_path",
+            "int64_categorical_field_error",
+        ),
+        (
+            "categorical_feature_feature_mapping_file_path",
+            "double_feature_baseline_data_path",
+            "categorical_test_data_path",
+            "double_categorical_field_error",
+        ),
     ],
 )
 def test_csv_files(
     job_config: Dict,
-    feature_mapping_file_path_str: str,
-    baseline_data_path_str: str,
-    test_data_path_str: str,
+    feature_mapping_path_fixture: str,
+    baseline_data_path_fixture: str,
+    test_data_path_fixture: str,
     expected_error_fixture: str,
     tmp_path: Path,
     request: pytest.FixtureRequest,
 ) -> None:
     """Tests that error raised if given empty data file."""
-    feature_mapping_file_path = request.getfixturevalue(feature_mapping_file_path_str)
-    baseline_data_path = request.getfixturevalue(baseline_data_path_str)
-    test_data_path = request.getfixturevalue(test_data_path_str)
-    expected_error = request.getfixturevalue(expected_error_fixture)
     bundle_path = _create_bundle(
         job_config,
-        feature_mapping_file_path,
-        baseline_data_path,
-        test_data_path,
+        feature_mapping_path_fixture,
+        baseline_data_path_fixture,
+        test_data_path_fixture,
         tmp_path,
+        request,
     )
+    expected_error = request.getfixturevalue(expected_error_fixture)
 
     with pytest.raises(expected_error.__class__) as excinfo:
-        process_bundle(bundle_path)
-
-    assert (
-        type(excinfo.value) == type(expected_error)
-        and excinfo.value.args == expected_error.args
-    )
-
-
-@pytest.mark.parametrize(
-    "feature_kind,field_value,field_type",
-    [
-        ("numerical", "'1.0'", "string"),
-        ("numerical", "True", "bool"),
-        ("categorical", "10", "int64"),
-        ("categorical", "1.0", "double"),
-    ],
-)
-def test_baseline_data_incompatible_field_type(
-    feature_kind: str, field_value: str, field_type: str, tmp_path: Path
-) -> None:
-    """Tests that error raised if data file has incompatible field type."""
-    bundle_path = tmp_path / "bundle.zip"
-    baseline_data_filename = "baseline_data.csv"
-    test_data_filename = "test_data.csv"
-    job_config = {
-        "report_name": "report_name",
-        "dataset_name": "dataset_name",
-        "dataset_version": "dataset_version",
-        "model_catalog_id": "model_catalog_id",
-        "feature_mapping": {"f0": {"name": "f0", "kind": feature_kind, "rank": 1}},
-        "baseline_data_filename": baseline_data_filename,
-        "test_data_filename": test_data_filename,
-    }
-    with ZipFile(bundle_path, "w") as zip_file:
-        job_config_path = tmp_path / "job_config.json"
-        job_config_path.write_text(json.dumps(job_config))
-        zip_file.write(job_config_path, arcname=job_config_path.name)
-        baseline_data_path = tmp_path / baseline_data_filename
-        baseline_data_path.write_text(f"f0\n{field_value}\n")
-        test_data_path = tmp_path / test_data_filename
-        test_data_path.write_text("f0\n1.0\n")
-        zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
-        zip_file.write(test_data_path, arcname=test_data_path.name)
-    expected_error = BadDataFileError(
-        f"{feature_kind.capitalize()} feature `f0` in `{baseline_data_filename}` parsed as `{field_type}`."
-    )
-
-    with pytest.raises(BadDataFileError) as excinfo:
         process_bundle(bundle_path)
 
     assert (
