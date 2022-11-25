@@ -12,6 +12,13 @@ class Rank(ConstrainedInt):
     strict = True
 
 
+class ImportanceScore(ConstrainedFloat):
+    """An importance score."""
+
+    ge = 0.0
+    le = 1.0
+
+
 class Name(ConstrainedStr):
     """A report name."""
 

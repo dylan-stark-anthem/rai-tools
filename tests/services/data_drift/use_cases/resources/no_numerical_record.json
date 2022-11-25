@@ -9,6 +9,7 @@
             "categorical_feature_0": {
                 "name": "categorical_feature_0",
                 "kind": "categorical",
+                "importance_score": 0.42,
                 "rank": 1,
                 "statistical_test": {
                     "name": "chi-squared",
@@ -24,6 +25,7 @@
             "categorical_feature_1": {
                 "name": "categorical_feature_1",
                 "kind": "categorical",
+                "importance_score": 0.11,
                 "rank": 2,
                 "statistical_test": {
                     "name": "chi-squared",
@@ -62,6 +64,7 @@
             "report_name": "Some simple report",
             "dataset_name": "Some name for this dataset",
             "dataset_version": "v0.1.0",
+            "feature_mapping_filename": "some_feature_mapping.csv",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv",
             "model_catalog_id": "123",

@@ -15,3 +15,7 @@ class BadDataFileError(Exception):
 
 class BadJobConfigError(Exception):
     """Bad job config error."""
+
+
+class BadFeatureMappingError(Exception):
+    """Bad feature mapping error."""

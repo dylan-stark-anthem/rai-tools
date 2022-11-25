@@ -9,11 +9,9 @@ import zipfile
 import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel
+from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
 
-from raitools.services.data_drift.domain.job_config import (
-    DataDriftJobConfig,
-    JobConfigFeature,
-)
+from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
     BadDataFileError,
@@ -29,6 +27,7 @@ class DataDriftBundle(BaseModel):
     baseline_data_filename: str
     test_data_filename: str
     job_config: DataDriftJobConfig
+    feature_mapping: FeatureMapping
     baseline_data: pa.Table
     test_data: pa.Table
 
@@ -42,17 +41,20 @@ def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
     """Creates a bundle."""
     job_config = get_job_config_from_bundle(bundle_path)
     job_config_filename = get_job_config_filename_from_bundle(bundle_path)
+    feature_mapping = get_feature_mapping_from_bundle(
+        bundle_path, job_config.feature_mapping_filename
+    )
     baseline_data = get_data_from_bundle(
         bundle_path,
         job_config.baseline_data_filename,
-        list(job_config.feature_mapping.keys()),
-        list(job_config.feature_mapping.values()),
+        list(feature_mapping.feature_mapping.keys()),
+        list(feature_mapping.feature_mapping.values()),
     )
     test_data = get_data_from_bundle(
         bundle_path,
         job_config.test_data_filename,
-        list(job_config.feature_mapping.keys()),
-        list(job_config.feature_mapping.values()),
+        list(feature_mapping.feature_mapping.keys()),
+        list(feature_mapping.feature_mapping.values()),
     )
 
     bundle = DataDriftBundle(
@@ -60,6 +62,7 @@ def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
         baseline_data_filename=job_config.baseline_data_filename,
         test_data_filename=job_config.test_data_filename,
         job_config=job_config,
+        feature_mapping=feature_mapping,
         baseline_data=baseline_data,
         test_data=test_data,
     )
@@ -97,11 +100,27 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
     return job_config
 
 
+def get_feature_mapping_from_bundle(
+    bundle_path: Path, feature_mapping_filename: str
+) -> FeatureMapping:
+    """Gets specified feature mapping from the bundle."""
+    with zipfile.ZipFile(bundle_path, "r") as zip_file:
+        with zip_file.open(feature_mapping_filename) as feature_mapping_file:
+            feature_mapping_table = read_data_file(
+                feature_mapping_file, feature_mapping_filename
+            )
+    feature_mapping_values = {
+        feature["name"]: feature for feature in feature_mapping_table.to_pylist()
+    }
+    feature_mapping = FeatureMapping(feature_mapping=feature_mapping_values)
+    return feature_mapping
+
+
 def get_data_from_bundle(
     bundle_path: Path,
     data_filename: str,
     required_fields: List[str],
-    features: List[JobConfigFeature],
+    features: List,
 ) -> pa.Table:
     """Gets specified dataset from the bundle."""
     with zipfile.ZipFile(bundle_path, "r") as zip_file:
@@ -144,7 +163,7 @@ def _validate_data_file_has_required_fields(
 
 
 def _validate_fields_compatible_with_features(
-    data: pa.Table, data_filename: str, features: List[JobConfigFeature]
+    data: pa.Table, data_filename: str, features: List
 ) -> None:
     def _check_compatibility_with_numeric(field_type: pa.DataType) -> bool:
         return pa.types.is_integer(field_type) or pa.types.is_floating(field_type)

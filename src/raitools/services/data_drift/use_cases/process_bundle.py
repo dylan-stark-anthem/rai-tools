@@ -1,5 +1,6 @@
 """Process data drift bundle."""
 
+from operator import attrgetter
 from pathlib import Path
 from typing import Dict
 
@@ -21,7 +22,6 @@ from raitools.services.data_drift.domain.data_drift_record import (
     RecordDriftSummary,
     RecordMetadata,
 )
-from raitools.services.data_drift.domain.job_config import JobConfigFeature
 from raitools.services.data_drift.domain.stats import statistical_tests
 from raitools.services.data_drift.exceptions import BadPathToBundleError
 
@@ -81,7 +81,7 @@ def _compile_bundle_for_record(
 
 def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSummary:
     """Creates drift summary for record."""
-    features = bundle.job_config.feature_mapping
+    features = bundle.feature_mapping.feature_mapping
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
     num_categorical_features = _compute_num_feature_kind(features, "categorical")
 
@@ -106,10 +106,22 @@ def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSum
 def _compile_features_for_drift_summary(
     baseline_data: pa.Table,
     test_data: pa.Table,
-    feature: Dict[str, JobConfigFeature],
+    feature: Dict,
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
     significance_level = 0.05
+
+    ranking = {
+        x.name: rank
+        for x, rank in zip(
+            sorted(
+                [value for value in feature.values()],
+                key=attrgetter("importance_score"),
+                reverse=True,
+            ),
+            range(1, len(feature.values()) + 1),
+        )
+    }
 
     results: Dict[str, DriftSummaryFeature] = {}
     for feature_name, feature_details in feature.items():
@@ -137,7 +149,8 @@ def _compile_features_for_drift_summary(
             results[feature_name] = DriftSummaryFeature(
                 name=feature_name,
                 kind=kind,
-                rank=feature_details.rank,
+                rank=ranking[feature_name],
+                importance_score=feature_details.importance_score,
                 statistical_test=statistical_test,
                 drift_status=drift_status,
             )
@@ -145,9 +158,7 @@ def _compile_features_for_drift_summary(
     return results
 
 
-def _compute_num_feature_kind(
-    feature_mapping: Dict[str, JobConfigFeature], kind: str
-) -> int:
+def _compute_num_feature_kind(feature_mapping: Dict, kind: str) -> int:
     """Counts number of features of a specific kind."""
     return len(
         [feature for feature in feature_mapping.values() if feature.kind == kind]

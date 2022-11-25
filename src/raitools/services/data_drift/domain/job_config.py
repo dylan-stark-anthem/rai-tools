@@ -1,31 +1,10 @@
 """A Data Drift job config."""
 
 import re
-from typing import Dict
+
 from pydantic import BaseModel, validator
-from raitools.services.data_drift.domain.types import Rank
 
 from raitools.services.data_drift.exceptions import BadJobConfigError
-
-
-class JobConfigFeature(BaseModel):
-    """A feature."""
-
-    name: str
-    kind: str
-    rank: Rank
-
-    @validator("kind")
-    def check_kind_supported(cls, value: str) -> str:
-        """Checks whether provided kind is supported."""
-        supported_kinds = ["numerical", "categorical"]
-        if value not in supported_kinds:
-            raise BadJobConfigError(
-                f"Feature kind '{value}' is not supported. "
-                "Supported feature kinds are 'numerical' and 'categorical."
-            )
-
-        return value
 
 
 class DataDriftJobConfig(BaseModel):
@@ -34,10 +13,10 @@ class DataDriftJobConfig(BaseModel):
     report_name: str
     dataset_name: str
     dataset_version: str
+    feature_mapping_filename: str
     baseline_data_filename: str
     test_data_filename: str
     model_catalog_id: str
-    feature_mapping: Dict[str, JobConfigFeature]
 
     @validator("report_name")
     def check_report_name(cls, value: str) -> str:
@@ -57,29 +36,6 @@ class DataDriftJobConfig(BaseModel):
 
         if value[-1] == " ":
             raise BadJobConfigError("Report name 'a ' ends with a space.")
-
-        return value
-
-    @validator("feature_mapping")
-    def check_feature_mapping_is_not_empty(
-        cls, value: Dict[str, JobConfigFeature]
-    ) -> Dict[str, JobConfigFeature]:
-        """Checks that keys in feature map match names in associated features."""
-        if len(value) == 0:
-            raise BadJobConfigError("Feature mapping is empty.")
-
-        return value
-
-    @validator("feature_mapping")
-    def check_keys_match_feature_name(
-        cls, value: Dict[str, JobConfigFeature]
-    ) -> Dict[str, JobConfigFeature]:
-        """Checks that keys in feature map match names in associated features."""
-        for key, feature in value.items():
-            if key != feature.name:
-                raise BadJobConfigError(
-                    f"Feature mapping key '{key}' does not match feature name '{feature.name}'"
-                )
 
         return value
 

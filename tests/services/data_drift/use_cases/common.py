@@ -16,9 +16,11 @@ from raitools.services.data_drift.domain.data_drift_report import DataDriftRepor
 
 def write_bundle_zip_to_disk(
     job_config_path: Path,
+    feature_mapping_path: Path,
     baseline_data_path: Path,
     test_data_path: Path,
     job_config_filename: str,
+    feature_mapping_filename: str,
     baseline_data_filename: str,
     test_data_filename: str,
     bundle_filename: str,
@@ -28,6 +30,7 @@ def write_bundle_zip_to_disk(
     bundle_path = tmp_path / bundle_filename
     with ZipFile(bundle_path, "w") as zip_file:
         zip_file.write(job_config_path, arcname=job_config_filename)
+        zip_file.write(feature_mapping_path, arcname=feature_mapping_filename)
         zip_file.write(baseline_data_path, arcname=baseline_data_filename)
         zip_file.write(test_data_path, arcname=test_data_filename)
 
@@ -83,6 +86,20 @@ def create_data_table(data_spec: Dict, dataset: str, count: int) -> pa.Table:
     return table
 
 
+def create_feature_mapping_table(feature_mapping: Dict) -> pa.Table:
+    """Creates a feature mapping table based on given spec."""
+    data = [value for value in feature_mapping.values()]
+    schema = pa.schema(
+        [
+            pa.field("name", pa.string()),
+            pa.field("kind", pa.string()),
+            pa.field("importance_score", pa.float32()),
+        ]
+    )
+    table = pa.Table.from_pylist(data, schema=schema)
+    return table
+
+
 def load_spec(spec_path: Path) -> Dict:
     """Loads specified spec from test resources."""
     spec = json.load(spec_path.open())
@@ -97,6 +114,13 @@ def prepare_bundle(spec_filename: str, tmp_path: Path) -> Path:
 
     job_config_path = write_job_config_to_disk(
         spec["job_config"], spec["job_config_filename"], tmp_path
+    )
+
+    feature_mapping = create_feature_mapping_table(spec["feature_mapping"])
+    feature_mapping_path = write_data_to_disk(
+        feature_mapping,
+        spec["job_config"]["feature_mapping_filename"],
+        tmp_path,
     )
 
     baseline_data = create_data_table(
@@ -115,9 +139,11 @@ def prepare_bundle(spec_filename: str, tmp_path: Path) -> Path:
 
     bundle_path = write_bundle_zip_to_disk(
         job_config_path,
+        feature_mapping_path,
         baseline_data_path,
         test_data_path,
         spec["job_config_filename"],
+        spec["job_config"]["feature_mapping_filename"],
         spec["job_config"]["baseline_data_filename"],
         spec["job_config"]["test_data_filename"],
         spec["bundle_filename"],

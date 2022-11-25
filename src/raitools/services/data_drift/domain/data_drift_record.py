@@ -14,6 +14,7 @@ from raitools.services.data_drift.domain.types import (
     FeatureKind,
     FeatureName,
     FileName,
+    ImportanceScore,
     Name,
     NonNegativeCount,
     PositiveCount,
@@ -75,6 +76,7 @@ class DriftSummaryFeature(BaseModel):
     name: FeatureName
     kind: FeatureKind
     rank: PositiveCount
+    importance_score: ImportanceScore
     statistical_test: FeatureStatisticalTest
     drift_status: DriftStatus
 

@@ -33,7 +33,7 @@ from tests.services.data_drift.use_cases.common import (
         ("with_13_features_spec.json", "with_13_features_record.json"),
     ],
 )
-def test_can_process_simple_drifted_bundle(
+def test_can_process_bundle(
     spec_filename: str, record_filename: str, tmp_path: Path
 ) -> None:
     """Tests that we can process a bundle."""
