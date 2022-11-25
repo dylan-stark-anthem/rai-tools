@@ -86,9 +86,14 @@ def create_data_table(data_spec: Dict, dataset: str, count: int) -> pa.Table:
     return table
 
 
-def create_feature_mapping_table(feature_mapping: Dict) -> pa.Table:
+def create_feature_mapping_table(data_spec: Dict) -> pa.Table:
     """Creates a feature mapping table based on given spec."""
-    data = [value for value in feature_mapping.values()]
+    FEATURE_KIND = {
+        "int64": "numerical",
+        "string": "categorical",
+    }
+
+    data = []
     schema = pa.schema(
         [
             pa.field("name", pa.string()),
@@ -96,6 +101,18 @@ def create_feature_mapping_table(feature_mapping: Dict) -> pa.Table:
             pa.field("importance_score", pa.float32()),
         ]
     )
+
+    random.seed(0)
+    for feature in data_spec.values():
+        importance_score = random.random()
+        data.append(
+            {
+                "name": feature["name"],
+                "kind": FEATURE_KIND[feature["kind"]],
+                "importance_score": importance_score,
+            }
+        )
+
     table = pa.Table.from_pylist(data, schema=schema)
     return table
 
@@ -116,7 +133,7 @@ def prepare_bundle(spec_filename: str, tmp_path: Path) -> Path:
         spec["job_config"], spec["job_config_filename"], tmp_path
     )
 
-    feature_mapping = create_feature_mapping_table(spec["feature_mapping"])
+    feature_mapping = create_feature_mapping_table(spec["data"])
     feature_mapping_path = write_data_to_disk(
         feature_mapping,
         spec["job_config"]["feature_mapping_filename"],

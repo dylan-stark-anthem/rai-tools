@@ -87,6 +87,7 @@ def _top_20_drifted_features_list(
 def _fields() -> List[str]:
     fields = [
         "rank",
+        "importance_score",
         "name",
         "kind",
         "p_value",
@@ -99,6 +100,7 @@ def _observations(features: List[DriftSummaryFeature]) -> Dict[str, Any]:
     ranked_features = sorted(features, key=lambda x: x.rank)
     observations: Dict[str, Any] = {
         "rank": [feature.rank for feature in ranked_features],
+        "importance_score": [feature.importance_score for feature in ranked_features],
         "name": [feature.name for feature in ranked_features],
         "kind": [feature.kind for feature in ranked_features],
         "p_value": [

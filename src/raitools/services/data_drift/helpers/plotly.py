@@ -285,6 +285,7 @@ def plotly_drift_magnitude_maker(
         text = []
         if element:
             text.append(f"Rank: {element['rank']}")
+            text.append(f"Importance score: {element['importance_score']:.6f}")
             text.append(f"Name: {element['name']}")
             text.append(f"Kind: {element['kind'].capitalize()}")
             text.append(f"P-value: {element['p_value']:.3f}")
@@ -343,7 +344,7 @@ def plotly_drift_magnitude_maker(
                 values=cell_values,
                 fill_color="lightgrey",
                 align="left",
-                format=["g", "", "", ".3f", ""],
+                format=["g", ".6f", "", "", ".3f", ""],
             ),
             visible=False,
         )

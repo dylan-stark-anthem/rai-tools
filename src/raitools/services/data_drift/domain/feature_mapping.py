@@ -16,7 +16,7 @@ class Feature(BaseModel):
     importance_score: ImportanceScore
 
     @validator("kind")
-    def check_kind_supported(self, value: str) -> str:
+    def check_kind_supported(cls, value: str) -> str:  # noqa: B902
         """Checks whether provided kind is supported."""
         supported_kinds = ["numerical", "categorical"]
         if value not in supported_kinds:
@@ -35,7 +35,7 @@ class FeatureMapping(BaseModel):
 
     @validator("feature_mapping")
     def check_feature_mapping_is_not_empty(
-        self, value: Dict[str, Feature]
+        cls, value: Dict[str, Feature]  # noqa: B902
     ) -> Dict[str, Feature]:
         """Checks that keys in feature map match names in associated features."""
         if len(value) == 0:

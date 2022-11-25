@@ -1,6 +1,6 @@
 """Tests for data drift job config."""
 
-from typing import Any, Dict
+from typing import Dict
 from pydantic import ValidationError
 import pytest
 
@@ -15,16 +15,10 @@ def full_job_config_dict() -> Dict:
         "report_name": "Some report name",
         "dataset_name": "Some dataset name",
         "dataset_version": "v0.1.0",
+        "feature_mapping_filename": "feature_mapping.csv",
         "baseline_data_filename": "baseline_data.csv",
         "test_data_filename": "test_data.csv",
         "model_catalog_id": "123",
-        "feature_mapping": {
-            "numerical_feature_0": {
-                "name": "numerical_feature_0",
-                "kind": "numerical",
-                "rank": 1,
-            }
-        },
     }
     return job_config
 
@@ -35,10 +29,10 @@ def full_job_config_dict() -> Dict:
         ("report_name"),
         ("dataset_name"),
         ("dataset_version"),
+        ("feature_mapping_filename"),
         ("baseline_data_filename"),
         ("test_data_filename"),
         ("model_catalog_id"),
-        ("feature_mapping"),
     ],
 )
 def test_job_config_without_field(field_name: str, full_job_config_dict: Dict) -> None:
@@ -52,108 +46,6 @@ def test_job_config_without_field(field_name: str, full_job_config_dict: Dict) -
         "msg": "field required",
         "type": "value_error.missing",
     } in excinfo.value.errors()
-
-
-@pytest.mark.parametrize(
-    "field_name",
-    [
-        ("name"),
-        ("rank"),
-        ("kind"),
-    ],
-)
-def test_job_config_feature_without_field(
-    field_name: str, full_job_config_dict: Dict
-) -> None:
-    """Tests that we raise error if required field not provided."""
-    del full_job_config_dict["feature_mapping"]["numerical_feature_0"][field_name]
-
-    with pytest.raises(ValidationError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-    assert {
-        "loc": (
-            "feature_mapping",
-            "numerical_feature_0",
-            field_name,
-        ),
-        "msg": "field required",
-        "type": "value_error.missing",
-    } in excinfo.value.errors()
-
-
-@pytest.mark.parametrize(
-    "bad_kind",
-    [("Numerical"), ("Categorical"), ("some-other-thing"), (42), (4.2), (True)],
-)
-def test_job_config_feature_kind_not_supported(
-    bad_kind: Any, full_job_config_dict: Dict
-) -> None:
-    """Tests that we raise error if required field not supported."""
-    full_job_config_dict["feature_mapping"]["numerical_feature_0"]["kind"] = bad_kind
-    expected_error = BadJobConfigError(
-        f"Feature kind '{bad_kind}' is not supported. "
-        "Supported feature kinds are 'numerical' and 'categorical."
-    )
-
-    with pytest.raises(BadJobConfigError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert (
-        type(excinfo.value) == type(expected_error)
-        and excinfo.value.args == expected_error.args
-    )
-
-
-@pytest.mark.parametrize(
-    "bad_rank,expected_error",
-    [
-        (
-            0,
-            {
-                "ctx": {"limit_value": 1},
-                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
-                "msg": "ensure this value is greater than or equal to 1",
-                "type": "value_error.number.not_ge",
-            },
-        ),
-        (
-            "forty-two",
-            {
-                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
-                "msg": "value is not a valid integer",
-                "type": "type_error.integer",
-            },
-        ),
-        (
-            True,
-            {
-                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
-                "msg": "value is not a valid integer",
-                "type": "type_error.integer",
-            },
-        ),
-        (
-            None,
-            {
-                "loc": ("feature_mapping", "numerical_feature_0", "rank"),
-                "msg": "none is not an allowed value",
-                "type": "type_error.none.not_allowed",
-            },
-        ),
-    ],
-)
-def test_feature_rank_not_valid(
-    bad_rank: Any,
-    expected_error: Dict,
-    full_job_config_dict: Dict,
-) -> None:
-    """Tests that we raise error if rank not valid."""
-    full_job_config_dict["feature_mapping"]["numerical_feature_0"]["rank"] = bad_rank
-
-    with pytest.raises(ValidationError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert expected_error in excinfo.value.errors()
 
 
 @pytest.mark.parametrize(
@@ -184,76 +76,3 @@ def test_report_name_with_special_characters(
         DataDriftJobConfig(**full_job_config_dict)
 
     assert type(excinfo.value) == type(error) and excinfo.value.args == error.args
-
-
-@pytest.mark.parametrize(
-    "bad_mapping",
-    [
-        (42),
-        (4.2),
-        ("forty-two"),
-        (True),
-    ],
-)
-def test_feature_mapping_is_a_simple_value(
-    bad_mapping: Any, full_job_config_dict: Dict
-) -> None:
-    """Tests that we raise error if feature mapping is a simple value."""
-    full_job_config_dict["feature_mapping"] = bad_mapping
-
-    with pytest.raises(ValidationError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert {
-        "loc": ("feature_mapping",),
-        "msg": "value is not a valid dict",
-        "type": "type_error.dict",
-    } in excinfo.value.errors()
-
-
-def test_feature_mapping_is_a_list_of_features(full_job_config_dict: Dict) -> None:
-    """Tests that we raise error if feature mapping is a list of features."""
-    bad_mapping = [{"name": "name", "kind": "kind", "rank": 1}]
-    full_job_config_dict["feature_mapping"] = bad_mapping
-
-    with pytest.raises(ValidationError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert {
-        "loc": ("feature_mapping",),
-        "msg": "value is not a valid dict",
-        "type": "type_error.dict",
-    } in excinfo.value.errors()
-
-
-@pytest.mark.parametrize("bad_mapping", [({}), ([])])
-def test_feature_mapping_is_empty(bad_mapping: str, full_job_config_dict: Dict) -> None:
-    """Tests that we raise error if feature mapping is empty."""
-    expected_error = BadJobConfigError("Feature mapping is empty.")
-    full_job_config_dict["feature_mapping"] = bad_mapping
-
-    with pytest.raises(BadJobConfigError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert (
-        type(excinfo.value) == type(expected_error)
-        and excinfo.value.args == expected_error.args
-    )
-
-
-def test_feature_mapping_key_not_in_feature(full_job_config_dict: Dict) -> None:
-    """Tests that we raise error if feature mapping key not in associated value."""
-    feature_mapping_key = "numerical_feature_0"
-    feature_name = "not_numerical_feature_0"
-    expected_error = BadJobConfigError(
-        f"Feature mapping key '{feature_mapping_key}' does not match feature name '{feature_name}'"
-    )
-    full_job_config_dict["feature_mapping"][feature_mapping_key]["name"] = feature_name
-
-    with pytest.raises(BadJobConfigError) as excinfo:
-        DataDriftJobConfig(**full_job_config_dict)
-
-    assert (
-        type(excinfo.value) == type(expected_error)
-        and excinfo.value.args == expected_error.args
-    )
