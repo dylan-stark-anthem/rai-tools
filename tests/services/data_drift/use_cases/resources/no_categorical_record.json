@@ -81,6 +81,7 @@
         "manifest": {
             "bundle_filename": "bundle.zip",
             "job_config_filename": "some_job_config.json",
+            "feature_mapping_filename": "some_feature_mapping.csv",
             "baseline_data_filename": "some_baseline_data.csv",
             "test_data_filename": "some_test_data.csv"
         }

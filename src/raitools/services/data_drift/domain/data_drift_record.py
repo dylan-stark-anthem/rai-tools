@@ -28,6 +28,7 @@ class BundleManifest(BaseModel):
 
     bundle_filename: FileName
     job_config_filename: FileName
+    feature_mapping_filename: FileName
     baseline_data_filename: FileName
     test_data_filename: FileName
 

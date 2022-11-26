@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
 
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.types import FileName
 from raitools.services.data_drift.exceptions import (
     BadBundleZipFileError,
     BadDataFileError,
@@ -24,9 +25,10 @@ from raitools.services.data_drift.exceptions import (
 class DataDriftBundle(BaseModel):
     """A Data Drift bundle."""
 
-    job_config_filename: str
-    baseline_data_filename: str
-    test_data_filename: str
+    job_config_filename: FileName
+    feature_mapping_filename: FileName
+    baseline_data_filename: FileName
+    test_data_filename: FileName
     job_config: DataDriftJobConfig
     feature_mapping: FeatureMapping
     baseline_data: pa.Table
@@ -60,6 +62,7 @@ def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
 
     bundle = DataDriftBundle(
         job_config_filename=job_config_filename,
+        feature_mapping_filename=job_config.feature_mapping_filename,
         baseline_data_filename=job_config.baseline_data_filename,
         test_data_filename=job_config.test_data_filename,
         job_config=job_config,

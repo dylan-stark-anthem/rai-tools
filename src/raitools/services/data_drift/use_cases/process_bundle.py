@@ -72,6 +72,7 @@ def _compile_bundle_for_record(
         manifest=BundleManifest(
             bundle_filename=bundle_filename,
             job_config_filename=bundle.job_config_filename,
+            feature_mapping_filename=bundle.feature_mapping_filename,
             baseline_data_filename=bundle.baseline_data_filename,
             test_data_filename=bundle.test_data_filename,
         ),
