@@ -1,0 +1,15 @@
+name,kind,importance_score
+age,numerical,0.95
+workclass,categorical,0.90
+fnlwgt,numerical,0.85
+education,categorical,0.80
+educational-num,numerical,.75
+marital-status,categorical,0.70
+occupation,categorical,0.65
+relationship,categorical,0.60
+race,categorical,0.55
+gender,categorical,0.50
+capital-gain,numerical,0.45
+capital-loss,numerical,0.40
+hours-per-week,numerical,0.35
+native-country,categorical,0.30
