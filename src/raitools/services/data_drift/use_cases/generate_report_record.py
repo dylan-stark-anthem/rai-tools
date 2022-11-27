@@ -26,10 +26,10 @@ def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
         dataset_version=record.bundle.job_config.dataset_version,
         model_catalog_id=record.bundle.job_config.model_catalog_id,
         thresholds=_thresholds_map(record.results.features),
-        num_total_features=len(record.results.features),
-        num_features_drifted=len(_drifted_feature_list(features_list)),
-        top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
-        top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
+        num_total_features=record.results.drift_summary.num_total_features,
+        num_features_drifted=record.results.drift_summary.num_features_drifted,
+        top_10_features_drifted=record.results.drift_summary.top_10_features_drifted,
+        top_20_features_drifted=record.results.drift_summary.top_20_features_drifted,
         fields=_fields(),
         observations=_observations(features_list),
         num_rows_baseline_data=record.bundle.data["baseline_data"].num_rows,
@@ -53,33 +53,6 @@ def _thresholds_map(
         threshold = feature.statistical_test.significance_level
         thresholds[kind][test_name] = threshold
     return thresholds
-
-
-def _drifted_feature_list(
-    features: List[DriftSummaryFeature],
-) -> List[DriftSummaryFeature]:
-    drifted_features = [
-        feature for feature in features if feature.drift_status == "drifted"
-    ]
-    return drifted_features
-
-
-def _top_10_drifted_features_list(
-    features: List[DriftSummaryFeature],
-) -> List[DriftSummaryFeature]:
-    top_10_drifted_features = [
-        feature for feature in _drifted_feature_list(features) if feature.rank <= 10
-    ]
-    return top_10_drifted_features
-
-
-def _top_20_drifted_features_list(
-    features: List[DriftSummaryFeature],
-) -> List[DriftSummaryFeature]:
-    top_20_drifted_features = [
-        feature for feature in _drifted_feature_list(features) if feature.rank <= 20
-    ]
-    return top_20_drifted_features
 
 
 def _fields() -> List[str]:

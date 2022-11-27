@@ -76,16 +76,26 @@ class DriftSummaryFeature(BaseModel):
 
 
 class RecordDataSummary(BaseModel):
-    """Data drift record drift summary."""
+    """Data drift record data summary."""
 
     num_numerical_features: NonNegativeCount
     num_categorical_features: NonNegativeCount
+
+
+class RecordDriftSummary(BaseModel):
+    """Data drift record drift summary."""
+
+    num_total_features: PositiveCount
+    num_features_drifted: NonNegativeCount
+    top_10_features_drifted: NonNegativeCount
+    top_20_features_drifted: NonNegativeCount
 
 
 class RecordResults(BaseModel):
     """Data drift record results."""
 
     data_summary: RecordDataSummary
+    drift_summary: RecordDriftSummary
     features: Dict[str, DriftSummaryFeature]
 
 

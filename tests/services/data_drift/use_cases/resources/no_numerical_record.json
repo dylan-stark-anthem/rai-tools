@@ -88,6 +88,12 @@
         "data_summary": {
             "num_numerical_features": 0,
             "num_categorical_features": 3
+        },
+        "drift_summary": {
+            "num_total_features": 3,
+            "num_features_drifted": 1,
+            "top_10_features_drifted": 1,
+            "top_20_features_drifted": 1
         }
     }
 }

@@ -9,6 +9,12 @@
             "num_numerical_features": 2,
             "num_categorical_features": 0
         },
+        "drift_summary": {
+            "num_total_features": 2,
+            "num_features_drifted": 1,
+            "top_10_features_drifted": 1,
+            "top_20_features_drifted": 1
+        },
         "features": {
             "numerical_feature_0": {
                 "name": "numerical_feature_0",

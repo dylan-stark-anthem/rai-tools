@@ -2,7 +2,7 @@
 
 from operator import attrgetter
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import pyarrow as pa
 
@@ -19,6 +19,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
     FeatureStatisticalTest,
     RecordBundle,
     RecordDataSummary,
+    RecordDriftSummary,
     RecordMetadata,
     RecordResults,
 )
@@ -92,11 +93,18 @@ def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
         features,
     )
 
+    features_list = list(drift_summary_features.values())
+
     results = RecordResults(
         data_summary=RecordDataSummary(
-            features=features,
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
+        ),
+        drift_summary=RecordDriftSummary(
+            num_total_features=len(features_list),
+            num_features_drifted=len(_drifted_feature_list(features_list)),
+            top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
+            top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
         ),
         features=drift_summary_features,
     )
@@ -171,3 +179,30 @@ def _validate_is_pathlib_path(bundle_path: Path) -> None:
         raise BadPathToBundleError(
             f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{type(bundle_path)}`."
         )
+
+
+def _drifted_feature_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
+    drifted_features = [
+        feature for feature in features if feature.drift_status == "drifted"
+    ]
+    return drifted_features
+
+
+def _top_10_drifted_features_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
+    top_10_drifted_features = [
+        feature for feature in _drifted_feature_list(features) if feature.rank <= 10
+    ]
+    return top_10_drifted_features
+
+
+def _top_20_drifted_features_list(
+    features: List[DriftSummaryFeature],
+) -> List[DriftSummaryFeature]:
+    top_20_drifted_features = [
+        feature for feature in _drifted_feature_list(features) if feature.rank <= 20
+    ]
+    return top_20_drifted_features

@@ -37,10 +37,10 @@ class HtmlReportBuilder:
             self.record.results.data_summary.num_categorical_features,
         )
         drift_summary_html = self.drift_summary_maker(
-            self.report_data.num_total_features,
-            self.report_data.num_features_drifted,
-            self.report_data.top_10_features_drifted,
-            self.report_data.top_20_features_drifted,
+            self.record.results.drift_summary.num_total_features,
+            self.record.results.drift_summary.num_features_drifted,
+            self.record.results.drift_summary.top_10_features_drifted,
+            self.record.results.drift_summary.top_20_features_drifted,
         )
         drift_magnitude_html = self.drift_magnitude_maker(
             self.report_data.fields, self.report_data.observations

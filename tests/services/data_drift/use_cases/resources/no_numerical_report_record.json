@@ -12,17 +12,11 @@
     "num_columns_baseline_data": 3,
     "num_rows_test_data": 10,
     "num_columns_test_data": 3,
-    "num_numerical_features": 0,
-    "num_categorical_features": 3,
     "thresholds": {
         "categorical": {
             "chi-squared": 0.05
         }
     },
-    "num_total_features": 3,
-    "num_features_drifted": 1,
-    "top_10_features_drifted": 1,
-    "top_20_features_drifted": 1,
     "fields": [
         "rank",
         "importance_score",
