@@ -34,7 +34,7 @@
             "test_data_filename": "some_test_data.csv"
         }
     },
-    "drift_summary": {
+    "results": {
         "features": {
             "categorical_feature_0": {
                 "name": "categorical_feature_0",
@@ -85,7 +85,7 @@
                 "drift_status": "not drifted"
             }
         },
-        "metadata": {
+        "data_summary": {
             "num_numerical_features": 0,
             "num_categorical_features": 3
         }

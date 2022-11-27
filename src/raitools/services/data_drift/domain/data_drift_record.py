@@ -55,13 +55,6 @@ class RecordMetadata(BaseModel):
     raitools_version: str = Field(raitools.__version__, const=True)
 
 
-class DriftSummaryMetadata(BaseModel):
-    """Summary statistics for data."""
-
-    num_numerical_features: NonNegativeCount
-    num_categorical_features: NonNegativeCount
-
-
 class FeatureStatisticalTest(BaseModel):
     """Drift summary."""
 
@@ -82,11 +75,18 @@ class DriftSummaryFeature(BaseModel):
     drift_status: DriftStatus
 
 
-class RecordDriftSummary(BaseModel):
+class RecordDataSummary(BaseModel):
     """Data drift record drift summary."""
 
+    num_numerical_features: NonNegativeCount
+    num_categorical_features: NonNegativeCount
+
+
+class RecordResults(BaseModel):
+    """Data drift record results."""
+
+    data_summary: RecordDataSummary
     features: Dict[str, DriftSummaryFeature]
-    metadata: DriftSummaryMetadata
 
 
 class DataDriftRecord(BaseModel):
@@ -95,5 +95,5 @@ class DataDriftRecord(BaseModel):
     apiVersion: str = Field("raitools/v1", const=True)
     kind: str = Field("DataDriftRecord", const=True)
     metadata: RecordMetadata
+    results: RecordResults
     bundle: RecordBundle
-    drift_summary: RecordDriftSummary

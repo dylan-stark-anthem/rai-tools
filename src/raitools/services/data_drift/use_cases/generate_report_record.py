@@ -17,7 +17,7 @@ def generate_report_record(record: DataDriftRecord) -> DataDriftReportRecord:
 
 def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
     """Compiles report data from the given record."""
-    features_list = list(record.drift_summary.features.values())
+    features_list = list(record.results.features.values())
 
     data_drift_report = DataDriftReportRecord(
         metadata=record.metadata,
@@ -25,8 +25,8 @@ def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
         dataset_name=record.bundle.job_config.dataset_name,
         dataset_version=record.bundle.job_config.dataset_version,
         model_catalog_id=record.bundle.job_config.model_catalog_id,
-        thresholds=_thresholds_map(record.drift_summary.features),
-        num_total_features=len(record.drift_summary.features),
+        thresholds=_thresholds_map(record.results.features),
+        num_total_features=len(record.results.features),
         num_features_drifted=len(_drifted_feature_list(features_list)),
         top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
         top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
@@ -36,10 +36,8 @@ def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
         num_columns_baseline_data=record.bundle.data["baseline_data"].num_columns,
         num_rows_test_data=record.bundle.data["test_data"].num_rows,
         num_columns_test_data=record.bundle.data["test_data"].num_columns,
-        num_numerical_features=(record.drift_summary.metadata.num_numerical_features),
-        num_categorical_features=(
-            record.drift_summary.metadata.num_categorical_features
-        ),
+        num_numerical_features=(record.results.data_summary.num_numerical_features),
+        num_categorical_features=(record.results.data_summary.num_categorical_features),
     )
 
     return data_drift_report

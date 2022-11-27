@@ -5,6 +5,7 @@ import time
 from typing import Any, Callable, Dict, List
 
 import bs4
+from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 
 from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
 
@@ -18,6 +19,7 @@ class HtmlReportBuilder:
         """Initializes report builder."""
         self.timestamp: str = time.strftime("%Y-%m-%d %H:%M:%S")
 
+        self.record: DataDriftRecord
         self.report_data: DataDriftReportRecord
 
         self.thresholds_list_maker: Callable[
@@ -31,8 +33,8 @@ class HtmlReportBuilder:
         """Builds an HTML report."""
         thresholds_list_html = self.thresholds_list_maker(self.report_data.thresholds)
         data_summary_html = self.data_summary_maker(
-            self.report_data.num_numerical_features,
-            self.report_data.num_categorical_features,
+            self.record.results.data_summary.num_numerical_features,
+            self.record.results.data_summary.num_categorical_features,
         )
         drift_summary_html = self.drift_summary_maker(
             self.report_data.num_total_features,

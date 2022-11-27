@@ -16,11 +16,11 @@ from raitools.services.data_drift.domain.data_drift_record import (
     BundleManifest,
     DataDriftRecord,
     DriftSummaryFeature,
-    DriftSummaryMetadata,
     FeatureStatisticalTest,
     RecordBundle,
-    RecordDriftSummary,
+    RecordDataSummary,
     RecordMetadata,
+    RecordResults,
 )
 from raitools.services.data_drift.domain.stats import statistical_tests
 from raitools.services.data_drift.exceptions import BadPathToBundleError
@@ -34,12 +34,12 @@ def process_bundle(bundle_path: Path) -> DataDriftRecord:
 
     metadata = _compile_metadata_for_record()
     record_bundle = _compile_bundle_for_record(bundle, bundle_path.name)
-    drift_summary = _compile_drift_summary_for_record(bundle)
+    results = _compile_drift_results_for_record(bundle)
 
     record = DataDriftRecord(
         metadata=metadata,
         bundle=record_bundle,
-        drift_summary=drift_summary,
+        results=results,
     )
 
     return record
@@ -80,7 +80,7 @@ def _compile_bundle_for_record(
     return record_bundle
 
 
-def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSummary:
+def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
     """Creates drift summary for record."""
     features = bundle.feature_mapping.feature_mapping
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
@@ -92,16 +92,16 @@ def _compile_drift_summary_for_record(bundle: DataDriftBundle) -> RecordDriftSum
         features,
     )
 
-    drift_summary = RecordDriftSummary(
-        features=drift_summary_features,
-        metadata=DriftSummaryMetadata(
+    results = RecordResults(
+        data_summary=RecordDataSummary(
             features=features,
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
         ),
+        features=drift_summary_features,
     )
 
-    return drift_summary
+    return results
 
 
 def _compile_features_for_drift_summary(

@@ -4,7 +4,11 @@
     "metadata": {
         "raitools_version": "0.1.0"
     },
-    "drift_summary": {
+    "results": {
+        "data_summary": {
+            "num_numerical_features": 2,
+            "num_categorical_features": 0
+        },
         "features": {
             "numerical_feature_0": {
                 "name": "numerical_feature_0",
@@ -38,10 +42,6 @@
                 },
                 "drift_status": "not drifted"
             }
-        },
-        "metadata": {
-            "num_numerical_features": 2,
-            "num_categorical_features": 0
         }
     },
     "bundle": {
