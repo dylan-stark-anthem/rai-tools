@@ -1,6 +1,6 @@
 """The data drift record."""
 
-from typing import Dict
+from typing import Any, Dict, List
 
 from pydantic import BaseModel, Field
 
@@ -91,11 +91,19 @@ class RecordDriftSummary(BaseModel):
     top_20_features_drifted: NonNegativeCount
 
 
+class RecordDriftDetails(BaseModel):
+    """Data drift record drift details."""
+
+    fields: List[str]
+    observations: Dict[str, Any]
+
+
 class RecordResults(BaseModel):
     """Data drift record results."""
 
     data_summary: RecordDataSummary
     drift_summary: RecordDriftSummary
+    drift_details: RecordDriftDetails
     features: Dict[str, DriftSummaryFeature]
 
 

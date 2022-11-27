@@ -2,7 +2,7 @@
 
 from operator import attrgetter
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import pyarrow as pa
 
@@ -19,6 +19,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
     FeatureStatisticalTest,
     RecordBundle,
     RecordDataSummary,
+    RecordDriftDetails,
     RecordDriftSummary,
     RecordMetadata,
     RecordResults,
@@ -105,6 +106,10 @@ def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
             num_features_drifted=len(_drifted_feature_list(features_list)),
             top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
             top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
+        ),
+        drift_details=RecordDriftDetails(
+            fields=_fields(),
+            observations=_observations(features_list),
         ),
         features=drift_summary_features,
     )
@@ -206,3 +211,30 @@ def _top_20_drifted_features_list(
         feature for feature in _drifted_feature_list(features) if feature.rank <= 20
     ]
     return top_20_drifted_features
+
+
+def _fields() -> List[str]:
+    fields = [
+        "rank",
+        "importance_score",
+        "name",
+        "kind",
+        "p_value",
+        "drift_status",
+    ]
+    return fields
+
+
+def _observations(features: List[DriftSummaryFeature]) -> Dict[str, Any]:
+    ranked_features = sorted(features, key=lambda x: x.rank)
+    observations: Dict[str, Any] = {
+        "rank": [feature.rank for feature in ranked_features],
+        "importance_score": [feature.importance_score for feature in ranked_features],
+        "name": [feature.name for feature in ranked_features],
+        "kind": [feature.kind for feature in ranked_features],
+        "p_value": [
+            feature.statistical_test.result.p_value for feature in ranked_features
+        ],
+        "drift_status": [feature.drift_status for feature in ranked_features],
+    }
+    return observations

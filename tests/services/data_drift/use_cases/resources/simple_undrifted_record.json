@@ -126,6 +126,60 @@
             "num_features_drifted": 0,
             "top_10_features_drifted": 0,
             "top_20_features_drifted": 0
+        },
+        "drift_details": {
+            "fields": [
+                "rank",
+                "importance_score",
+                "name",
+                "kind",
+                "p_value",
+                "drift_status"
+            ],
+            "observations": {
+                "rank": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "importance_score": [
+                    0.84442186,
+                    0.7579544,
+                    0.5112747,
+                    0.4205716,
+                    0.25891674
+                ],
+                "name": [
+                    "numerical_feature_0",
+                    "numerical_feature_1",
+                    "categorical_feature_2",
+                    "categorical_feature_0",
+                    "categorical_feature_1"
+                ],
+                "kind": [
+                    "numerical",
+                    "numerical",
+                    "categorical",
+                    "categorical",
+                    "categorical"
+                ],
+                "p_value": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "drift_status": [
+                    "not drifted",
+                    "not drifted",
+                    "not drifted",
+                    "not drifted",
+                    "not drifted"
+                ]
+            }
         }
     }
 }

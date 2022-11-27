@@ -16,45 +16,5 @@
         "categorical": {
             "chi-squared": 0.05
         }
-    },
-    "fields": [
-        "rank",
-        "importance_score",
-        "name",
-        "kind",
-        "p_value",
-        "drift_status"
-    ],
-    "observations": {
-        "rank": [
-            1,
-            2,
-            3
-        ],
-        "importance_score": [
-            0.84442186,
-            0.7579544,
-            0.4205716
-        ],
-        "name": [
-            "categorical_feature_0",
-            "categorical_feature_1",
-            "categorical_feature_2"
-        ],
-        "kind": [
-            "categorical",
-            "categorical",
-            "categorical"
-        ],
-        "p_value": [
-            0.009283244336110639,
-            1.0,
-            1.0
-        ],
-        "drift_status": [
-            "drifted",
-            "not drifted",
-            "not drifted"
-        ]
     }
 }

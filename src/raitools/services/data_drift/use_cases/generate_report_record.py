@@ -1,7 +1,7 @@
 """Report record (data) generation."""
 
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Dict
 from raitools.services.data_drift.domain.data_drift_record import (
     DataDriftRecord,
     DriftSummaryFeature,
@@ -17,8 +17,6 @@ def generate_report_record(record: DataDriftRecord) -> DataDriftReportRecord:
 
 def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
     """Compiles report data from the given record."""
-    features_list = list(record.results.features.values())
-
     data_drift_report = DataDriftReportRecord(
         metadata=record.metadata,
         report_name=record.bundle.job_config.report_name,
@@ -30,8 +28,8 @@ def compile_report_data(record: DataDriftRecord) -> DataDriftReportRecord:
         num_features_drifted=record.results.drift_summary.num_features_drifted,
         top_10_features_drifted=record.results.drift_summary.top_10_features_drifted,
         top_20_features_drifted=record.results.drift_summary.top_20_features_drifted,
-        fields=_fields(),
-        observations=_observations(features_list),
+        fields=record.results.drift_details.fields,
+        observations=record.results.drift_details.observations,
         num_rows_baseline_data=record.bundle.data["baseline_data"].num_rows,
         num_columns_baseline_data=record.bundle.data["baseline_data"].num_columns,
         num_rows_test_data=record.bundle.data["test_data"].num_rows,
@@ -53,30 +51,3 @@ def _thresholds_map(
         threshold = feature.statistical_test.significance_level
         thresholds[kind][test_name] = threshold
     return thresholds
-
-
-def _fields() -> List[str]:
-    fields = [
-        "rank",
-        "importance_score",
-        "name",
-        "kind",
-        "p_value",
-        "drift_status",
-    ]
-    return fields
-
-
-def _observations(features: List[DriftSummaryFeature]) -> Dict[str, Any]:
-    ranked_features = sorted(features, key=lambda x: x.rank)
-    observations: Dict[str, Any] = {
-        "rank": [feature.rank for feature in ranked_features],
-        "importance_score": [feature.importance_score for feature in ranked_features],
-        "name": [feature.name for feature in ranked_features],
-        "kind": [feature.kind for feature in ranked_features],
-        "p_value": [
-            feature.statistical_test.result.p_value for feature in ranked_features
-        ],
-        "drift_status": [feature.drift_status for feature in ranked_features],
-    }
-    return observations

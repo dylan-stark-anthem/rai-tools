@@ -1,7 +1,7 @@
 """Data drift report data model."""
 
 
-from typing import Any, Dict, List
+from typing import Dict
 
 from pydantic import BaseModel, Field
 
@@ -36,8 +36,6 @@ class DataDriftReportRecord(BaseModel):
     num_rows_test_data: PositiveCount
     num_columns_test_data: PositiveCount
     thresholds: Dict[str, Dict[str, float]]
-    fields: List[str]
-    observations: Dict[str, Any]
 
     class Config:
         """Configuration."""
