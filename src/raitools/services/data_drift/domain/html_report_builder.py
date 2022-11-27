@@ -5,9 +5,8 @@ import time
 from typing import Any, Callable, Dict, List
 
 import bs4
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 
-from raitools.services.data_drift.domain.data_drift_report import DataDriftReportRecord
+from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 
 
 class HtmlReportBuilder:
@@ -20,7 +19,6 @@ class HtmlReportBuilder:
         self.timestamp: str = time.strftime("%Y-%m-%d %H:%M:%S")
 
         self.record: DataDriftRecord
-        self.report_data: DataDriftReportRecord
 
         self.thresholds_list_maker: Callable[
             [Dict[str, Dict[str, float]]], str
@@ -72,8 +70,8 @@ class HtmlReportBuilder:
                         </thead>
                         <tbody>
                           <tr>
-                            <td>{self.report_data.num_rows_baseline_data} X {self.report_data.num_columns_baseline_data}</td>
-                            <td>{self.report_data.num_rows_test_data} X {self.report_data.num_columns_test_data}</td>
+                            <td>{self.record.bundle.data["baseline_data"].num_rows} X {self.record.bundle.data["baseline_data"].num_columns}</td>
+                            <td>{self.record.bundle.data["test_data"].num_rows} X {self.record.bundle.data["test_data"].num_columns}</td>
                           </tr>
                         </tbody>
                     </table>

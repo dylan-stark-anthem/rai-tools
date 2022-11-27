@@ -1,16 +1,12 @@
 """Example using the UCI Adult data set."""
 
-
 from pathlib import Path
 from zipfile import ZipFile
+
 from raitools.services.data_drift.domain.plotly_report_builder import (
     plotly_report_builder,
 )
-
 from raitools.services.data_drift.use_cases.generate_report import generate_report
-from raitools.services.data_drift.use_cases.generate_report_record import (
-    generate_report_record,
-)
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
 
@@ -38,8 +34,7 @@ def run_uci_adult_example(bundle_path: Path, output_path: Path) -> None:
 
     print(f"Using bundle at {bundle_path}")
     record = process_bundle(bundle_path)
-    report_record = generate_report_record(record)
-    report = generate_report(report_record, report_builder=plotly_report_builder)
+    report = generate_report(record, report_builder=plotly_report_builder)
 
     report_filename = f"{record.bundle.job_config.report_name}.html"
     report_path = output_path / report_filename
