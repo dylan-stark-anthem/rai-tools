@@ -1,5 +1,6 @@
 """Process data drift bundle."""
 
+from collections import defaultdict
 from operator import attrgetter
 from pathlib import Path
 from typing import Any, Dict, List
@@ -23,6 +24,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
     RecordDriftSummary,
     RecordMetadata,
     RecordResults,
+    ResultMetadata,
 )
 from raitools.services.data_drift.domain.stats import statistical_tests
 from raitools.services.data_drift.exceptions import BadPathToBundleError
@@ -97,6 +99,7 @@ def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
     features_list = list(drift_summary_features.values())
 
     results = RecordResults(
+        metadata=ResultMetadata(thresholds=_thresholds_map(drift_summary_features)),
         data_summary=RecordDataSummary(
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
@@ -238,3 +241,15 @@ def _observations(features: List[DriftSummaryFeature]) -> Dict[str, Any]:
         "drift_status": [feature.drift_status for feature in ranked_features],
     }
     return observations
+
+
+def _thresholds_map(
+    features: Dict[str, DriftSummaryFeature]
+) -> Dict[str, Dict[str, float]]:
+    thresholds: Dict[str, Dict[str, float]] = defaultdict(dict)
+    for feature in features.values():
+        kind = feature.kind
+        test_name = feature.statistical_test.name
+        threshold = feature.statistical_test.significance_level
+        thresholds[kind][test_name] = threshold
+    return thresholds

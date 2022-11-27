@@ -1845,6 +1845,16 @@
                 "drift_status": "not drifted"
             }
         },
+        "metadata": {
+            "thresholds": {
+                "numerical": {
+                    "kolmogorov-smirnov": 0.05
+                },
+                "categorical": {
+                    "chi-squared": 0.05
+                }
+            }
+        },
         "data_summary": {
             "num_numerical_features": 56,
             "num_categorical_features": 57

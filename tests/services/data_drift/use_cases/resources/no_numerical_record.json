@@ -85,6 +85,13 @@
                 "drift_status": "not drifted"
             }
         },
+        "metadata": {
+            "thresholds": {
+                "categorical": {
+                    "chi-squared": 0.05
+                }
+            }
+        },
         "data_summary": {
             "num_numerical_features": 0,
             "num_categorical_features": 3

@@ -31,7 +31,9 @@ class HtmlReportBuilder:
 
     def compile(self) -> None:
         """Builds an HTML report."""
-        thresholds_list_html = self.thresholds_list_maker(self.report_data.thresholds)
+        thresholds_list_html = self.thresholds_list_maker(
+            self.record.results.metadata.thresholds
+        )
         data_summary_html = self.data_summary_maker(
             self.record.results.data_summary.num_numerical_features,
             self.record.results.data_summary.num_categorical_features,
@@ -50,14 +52,14 @@ class HtmlReportBuilder:
         self.html = f"""\
             <html>
                 <head>
-                    <title>{self.report_data.report_name}</title>
+                    <title>{self.record.bundle.job_config.report_name}</title>
                 </head>
                 <body>
                     <h3 style ='color: darkred'>Timestamp: {self.timestamp}</h3>
-                    <h3 style ='color: darkred'> Report name: {self.report_data.report_name} </h3>
-                    <h3 style ='color: darkred'> Dataset name: {self.report_data.dataset_name} </h3>
-                    <h3 style ='color: darkred'> Dataset Version: {self.report_data.dataset_version} </h3>
-                    <h3 style ='color: darkred'> Model Catalog ID: {self.report_data.model_catalog_id} </h3>
+                    <h3 style ='color: darkred'> Report name: {self.record.bundle.job_config.report_name} </h3>
+                    <h3 style ='color: darkred'> Dataset name: {self.record.bundle.job_config.dataset_name} </h3>
+                    <h3 style ='color: darkred'> Dataset Version: {self.record.bundle.job_config.dataset_version} </h3>
+                    <h3 style ='color: darkred'> Model Catalog ID: {self.record.bundle.job_config.model_catalog_id} </h3>
                     <h3 style ='color: darkred'>
                         {thresholds_list_html}
                     </h3>

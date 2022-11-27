@@ -98,9 +98,16 @@ class RecordDriftDetails(BaseModel):
     observations: Dict[str, Any]
 
 
+class ResultMetadata(BaseModel):
+    """Data drift result metadata."""
+
+    thresholds: Dict[str, Dict[str, float]]
+
+
 class RecordResults(BaseModel):
     """Data drift record results."""
 
+    metadata: ResultMetadata
     data_summary: RecordDataSummary
     drift_summary: RecordDriftSummary
     drift_details: RecordDriftDetails

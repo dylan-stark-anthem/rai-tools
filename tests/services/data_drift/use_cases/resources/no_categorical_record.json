@@ -5,6 +5,13 @@
         "raitools_version": "0.1.0"
     },
     "results": {
+        "metadata": {
+            "thresholds": {
+                "numerical": {
+                    "kolmogorov-smirnov": 0.05
+                }
+            }
+        },
         "data_summary": {
             "num_numerical_features": 2,
             "num_categorical_features": 0
