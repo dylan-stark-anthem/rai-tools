@@ -9,8 +9,9 @@ import zipfile
 import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel
-from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
 
+from raitools.services.data_drift.domain.data_file_readers import read_data_file
+from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
 from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
 from raitools.services.data_drift.domain.types import FileName
 from raitools.services.data_drift.exceptions import (
@@ -151,16 +152,6 @@ def read_feature_mapping_file(data_file: IO[bytes], data_filename: str) -> pa.Ta
             raise BadFeatureMappingError(
                 f"Feature mapping file `{data_filename}` is empty."
             ) from err
-        raise
-
-
-def read_data_file(data_file: IO[bytes], data_filename: str) -> pa.Table:
-    """Reads user-provided data file."""
-    try:
-        return read_csv(data_file)
-    except pa.lib.ArrowInvalid as err:
-        if "Empty CSV file" in err.args:
-            raise BadDataFileError(f"Data file `{data_filename}` is empty.") from err
         raise
 
 
