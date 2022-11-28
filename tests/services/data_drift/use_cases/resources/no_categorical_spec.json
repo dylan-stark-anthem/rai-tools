@@ -39,20 +39,20 @@
         },
         "numerical_feature_1": {
             "name": "numerical_feature_1",
-            "kind": "int64",
+            "kind": "float32",
             "baseline_data": {
-                "method": "random.randrange",
+                "method": "random.uniform",
                 "kwargs": {
-                    "start": 0,
-                    "stop": 10
+                    "a": 0,
+                    "b": 10
                 },
                 "seed": 0
             },
             "test_data": {
-                "method": "random.randrange",
+                "method": "random.uniform",
                 "kwargs": {
-                    "start": 0,
-                    "stop": 10
+                    "a": 0,
+                    "b": 10
                 },
                 "seed": 0
             }

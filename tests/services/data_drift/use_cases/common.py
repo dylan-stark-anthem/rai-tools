@@ -68,6 +68,7 @@ def create_data_table(data_spec: Dict, dataset: str, count: int) -> pa.Table:
     """Creates a data table based on given spec."""
     PA_TYPE = {
         "int64": pa.int64(),
+        "float32": pa.float32(),
         "string": pa.string(),
     }
 
@@ -89,6 +90,7 @@ def create_feature_mapping_table(data_spec: Dict) -> pa.Table:
     """Creates a feature mapping table based on given spec."""
     FEATURE_KIND = {
         "int64": "numerical",
+        "float32": "numerical",
         "string": "categorical",
     }
 
