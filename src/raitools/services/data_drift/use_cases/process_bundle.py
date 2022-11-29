@@ -111,6 +111,7 @@ def _compile_drift_results_for_record(
 
     results = RecordResults(
         metadata=ResultMetadata(
+            report_name=bundle.job_config.report_name,
             timestamp=timestamp,
             uuid=uuid,
             thresholds=_thresholds_map(drift_summary_features),

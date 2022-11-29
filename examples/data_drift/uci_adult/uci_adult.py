@@ -1,5 +1,6 @@
 """Example using the UCI Adult data set."""
 
+import json
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -36,10 +37,15 @@ def run_uci_adult_example(bundle_path: Path, output_path: Path) -> None:
     record = process_bundle(bundle_path)
     report = generate_report(record, report_builder=plotly_report_builder)
 
+    record_filename = f"{record.bundle.job_config.report_name}.json"
+    record_path = output_path / record_filename
+    record_path.write_text(json.dumps(record.dict(), indent=4))
+
     report_filename = f"{record.bundle.job_config.report_name}.html"
     report_path = output_path / report_filename
     report_path.write_text(report)
 
+    print(f"Wrote record to {record_path}")
     print(f"Wrote report to {report_path}")
     print("Done.")
 
