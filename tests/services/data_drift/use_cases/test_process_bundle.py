@@ -42,7 +42,9 @@ def test_can_process_bundle(
     expected_record = prepare_record(record_filename)
 
     actual_record = process_bundle(
-        bundle_path, timestamp=expected_record.results.metadata.timestamp
+        bundle_path,
+        timestamp=expected_record.results.metadata.timestamp,
+        uuid=expected_record.results.metadata.uuid,
     )
 
     assert_equal_records(expected_record, actual_record)

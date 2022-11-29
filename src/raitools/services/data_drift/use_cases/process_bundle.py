@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from operator import attrgetter
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import uuid
 
 import pyarrow as pa
 
@@ -32,7 +33,7 @@ from raitools.services.data_drift.exceptions import BadPathToBundleError
 
 
 def process_bundle(
-    bundle_path: Path, timestamp: Optional[str] = None
+    bundle_path: Path, timestamp: Optional[str] = None, uuid: Optional[str] = None
 ) -> DataDriftRecord:
     """Processes a data drift bundle."""
     _validate_is_pathlib_path(bundle_path)
@@ -41,7 +42,7 @@ def process_bundle(
 
     metadata = _compile_metadata_for_record()
     record_bundle = _compile_bundle_for_record(bundle, bundle_path.name)
-    results = _compile_drift_results_for_record(bundle, timestamp)
+    results = _compile_drift_results_for_record(bundle, timestamp, uuid)
 
     record = DataDriftRecord(
         metadata=metadata,
@@ -88,11 +89,13 @@ def _compile_bundle_for_record(
 
 
 def _compile_drift_results_for_record(
-    bundle: DataDriftBundle, timestamp: Optional[str] = None
+    bundle: DataDriftBundle, timestamp: Optional[str] = None, uuid: Optional[str] = None
 ) -> RecordResults:
     """Creates drift summary for record."""
     if not timestamp:
         timestamp = _timestamp()
+    if not uuid:
+        uuid = _uuid()
 
     features = bundle.feature_mapping.feature_mapping
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
@@ -108,7 +111,9 @@ def _compile_drift_results_for_record(
 
     results = RecordResults(
         metadata=ResultMetadata(
-            timestamp=timestamp, thresholds=_thresholds_map(drift_summary_features)
+            timestamp=timestamp,
+            uuid=uuid,
+            thresholds=_thresholds_map(drift_summary_features),
         ),
         data_summary=RecordDataSummary(
             num_numerical_features=num_numerical_features,
@@ -268,3 +273,8 @@ def _thresholds_map(
 def _timestamp() -> str:
     timestamp = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
     return timestamp
+
+
+def _uuid() -> str:
+    uuid_ = uuid.uuid4().hex
+    return uuid_
