@@ -1,7 +1,7 @@
 """HTML report builder for data drift."""
 
 
-import time
+from datetime import datetime
 from typing import Any, Callable, Dict, List
 
 import bs4
@@ -16,8 +16,6 @@ class HtmlReportBuilder:
         self,
     ) -> None:
         """Initializes report builder."""
-        self.timestamp: str = time.strftime("%Y-%m-%d %H:%M:%S")
-
         self.record: DataDriftRecord
 
         self.thresholds_list_maker: Callable[
@@ -29,6 +27,9 @@ class HtmlReportBuilder:
 
     def compile(self) -> None:
         """Builds an HTML report."""
+        timestamp_date = datetime.fromisoformat(self.record.results.metadata.timestamp)
+        timestamp_str = timestamp_date.strftime("%Y-%m-%d %H:%M:%S (%Z)")
+
         thresholds_list_html = self.thresholds_list_maker(
             self.record.results.metadata.thresholds
         )
@@ -53,7 +54,7 @@ class HtmlReportBuilder:
                     <title>{self.record.bundle.job_config.report_name}</title>
                 </head>
                 <body>
-                    <h3 style ='color: darkred'>Timestamp: {self.timestamp}</h3>
+                    <h3 style ='color: darkred'>Timestamp: {timestamp_str}</h3>
                     <h3 style ='color: darkred'> Report name: {self.record.bundle.job_config.report_name} </h3>
                     <h3 style ='color: darkred'> Dataset name: {self.record.bundle.job_config.dataset_name} </h3>
                     <h3 style ='color: darkred'> Dataset Version: {self.record.bundle.job_config.dataset_version} </h3>

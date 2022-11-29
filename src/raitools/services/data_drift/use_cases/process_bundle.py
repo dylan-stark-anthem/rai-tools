@@ -1,9 +1,10 @@
 """Process data drift bundle."""
 
 from collections import defaultdict
+from datetime import datetime, timezone
 from operator import attrgetter
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pyarrow as pa
 
@@ -30,7 +31,9 @@ from raitools.services.data_drift.domain.stats import statistical_tests
 from raitools.services.data_drift.exceptions import BadPathToBundleError
 
 
-def process_bundle(bundle_path: Path) -> DataDriftRecord:
+def process_bundle(
+    bundle_path: Path, timestamp: Optional[str] = None
+) -> DataDriftRecord:
     """Processes a data drift bundle."""
     _validate_is_pathlib_path(bundle_path)
 
@@ -38,7 +41,7 @@ def process_bundle(bundle_path: Path) -> DataDriftRecord:
 
     metadata = _compile_metadata_for_record()
     record_bundle = _compile_bundle_for_record(bundle, bundle_path.name)
-    results = _compile_drift_results_for_record(bundle)
+    results = _compile_drift_results_for_record(bundle, timestamp)
 
     record = DataDriftRecord(
         metadata=metadata,
@@ -84,8 +87,13 @@ def _compile_bundle_for_record(
     return record_bundle
 
 
-def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
+def _compile_drift_results_for_record(
+    bundle: DataDriftBundle, timestamp: Optional[str] = None
+) -> RecordResults:
     """Creates drift summary for record."""
+    if not timestamp:
+        timestamp = _timestamp()
+
     features = bundle.feature_mapping.feature_mapping
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
     num_categorical_features = _compute_num_feature_kind(features, "categorical")
@@ -99,7 +107,9 @@ def _compile_drift_results_for_record(bundle: DataDriftBundle) -> RecordResults:
     features_list = list(drift_summary_features.values())
 
     results = RecordResults(
-        metadata=ResultMetadata(thresholds=_thresholds_map(drift_summary_features)),
+        metadata=ResultMetadata(
+            timestamp=timestamp, thresholds=_thresholds_map(drift_summary_features)
+        ),
         data_summary=RecordDataSummary(
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
@@ -253,3 +263,8 @@ def _thresholds_map(
         threshold = feature.statistical_test.significance_level
         thresholds[kind][test_name] = threshold
     return thresholds
+
+
+def _timestamp() -> str:
+    timestamp = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+    return timestamp

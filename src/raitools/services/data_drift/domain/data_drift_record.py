@@ -101,6 +101,7 @@ class RecordDriftDetails(BaseModel):
 class ResultMetadata(BaseModel):
     """Data drift result metadata."""
 
+    timestamp: str
     thresholds: Dict[str, Dict[str, float]]
 
 

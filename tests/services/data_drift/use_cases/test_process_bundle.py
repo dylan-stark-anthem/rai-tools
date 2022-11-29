@@ -39,10 +39,12 @@ def test_can_process_bundle(
 ) -> None:
     """Tests that we can process a bundle."""
     bundle_path = prepare_bundle(spec_filename, tmp_path)
-
-    actual_record = process_bundle(bundle_path)
-
     expected_record = prepare_record(record_filename)
+
+    actual_record = process_bundle(
+        bundle_path, timestamp=expected_record.results.metadata.timestamp
+    )
+
     assert_equal_records(expected_record, actual_record)
 
 

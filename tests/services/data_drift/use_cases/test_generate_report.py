@@ -53,13 +53,13 @@ def test_can_generate_report(
 ) -> None:
     """Tests that we can generate an HTML report."""
     record = prepare_record(record_filename)
+    expected_report_html = prepare_report(report_html_filename)
 
     actual_report_html = generate_report(
         record,
         report_builder=simple_report_builder,
     )
 
-    expected_report_html = prepare_report(report_html_filename)
     _assert_equal_htmls(expected_report_html, actual_report_html)
 
 
@@ -98,7 +98,6 @@ def _assert_equal_htmls(expected_html: str, actual_html: str) -> None:
 def simple_report_builder_impl(record: DataDriftRecord) -> str:
     """Creates a report builder for the simple test case."""
     report_builder = HtmlReportBuilder()
-    report_builder.timestamp = "1970-01-01 00:00:00"
     report_builder.data_summary_maker = basic_data_summary_maker
     report_builder.drift_summary_maker = basic_drift_summary_maker
     report_builder.drift_magnitude_maker = basic_drift_magnitude_maker
