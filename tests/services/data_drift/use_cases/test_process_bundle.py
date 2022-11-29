@@ -221,6 +221,7 @@ def job_config() -> Dict:
     baseline_data_filename = "baseline_data.csv"
     test_data_filename = "test_data.csv"
     job_config = {
+        "service_name": "data_drift",
         "report_name": "report_name",
         "dataset_name": "dataset_name",
         "dataset_version": "dataset_version",

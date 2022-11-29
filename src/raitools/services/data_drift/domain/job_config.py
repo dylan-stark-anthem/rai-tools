@@ -10,6 +10,7 @@ from raitools.services.data_drift.exceptions import BadJobConfigError
 class DataDriftJobConfig(BaseModel):
     """A Data Drift job config."""
 
+    service_name: str
     report_name: str
     dataset_name: str
     dataset_version: str
@@ -17,6 +18,15 @@ class DataDriftJobConfig(BaseModel):
     baseline_data_filename: str
     test_data_filename: str
     model_catalog_id: str
+
+    @validator("service_name")
+    def check_service_name(cls, value: str) -> str:
+        """Checks that service name is set to "data_drift"."""
+        if value != "data_drift":
+            raise BadJobConfigError(
+                f'Service name must be "data_drift"; user-provided "{value}" is not valid'
+            )
+        return value
 
     @validator("report_name")
     def check_report_name(cls, value: str) -> str:

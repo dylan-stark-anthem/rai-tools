@@ -12,6 +12,7 @@ from raitools.services.data_drift.exceptions import BadJobConfigError
 def full_job_config_dict() -> Dict:
     """A full job config."""
     job_config = {
+        "service_name": "data_drift",
         "report_name": "Some report name",
         "dataset_name": "Some dataset name",
         "dataset_version": "v0.1.0",
@@ -26,6 +27,7 @@ def full_job_config_dict() -> Dict:
 @pytest.mark.parametrize(
     "field_name",
     [
+        ("service_name"),
         ("report_name"),
         ("dataset_name"),
         ("dataset_version"),
@@ -46,6 +48,35 @@ def test_job_config_without_field(field_name: str, full_job_config_dict: Dict) -
         "msg": "field required",
         "type": "value_error.missing",
     } in excinfo.value.errors()
+
+
+@pytest.mark.parametrize(
+    "service_name,error",
+    [
+        (
+            "",
+            BadJobConfigError(
+                'Service name must be "data_drift"; user-provided "" is not valid'
+            ),
+        ),
+        (
+            "not_data_drift",
+            BadJobConfigError(
+                'Service name must be "data_drift"; user-provided "not_data_drift" is not valid'
+            ),
+        ),
+    ],
+)
+def test_error_on_invalid_service_name(
+    service_name: str, error: BadJobConfigError, full_job_config_dict: Dict
+) -> None:
+    """Tests that we raise error if service name is invalid."""
+    full_job_config_dict["service_name"] = service_name
+
+    with pytest.raises(BadJobConfigError) as excinfo:
+        DataDriftJobConfig(**full_job_config_dict)
+
+    assert type(excinfo.value) == type(error) and excinfo.value.args == error.args
 
 
 @pytest.mark.parametrize(

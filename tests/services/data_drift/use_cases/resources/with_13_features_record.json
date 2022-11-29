@@ -6,6 +6,7 @@
     },
     "bundle": {
         "job_config": {
+            "service_name": "data_drift",
             "report_name": "Some simple report",
             "dataset_name": "Some name for this dataset",
             "dataset_version": "v0.1.0",
