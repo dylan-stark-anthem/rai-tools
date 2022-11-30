@@ -1,11 +1,12 @@
 """Tests for Z-IR statistical significance test."""
 
-
+import math
 from typing import List
 
-from raitools.stats.z_ir import get_z_ir_parameters, z_ir, sample_size
 import numpy
-import math
+import pytest
+
+from raitools.stats.z_ir import get_z_ir_parameters, z_ir, sample_size
 
 
 def test_can_run_z_ir_test() -> None:
@@ -36,12 +37,9 @@ def test_can_not_run_z_ir_test_empty_list() -> None:
     """Tests that we can not run the Z-IR test."""
     group_a_data: List = []
     group_b_data: List = []
-    try:
-        SR_min, SR_maj, SR_T, N, P_min = get_z_ir_parameters(group_a_data, group_b_data)
-        actual_statistic, actual_p_value = z_ir(SR_min, SR_maj, SR_T, N, P_min)
-        assert False
-    except:
-        assert True
+
+    with pytest.raises(IndexError):
+        get_z_ir_parameters(group_a_data, group_b_data)
 
 
 def test_can_not_run_z_ir_test_zero_value_list() -> None:
