@@ -9,7 +9,7 @@ import math
 
 
 def test_can_run_z_ir_test() -> None:
-
+    """test can run using one example from Morris paper."""
     total_n = 200
     proportion_minority = 0.25
     n_minority = total_n * proportion_minority
