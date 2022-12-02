@@ -1,5 +1,5 @@
 {
     "cucumber.features": [
-        "test_acceptance/features/*.feature"
+        "test_acceptance/services/data_drift/*.feature"
     ]
 }
