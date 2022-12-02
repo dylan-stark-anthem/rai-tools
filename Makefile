@@ -23,6 +23,12 @@ test:
 type_check:
 	poetry run mypy src tests --ignore-missing-import
 
+accept:
+	poetry run behave --stop
+
+accept_wip:
+	poetry run behave --stop --tags=wip
+
 ################################################################################
 
 examples:
@@ -31,6 +37,8 @@ examples:
 ################################################################################
 
 .PHONY: \
+	accept \
+	accept_wip \
 	build \
 	examples
 	help \

@@ -1,0 +1,5 @@
+{
+    "cucumber.features": [
+        "test_acceptance/features/*.feature"
+    ]
+}

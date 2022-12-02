@@ -33,6 +33,7 @@
 	},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"cucumberopen.cucumber-official",
 		"ms-python.python",
 		"ms-python.vscode-pylance",
 		"redhat.vscode-yaml"
