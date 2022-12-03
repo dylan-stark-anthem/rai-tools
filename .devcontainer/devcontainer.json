@@ -15,6 +15,7 @@
 	},
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
+		"editor.defaultFormatter": "ms-python.python",
 		"editor.formatOnSave": true,
 		"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
 		"python.formatting.provider": "black",
@@ -26,6 +27,7 @@
 		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
 		"python.linting.pylintEnabled": false,
 		"python.pythonPath": "/usr/local/bin/python",
+		"python.terminal.activateEnvironment": false,
 		"python.testing.pytestArgs": [
 			"tests"
 		],

@@ -1,17 +1,8 @@
 """Tests for generate report use case."""
 
-from typing import Callable
-
 import bs4
 import pytest
 
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.services.data_drift.domain.html_report_builder import (
-    HtmlReportBuilder,
-    basic_data_summary_maker,
-    basic_drift_magnitude_maker,
-    basic_drift_summary_maker,
-)
 from raitools.services.data_drift.use_cases.generate_report import generate_report
 
 from tests.services.data_drift.use_cases.common import prepare_record, prepare_report
@@ -49,16 +40,16 @@ from tests.services.data_drift.use_cases.common import prepare_record, prepare_r
 def test_can_generate_report(
     record_filename: str,
     report_html_filename: str,
-    simple_report_builder: Callable[[DataDriftRecord], str],
 ) -> None:
     """Tests that we can generate an HTML report."""
     record = prepare_record(record_filename)
     expected_report_html = prepare_report(report_html_filename)
 
-    actual_report_html = generate_report(
+    report = generate_report(
         record,
-        report_builder=simple_report_builder,
+        report_builder="simple",
     )
+    actual_report_html = report.results
 
     _assert_equal_htmls(expected_report_html, actual_report_html)
 
@@ -93,20 +84,3 @@ def _assert_equal_htmls(expected_html: str, actual_html: str) -> None:
     assert expected_soup.prettify(formatter=formatter) == actual_report_soup.prettify(
         formatter=formatter
     )
-
-
-def simple_report_builder_impl(record: DataDriftRecord) -> str:
-    """Creates a report builder for the simple test case."""
-    report_builder = HtmlReportBuilder()
-    report_builder.data_summary_maker = basic_data_summary_maker
-    report_builder.drift_summary_maker = basic_drift_summary_maker
-    report_builder.drift_magnitude_maker = basic_drift_magnitude_maker
-    report_builder.record = record
-    report_builder.compile()
-    return report_builder.get()
-
-
-@pytest.fixture
-def simple_report_builder() -> Callable[[DataDriftRecord], str]:
-    """Returms simple report builder method."""
-    return simple_report_builder_impl

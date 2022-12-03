@@ -13,6 +13,7 @@ build:
 	poetry run flake8 src tests
 	poetry run mypy src tests --ignore-missing-import
 	poetry run pytest --cov
+	poetry run behave --stop
 
 lint:
 	poetry run flake8 src tests

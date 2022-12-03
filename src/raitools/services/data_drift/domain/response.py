@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from raitools.domain.rai_error import RaiError
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.domain.data_drift_report import DataDriftReport
 
 
 class Response(BaseModel):
@@ -14,4 +15,4 @@ class Response(BaseModel):
     status_code: int
     status_desc: str
     message: str
-    response: Union[DataDriftRecord, RaiError]
+    body: Union[DataDriftRecord, DataDriftReport, RaiError]
