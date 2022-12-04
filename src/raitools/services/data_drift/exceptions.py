@@ -41,3 +41,9 @@ class BadFeatureMappingError(DataDriftError):
     """Bad feature mapping error."""
 
     code = 505
+
+
+class BadRecordError(DataDriftError):
+    """Bad record error."""
+
+    code = 506

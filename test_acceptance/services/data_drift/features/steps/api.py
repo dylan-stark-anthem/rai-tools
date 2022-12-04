@@ -27,9 +27,13 @@ def step_given(context: Context) -> None:
 @given("a user has a record")  # type: ignore
 def step_given(context: Context) -> None:
     """Adds a good record to the context."""
-    bundle_path = _get_path_to_well_formed_bundle(context)
-    response = _get_response_with_bundle_path(bundle_path)
-    context.record = response["body"]
+    context.record = _get_good_record(context)
+
+
+@given("a user has an corrupt record")  # type: ignore
+def step_given(context: Context) -> None:
+    """Adds a good record to the context."""
+    context.record = _get_bad_record(context)
 
 
 @when("they compile the record")  # type: ignore
@@ -56,7 +60,7 @@ def step_then(context: Context) -> None:
     assert context.response["body"]["kind"] == "DataDriftReport"
 
 
-@then("the Data Drift services returns an error in the response")  # type: ignore
+@then("the Data Drift service returns an error in the response")  # type: ignore
 def step_then(context: Context) -> None:
     """Takes step."""
     response = context.response
@@ -103,3 +107,16 @@ def _get_response_with_bundle_path(bundle_path: str) -> Dict:
         bundle_path=bundle_path, timestamp=run_timestamp, uuid=run_uuid
     )
     return response
+
+
+def _get_good_record(context: Context) -> Dict:
+    bundle_path = _get_path_to_well_formed_bundle(context)
+    response = _get_response_with_bundle_path(bundle_path)
+    record = response["body"]
+    return record
+
+
+def _get_bad_record(context: Context) -> Dict:
+    record = _get_good_record(context)
+    del record["results"]
+    return record

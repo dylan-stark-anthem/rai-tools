@@ -2,11 +2,13 @@
 
 from pathlib import Path
 from typing import Any, Dict
+
+from pydantic import ValidationError
 from raitools.domain.rai_error import RaiError
 
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.services.data_drift.domain.response import Response
-from raitools.services.data_drift.exceptions import DataDriftError
+from raitools.services.data_drift.exceptions import BadRecordError, DataDriftError
 from raitools.services.data_drift.use_cases.generate_report import generate_report
 from raitools.services.data_drift.use_cases.process_bundle import process_bundle
 
@@ -37,8 +39,12 @@ def get_report(record: Dict) -> Dict:
             record=DataDriftRecord(**record), report_builder="plotly"
         )
         return _make_response(result).dict()
+    except ValidationError as excinfo:
+        return _make_error_response(
+            "Failed to create DataDriftReport.", BadRecordError(*excinfo.args)
+        ).dict()
     except DataDriftError as excinfo:
-        return _make_error_response("Faised to create DataDriftReport.", excinfo).dict()
+        return _make_error_response("Failed to create DataDriftReport.", excinfo).dict()
 
 
 def _make_response(result: Any) -> Response:
