@@ -87,20 +87,20 @@ def step_then(context: Context, expected_status_message: str) -> None:
     assert response["message"] == expected_status_message
 
 
-def _get_path_to_well_formed_bundle(context: Context) -> str:
-    spec_filename = "simple_undrifted_spec.json"
+def _get_path_to_bundle_from_spec(spec_filename: str, context: Context) -> str:
     bundle_path = str(prepare_bundle(spec_filename, context.tmp_path))
     return bundle_path
+
+
+def _get_path_to_well_formed_bundle(context: Context) -> str:
+    return _get_path_to_bundle_from_spec("simple_undrifted_spec.json", context)
 
 
 def _get_path_to_ill_formed_bundle(context: Context) -> str:
-    spec_filename = "bad_simple_undrifted_spec.json"
-    bundle_path = str(prepare_bundle(spec_filename, context.tmp_path))
-    return bundle_path
+    return _get_path_to_bundle_from_spec("bad_simple_undrifted_spec.json", context)
 
 
 def _get_response_with_bundle_path(bundle_path: str) -> Dict:
-    """Gets the response for the given bundle."""
     run_timestamp = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
     run_uuid = uuid.uuid4().hex
     response = get_record(
