@@ -8,7 +8,7 @@ import zipfile
 
 import pyarrow as pa
 from pyarrow.csv import read_csv
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from raitools.services.data_drift.domain.data_file_readers import read_data_file
 from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
@@ -101,8 +101,12 @@ def get_job_config_from_bundle(bundle_path: Path) -> DataDriftJobConfig:
         job_config_json = json.loads(
             zipfile.Path(zip_file, at=str(job_config_path)).read_text()
         )
+
+    try:
         job_config = DataDriftJobConfig(**job_config_json)
-    return job_config
+        return job_config
+    except ValidationError as excinfo:
+        raise BadJobConfigError(*excinfo.args) from excinfo
 
 
 def get_feature_mapping_from_bundle(

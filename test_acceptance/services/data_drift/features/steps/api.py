@@ -18,6 +18,12 @@ def step_given(context: Context) -> None:
     context.bundle_path = _get_path_to_well_formed_bundle(context)
 
 
+@given("a user has an ill-formed bundle")  # type: ignore
+def step_given(context: Context) -> None:
+    """Adds a path to a bad bundle to the context."""
+    context.bundle_path = _get_path_to_ill_formed_bundle(context)
+
+
 @given("a user has a record")  # type: ignore
 def step_given(context: Context) -> None:
     """Adds a good record to the context."""
@@ -50,26 +56,41 @@ def step_then(context: Context) -> None:
     assert context.response["body"]["kind"] == "DataDriftReport"
 
 
+@then("the Data Drift services returns an error in the response")  # type: ignore
+def step_then(context: Context) -> None:
+    """Takes step."""
+    response = context.response
+    assert response["body"]["kind"] == "RaiError"
+
+
 @then('the status code is "{expected_status_code:d}"')  # type: ignore
 def step_then(context: Context, expected_status_code: int) -> None:
     """Takes step."""
-    assert context.response["status_code"] == 200
+    assert context.response["status_code"] == expected_status_code
 
 
 @then('the status description is "{expected_status_desc}"')  # type: ignore
 def step_then(context: Context, expected_status_desc: str) -> None:
     """Takes step."""
-    assert context.response["status_desc"] == expected_status_desc
+    response = context.response
+    assert response["status_desc"] == expected_status_desc
 
 
 @then('the message is "{expected_status_message}"')  # type: ignore
 def step_then(context: Context, expected_status_message: str) -> None:
     """Takes step."""
-    assert context.response["message"] == expected_status_message
+    response = context.response
+    assert response["message"] == expected_status_message
 
 
 def _get_path_to_well_formed_bundle(context: Context) -> str:
     spec_filename = "simple_undrifted_spec.json"
+    bundle_path = str(prepare_bundle(spec_filename, context.tmp_path))
+    return bundle_path
+
+
+def _get_path_to_ill_formed_bundle(context: Context) -> str:
+    spec_filename = "bad_simple_undrifted_spec.json"
     bundle_path = str(prepare_bundle(spec_filename, context.tmp_path))
     return bundle_path
 
