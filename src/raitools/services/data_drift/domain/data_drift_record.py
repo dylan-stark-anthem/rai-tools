@@ -122,6 +122,6 @@ class DataDriftRecord(BaseModel):
 
     apiVersion: str = Field("raitools/v1", const=True)
     kind: str = Field("DataDriftRecord", const=True)
-    metadata: RecordMetadata
+    metadata: RecordMetadata = RecordMetadata()
     results: RecordResults
     bundle: RecordBundle

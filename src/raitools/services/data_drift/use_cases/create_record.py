@@ -8,7 +8,6 @@ import uuid
 
 import pyarrow as pa
 
-import raitools
 from raitools.services.data_drift.domain.bundle import Bundle
 from raitools.services.data_drift.domain.data_drift_record import (
     BundleData,
@@ -20,7 +19,6 @@ from raitools.services.data_drift.domain.data_drift_record import (
     RecordDataSummary,
     RecordDriftDetails,
     RecordDriftSummary,
-    RecordMetadata,
     RecordResults,
     ResultMetadata,
 )
@@ -34,23 +32,15 @@ def create_record_from_bundle(
     uuid: Optional[str] = None,
 ) -> DataDriftRecord:
     """Processes a data drift bundle."""
-    metadata = _compile_metadata_for_record()
     record_bundle = _compile_bundle_for_record(bundle, bundle_filename)
     results = _compile_drift_results_for_record(bundle, timestamp, uuid)
 
     record = DataDriftRecord(
-        metadata=metadata,
         bundle=record_bundle,
         results=results,
     )
 
     return record
-
-
-def _compile_metadata_for_record() -> RecordMetadata:
-    """Creates record metadata."""
-    metadata = RecordMetadata(raitools_version=raitools.__version__)
-    return metadata
 
 
 def _compile_bundle_for_record(bundle: Bundle, bundle_filename: str) -> RecordBundle:
