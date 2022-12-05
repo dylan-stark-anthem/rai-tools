@@ -1,10 +1,8 @@
 """Process data drift bundle."""
 
 from collections import defaultdict
-from datetime import datetime, timezone
 from operator import attrgetter
 from typing import Any, Dict, List, Optional
-import uuid
 
 import pyarrow as pa
 
@@ -74,11 +72,6 @@ def _compile_drift_results_for_record(
     bundle: Bundle, timestamp: Optional[str] = None, uuid: Optional[str] = None
 ) -> RecordResults:
     """Creates drift summary for record."""
-    if not timestamp:
-        timestamp = _timestamp()
-    if not uuid:
-        uuid = _uuid()
-
     features = bundle.feature_mapping.feature_mapping
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
     num_categorical_features = _compute_num_feature_kind(features, "categorical")
@@ -244,13 +237,3 @@ def _thresholds_map(
         threshold = feature.statistical_test.significance_level
         thresholds[kind][test_name] = threshold
     return thresholds
-
-
-def _timestamp() -> str:
-    timestamp = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
-    return timestamp
-
-
-def _uuid() -> str:
-    uuid_ = uuid.uuid4().hex
-    return uuid_
