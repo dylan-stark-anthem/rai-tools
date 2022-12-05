@@ -6,7 +6,7 @@ from typing import Any, Dict
 from pydantic import ValidationError
 
 from raitools.services.data_drift.domain.bundle import create_bundle_from_zip
-from raitools.domain.rai_error import RaiError
+from raitools.rai_error import RaiError
 from raitools.exceptions import BadRecordError, DataDriftError
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.services.data_drift.domain.response import Response
