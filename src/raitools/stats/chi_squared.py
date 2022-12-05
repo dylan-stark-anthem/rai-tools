@@ -5,14 +5,12 @@ depends on concrete implementations from external packages.
 """
 
 
-from typing import List
+from typing import List, Tuple
 
 from scipy.stats.contingency import chi2_contingency
 
-from raitools.stats.types import StatisticalTestResultType
 
-
-def chi_squared(baseline_data: List, test_data: List) -> StatisticalTestResultType:
+def chi_squared(baseline_data: List, test_data: List) -> Tuple[float, float]:
     """Applies Chi-Squared test."""
     observed = create_contingency_table(baseline_data, test_data)
     chi2, p, _, _ = chi2_contingency(observed)
