@@ -4,7 +4,6 @@ from collections import defaultdict
 from operator import attrgetter
 from typing import Any, Dict, List, Optional
 
-import pyarrow as pa
 
 from raitools.services.data_drift.domain.bundle import Bundle
 from raitools.services.data_drift.domain.data_drift_record import (
@@ -12,7 +11,6 @@ from raitools.services.data_drift.domain.data_drift_record import (
     BundleManifest,
     DataDriftRecord,
     DriftSummaryFeature,
-    FeatureStatisticalTest,
     RecordBundle,
     RecordDataSummary,
     RecordDriftDetails,
@@ -20,7 +18,7 @@ from raitools.services.data_drift.domain.data_drift_record import (
     RecordResults,
     ResultMetadata,
 )
-from raitools.services.data_drift.domain.stats import statistical_tests
+from raitools.services.data_drift.use_cases.get_drift_results import get_drift_results
 
 
 def create_record_from_bundle(
@@ -30,8 +28,20 @@ def create_record_from_bundle(
     uuid: Optional[str] = None,
 ) -> DataDriftRecord:
     """Processes a data drift bundle."""
+    drift_results = get_drift_results(
+        baseline_data=bundle.baseline_data,
+        test_data=bundle.test_data,
+        feature_mapping=bundle.feature_mapping.feature_mapping,
+    )
+
     record_bundle = _compile_bundle_for_record(bundle, bundle_filename)
-    results = _compile_drift_results_for_record(bundle, timestamp, uuid)
+    results = _compile_drift_results_for_record(
+        drift_results,
+        bundle.feature_mapping.feature_mapping,
+        bundle.job_config.report_name,
+        timestamp,
+        uuid,
+    )
 
     record = DataDriftRecord(
         bundle=record_bundle,
@@ -69,41 +79,53 @@ def _compile_bundle_for_record(bundle: Bundle, bundle_filename: str) -> RecordBu
 
 
 def _compile_drift_results_for_record(
-    bundle: Bundle, timestamp: Optional[str] = None, uuid: Optional[str] = None
+    drift_results: Dict,
+    feature_mapping: Dict,
+    report_name: str,
+    timestamp: Optional[str] = None,
+    uuid: Optional[str] = None,
 ) -> RecordResults:
     """Creates drift summary for record."""
-    features = bundle.feature_mapping.feature_mapping
+    features = feature_mapping
+
+    drift_summary_features = _compile_features_for_drift_summary(
+        drift_results, feature_mapping
+    )
+
+    thresholds = _thresholds_map(drift_summary_features)
+
     num_numerical_features = _compute_num_feature_kind(features, "numerical")
     num_categorical_features = _compute_num_feature_kind(features, "categorical")
 
-    drift_summary_features = _compile_features_for_drift_summary(
-        bundle.baseline_data,
-        bundle.test_data,
-        features,
-    )
-
     features_list = list(drift_summary_features.values())
+    num_total_features = len(features_list)
+    num_features_drifted = len(_drifted_feature_list(features_list))
+    top_10_features_drifted = len(_top_10_drifted_features_list(features_list))
+    top_20_features_drifted = len(_top_20_drifted_features_list(features_list))
+
+    fields = _fields()
+    observations = _observations(features_list)
 
     results = RecordResults(
         metadata=ResultMetadata(
-            report_name=bundle.job_config.report_name,
+            report_name=report_name,
             timestamp=timestamp,
             uuid=uuid,
-            thresholds=_thresholds_map(drift_summary_features),
+            thresholds=thresholds,
         ),
         data_summary=RecordDataSummary(
             num_numerical_features=num_numerical_features,
             num_categorical_features=num_categorical_features,
         ),
         drift_summary=RecordDriftSummary(
-            num_total_features=len(features_list),
-            num_features_drifted=len(_drifted_feature_list(features_list)),
-            top_10_features_drifted=len(_top_10_drifted_features_list(features_list)),
-            top_20_features_drifted=len(_top_20_drifted_features_list(features_list)),
+            num_total_features=num_total_features,
+            num_features_drifted=num_features_drifted,
+            top_10_features_drifted=top_10_features_drifted,
+            top_20_features_drifted=top_20_features_drifted,
         ),
         drift_details=RecordDriftDetails(
-            fields=_fields(),
-            observations=_observations(features_list),
+            fields=fields,
+            observations=observations,
         ),
         features=drift_summary_features,
     )
@@ -112,56 +134,33 @@ def _compile_drift_results_for_record(
 
 
 def _compile_features_for_drift_summary(
-    baseline_data: pa.Table,
-    test_data: pa.Table,
-    feature: Dict,
+    drift_results: Dict, feature_mapping: Dict
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
-    significance_level = 0.05
-
     ranking = {
         x.name: rank
         for x, rank in zip(
             sorted(
-                [value for value in feature.values()],
+                [value for value in feature_mapping.values()],
                 key=attrgetter("importance_score"),
                 reverse=True,
             ),
-            range(1, len(feature.values()) + 1),
+            range(1, len(feature_mapping.values()) + 1),
         )
     }
 
     results: Dict[str, DriftSummaryFeature] = {}
-    for feature_name, feature_details in feature.items():
-        kind = feature_details.kind
-        tests = statistical_tests[kind]
-        for test_name, test_details in tests.items():
-            result = test_details["method"](
-                baseline_data.column(feature_name).to_pylist(),
-                test_data.column(feature_name).to_pylist(),
-            )
-            if result.p_value <= significance_level:
-                outcome = "reject null hypothesis"
-            else:
-                outcome = "fail to reject null hypothesis"
-            statistical_test = FeatureStatisticalTest(
-                name=test_name,
-                result=result,
-                significance_level=significance_level,
-                outcome=outcome,
-            )
-            if outcome == "reject null hypothesis":
-                drift_status = "drifted"
-            else:
-                drift_status = "not drifted"
-            results[feature_name] = DriftSummaryFeature(
-                name=feature_name,
-                kind=kind,
-                rank=ranking[feature_name],
-                importance_score=feature_details.importance_score,
-                statistical_test=statistical_test,
-                drift_status=drift_status,
-            )
+    for feature_name, feature_results in drift_results.items():
+        kind = feature_mapping[feature_name].kind
+        importance_score = feature_mapping[feature_name].importance_score
+        results[feature_name] = DriftSummaryFeature(
+            name=feature_name,
+            kind=kind,
+            rank=ranking[feature_name],
+            importance_score=importance_score,
+            statistical_test=feature_results["statistical_test"],
+            drift_status=feature_results["drift_status"],
+        )
 
     return results
 
