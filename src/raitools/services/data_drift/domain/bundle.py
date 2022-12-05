@@ -1,6 +1,5 @@
 """Data Drift bundle."""
 
-
 import json
 from pathlib import Path
 from typing import IO, List
