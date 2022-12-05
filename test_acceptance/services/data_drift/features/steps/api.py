@@ -7,7 +7,8 @@ import uuid
 from behave import given, then, when
 from behave.runner import Context
 
-from raitools.services.data_drift.api import get_record, get_report
+from raitools.services.data_drift.api.get_record import get_record
+from raitools.services.data_drift.api.get_report import get_report
 
 from tests.services.data_drift.use_cases.common import prepare_bundle
 
