@@ -1,12 +1,25 @@
 """Data Drift results."""
 
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, TypedDict
+
 import pyarrow as pa
 
+from raitools.services.data_drift.domain.statistical_test_result import (
+    StatisticalTestResult,
+)
 from raitools.services.data_drift.stats import statistical_tests
 
 
-def get_drift_result(test_fn: Callable, baseline_data: List, test_data: List) -> Dict:
+class Result(TypedDict):
+    """Statistical test result."""
+
+    test_name: str
+    drift_result: StatisticalTestResult
+
+
+def get_drift_result(
+    test_fn: Callable, baseline_data: List, test_data: List
+) -> StatisticalTestResult:
     """Computes drift result."""
     return test_fn(baseline_data, test_data)
 
@@ -17,7 +30,7 @@ def get_drift_results(
     feature_mapping: Dict,
 ) -> Dict:
     """Computes drift results."""
-    drift_results = {}
+    drift_results: Dict[str, Result] = {}
     for feature_name, feature_details in feature_mapping.items():
         kind = feature_details.kind
         for test_name, test_details in statistical_tests[kind].items():
@@ -42,16 +55,16 @@ def get_drift_results(
     significance_level = 0.05
 
     results = {}
-    for feature_name, drift_result in drift_results.items():
+    for feature_name, drift_result_ in drift_results.items():
         outcome = OUTCOME_DESC[
-            drift_result["drift_result"].p_value <= significance_level
+            drift_result_["drift_result"].p_value <= significance_level
         ]
         drift_status = STATUS_DESC[outcome]
         results[feature_name] = dict(
             name=feature_name,
             statistical_test=dict(
-                name=drift_result["test_name"],
-                result=drift_result["drift_result"],
+                name=drift_result_["test_name"],
+                result=drift_result_["drift_result"],
                 significance_level=significance_level,
                 outcome=outcome,
             ),
