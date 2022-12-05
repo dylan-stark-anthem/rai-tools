@@ -3,12 +3,12 @@
 import json
 from pathlib import Path
 from zipfile import ZipFile
+from raitools.domain.bundle import create_bundle_from_zip
 
-from raitools.services.data_drift.domain.plotly_report_builder import (
-    plotly_report_builder,
+from raitools.services.data_drift.use_cases.create_record import (
+    create_record_from_bundle,
 )
-from raitools.services.data_drift.use_cases.generate_report import generate_report
-from raitools.services.data_drift.use_cases.process_bundle import process_bundle
+from raitools.services.data_drift.use_cases.create_report import create_report
 
 
 def create_bundle(
@@ -34,8 +34,9 @@ def run_uci_adult_example(bundle_path: Path, output_path: Path) -> None:
     print("Running UCI Adult data set example ...")
 
     print(f"Using bundle at {bundle_path}")
-    record = process_bundle(bundle_path)
-    report = generate_report(record, report_builder=plotly_report_builder)
+    bundle = create_bundle_from_zip(bundle_path)
+    record = create_record_from_bundle(bundle=bundle, bundle_filename=bundle_path.name)
+    report = create_report(record, report_builder="plotly")
 
     record_filename = f"{record.bundle.job_config.report_name}.json"
     record_path = output_path / record_filename

@@ -1,4 +1,4 @@
-"""Tests for process bundle use case."""
+"""Tests for bundles."""
 
 import json
 from pathlib import Path
@@ -6,48 +6,14 @@ from typing import Any, Dict
 from zipfile import ZipFile
 
 import pytest
-from raitools.services.data_drift.exceptions import (
+from raitools.exceptions import (
     BadBundleZipFileError,
     BadDataFileError,
     BadFeatureMappingError,
     BadJobConfigError,
     BadPathToBundleError,
 )
-
-from raitools.services.data_drift.use_cases.process_bundle import process_bundle
-
-from tests.asserts import assert_equal_records
-from tests.services.data_drift.use_cases.common import (
-    prepare_bundle,
-    prepare_record,
-)
-
-
-@pytest.mark.parametrize(
-    "spec_filename,record_filename",
-    [
-        ("simple_undrifted_spec.json", "simple_undrifted_record.json"),
-        ("simple_drifted_spec.json", "simple_drifted_record.json"),
-        ("no_numerical_spec.json", "no_numerical_record.json"),
-        ("no_categorical_spec.json", "no_categorical_record.json"),
-        ("with_113_features_spec.json", "with_113_features_record.json"),
-        ("with_13_features_spec.json", "with_13_features_record.json"),
-    ],
-)
-def test_can_process_bundle(
-    spec_filename: str, record_filename: str, tmp_path: Path
-) -> None:
-    """Tests that we can process a bundle."""
-    bundle_path = prepare_bundle(spec_filename, tmp_path)
-    expected_record = prepare_record(record_filename)
-
-    actual_record = process_bundle(
-        bundle_path,
-        timestamp=expected_record.results.metadata.timestamp,
-        uuid=expected_record.results.metadata.uuid,
-    )
-
-    assert_equal_records(expected_record, actual_record)
+from raitools.services.data_drift.domain.bundle import create_bundle_from_zip
 
 
 @pytest.mark.parametrize(
@@ -70,7 +36,7 @@ def test_can_process_bundle(
 def test_path_to_bundle_not_a_path(bundle_path: Any, error_message: str) -> None:
     """Tests that we raise appropriate error if path to bundle is not a Path."""
     with pytest.raises(BadPathToBundleError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
     assert error_message in str(excinfo.value)
 
 
@@ -97,7 +63,7 @@ def test_path_to_bundle_not_a_path(bundle_path: Any, error_message: str) -> None
 def test_path_to_bundle_not_a_zip(bundle_path: Path, error_message: str) -> None:
     """Tests that we raise appropriate error if path not a zip file."""
     with pytest.raises(BadPathToBundleError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
     assert error_message in str(excinfo.value)
 
 
@@ -109,7 +75,7 @@ def test_bundle_zip_empty(tmp_path: Path) -> None:
     error_message = f"Bundle zip file is empty: `{bundle_path}`"
 
     with pytest.raises(BadBundleZipFileError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -125,7 +91,7 @@ def test_bundle_zip_without_json(tmp_path: Path) -> None:
     error_message = f"Bundle zip file does not have any `.json` files: `{bundle_path}`"
 
     with pytest.raises(BadBundleZipFileError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -144,7 +110,7 @@ def test_bundle_zip_with_too_many_json(tmp_path: Path) -> None:
     error_message = f"Bundle zip file has too many `.json` files: `{bundle_path}`"
 
     with pytest.raises(BadBundleZipFileError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -161,7 +127,7 @@ def test_job_config_not_well_formed(tmp_path: Path) -> None:
     )
 
     with pytest.raises(BadJobConfigError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -185,7 +151,7 @@ def test_baseline_data_filename_not_in_zip(tmp_path: Path) -> None:
     error_message = f"Baseline data file `{baseline_data_filename}` referenced in `{job_config_path.name}` not in `{bundle_path}`."
 
     with pytest.raises(BadJobConfigError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -209,7 +175,7 @@ def test_test_data_filename_not_in_zip(tmp_path: Path) -> None:
     error_message = f"Test data file `{test_data_filename}` referenced in `{job_config_path.name}` not in `{bundle_path}`."
 
     with pytest.raises(BadJobConfigError) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert error_message in str(excinfo.value)
 
@@ -665,7 +631,7 @@ def test_csv_files(
     expected_error = request.getfixturevalue(expected_error_fixture)
 
     with pytest.raises(expected_error.__class__) as excinfo:
-        process_bundle(bundle_path)
+        create_bundle_from_zip(bundle_path)
 
     assert (
         type(excinfo.value) == type(expected_error)

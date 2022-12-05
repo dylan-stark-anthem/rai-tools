@@ -6,8 +6,8 @@ from typing import Callable
 import pyarrow as pa
 import pytest
 
+from raitools.exceptions import BadDataFileError
 from raitools.services.data_drift.domain.data_file_readers import read_data_file
-from raitools.services.data_drift.exceptions import BadDataFileError
 
 
 @pytest.mark.parametrize(

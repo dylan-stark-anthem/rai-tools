@@ -12,7 +12,7 @@ from raitools.services.data_drift.domain.simple_report_builder import (
 )
 
 
-def generate_report(record: DataDriftRecord, report_builder: str) -> DataDriftReport:
+def create_report(record: DataDriftRecord, report_builder: str) -> DataDriftReport:
     """Generates a report for the given record."""
     report_builder_impl = _get_report_builder(report_builder)
     report = DataDriftReport(results=report_builder_impl(record))

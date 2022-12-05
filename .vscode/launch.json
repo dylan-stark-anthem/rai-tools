@@ -5,13 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Behave current file",
+            "name": "Behave WIP",
             "type": "python",
             "request": "launch",
             "module": "behave",
             "console": "integratedTerminal",
             "args": [
-                "--wip"
+                "--wip",
+                "--stop"
+            ]
+        },
+        {
+            "name": "Behave (all)",
+            "type": "python",
+            "request": "launch",
+            "module": "behave",
+            "console": "integratedTerminal",
+            "args": [
+                "--stop"
             ]
         }
     ]

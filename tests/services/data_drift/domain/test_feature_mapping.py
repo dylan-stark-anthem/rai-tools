@@ -4,8 +4,8 @@ from typing import Any, Dict
 from pydantic import ValidationError
 import pytest
 
+from raitools.exceptions import BadFeatureMappingError
 from raitools.services.data_drift.domain.feature_mapping import Feature, FeatureMapping
-from raitools.services.data_drift.exceptions import BadFeatureMappingError
 
 
 def test_unsupported_kind() -> None:

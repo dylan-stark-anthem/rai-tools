@@ -3,7 +3,7 @@
 import bs4
 import pytest
 
-from raitools.services.data_drift.use_cases.generate_report import generate_report
+from raitools.services.data_drift.use_cases.create_report import create_report
 
 from tests.services.data_drift.use_cases.common import prepare_record, prepare_report
 
@@ -45,7 +45,7 @@ def test_can_generate_report(
     record = prepare_record(record_filename)
     expected_report_html = prepare_report(report_html_filename)
 
-    report = generate_report(
+    report = create_report(
         record,
         report_builder="simple",
     )

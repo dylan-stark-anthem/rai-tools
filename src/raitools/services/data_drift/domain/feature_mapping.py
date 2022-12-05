@@ -5,7 +5,7 @@ from typing import Dict
 from pydantic import BaseModel, validator
 
 from raitools.services.data_drift.domain.types import ImportanceScore
-from raitools.services.data_drift.exceptions import BadFeatureMappingError
+from raitools.exceptions import BadFeatureMappingError
 
 
 class Feature(BaseModel):

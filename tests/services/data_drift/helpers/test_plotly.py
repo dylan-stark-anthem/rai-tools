@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from raitools.services.data_drift.use_cases.generate_report import generate_report
+from raitools.services.data_drift.use_cases.create_report import create_report
 from tests.services.data_drift.use_cases.common import prepare_record
 
 
@@ -49,7 +49,7 @@ def test_can_generate_report_with_plotly(
     output_path = Path("scratch/tests/services/data_drift/helpers/test_plotly")
     record = prepare_record(record_filename)
 
-    report = generate_report(record, report_builder="plotly")
+    report = create_report(record, report_builder="plotly")
 
     output_path.mkdir(parents=True, exist_ok=True)
     report_path = output_path / report_html_filename

@@ -10,20 +10,20 @@ import pyarrow as pa
 from pyarrow.csv import read_csv
 from pydantic import BaseModel, ValidationError
 
-from raitools.services.data_drift.domain.data_file_readers import read_data_file
-from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.services.data_drift.domain.types import FileName
-from raitools.services.data_drift.exceptions import (
+from raitools.exceptions import (
     BadBundleZipFileError,
     BadDataFileError,
     BadFeatureMappingError,
     BadJobConfigError,
     BadPathToBundleError,
 )
+from raitools.services.data_drift.domain.data_file_readers import read_data_file
+from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
+from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.domain.types import FileName
 
 
-class DataDriftBundle(BaseModel):
+class Bundle(BaseModel):
     """A Data Drift bundle."""
 
     job_config_filename: FileName
@@ -41,8 +41,10 @@ class DataDriftBundle(BaseModel):
         arbitrary_types_allowed = True
 
 
-def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
+def create_bundle_from_zip(bundle_path: Path) -> Bundle:
     """Creates a bundle."""
+    _validate_is_pathlib_path(bundle_path)
+
     job_config = get_job_config_from_bundle(bundle_path)
     job_config_filename = get_job_config_filename_from_bundle(bundle_path)
     feature_mapping = get_feature_mapping_from_bundle(
@@ -61,7 +63,7 @@ def create_bundle_from_zip(bundle_path: Path) -> DataDriftBundle:
         list(feature_mapping.feature_mapping.values()),
     )
 
-    bundle = DataDriftBundle(
+    bundle = Bundle(
         job_config_filename=job_config_filename,
         feature_mapping_filename=job_config.feature_mapping_filename,
         baseline_data_filename=job_config.baseline_data_filename,
@@ -268,4 +270,11 @@ def _validate_data_in_zip_file(bundle_path: Path) -> None:
     if test_data_filename not in filenames:
         raise BadJobConfigError(
             f"Test data file `{test_data_filename}` referenced in `{job_config_filename}` not in `{bundle_path}`."
+        )
+
+
+def _validate_is_pathlib_path(bundle_path: Path) -> None:
+    if not isinstance(bundle_path, Path):
+        raise BadPathToBundleError(
+            f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{type(bundle_path)}`."
         )

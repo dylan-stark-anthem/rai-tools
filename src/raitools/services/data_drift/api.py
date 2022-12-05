@@ -4,13 +4,16 @@ from pathlib import Path
 from typing import Any, Dict
 
 from pydantic import ValidationError
-from raitools.domain.rai_error import RaiError
 
+from raitools.services.data_drift.domain.bundle import create_bundle_from_zip
+from raitools.domain.rai_error import RaiError
+from raitools.exceptions import BadRecordError, DataDriftError
 from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
 from raitools.services.data_drift.domain.response import Response
-from raitools.services.data_drift.exceptions import BadRecordError, DataDriftError
-from raitools.services.data_drift.use_cases.generate_report import generate_report
-from raitools.services.data_drift.use_cases.process_bundle import process_bundle
+from raitools.services.data_drift.use_cases.create_report import create_report
+from raitools.services.data_drift.use_cases.create_record import (
+    create_record_from_bundle,
+)
 
 
 def get_record(bundle_path: str, timestamp: str, uuid: str) -> Dict:
@@ -19,12 +22,14 @@ def get_record(bundle_path: str, timestamp: str, uuid: str) -> Dict:
     This is the integration point with components, RESTful APIs, CLIs, etc.
     """
     try:
-        result = process_bundle(
-            bundle_path=Path(bundle_path),
+        bundle = create_bundle_from_zip(Path(bundle_path))
+        record = create_record_from_bundle(
+            bundle=bundle,
+            bundle_filename=Path(bundle_path).name,
             timestamp=timestamp,
             uuid=uuid,
         )
-        return _make_response(result).dict()
+        return _make_response(record).dict()
     except DataDriftError as excinfo:
         return _make_error_response("Failed to create DataDriftRecord.", excinfo).dict()
 
@@ -35,7 +40,7 @@ def get_report(record: Dict) -> Dict:
     This is the integration point with components, RESTful APIs, CLIs, etc.
     """
     try:
-        result = generate_report(
+        result = create_report(
             record=DataDriftRecord(**record), report_builder="plotly"
         )
         return _make_response(result).dict()

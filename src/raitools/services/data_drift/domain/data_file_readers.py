@@ -5,7 +5,7 @@ from typing import IO
 import pyarrow as pa
 from pyarrow.csv import read_csv
 
-from raitools.services.data_drift.exceptions import BadDataFileError
+from raitools.exceptions import BadDataFileError
 
 
 def read_data_file(data_file: IO[bytes], data_filename: str) -> pa.Table:

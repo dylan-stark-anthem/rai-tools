@@ -4,7 +4,7 @@ import re
 
 from pydantic import BaseModel, validator
 
-from raitools.services.data_drift.exceptions import BadJobConfigError
+from raitools.exceptions import BadJobConfigError
 
 
 class DataDriftJobConfig(BaseModel):

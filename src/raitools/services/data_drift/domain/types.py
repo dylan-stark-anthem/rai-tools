@@ -29,6 +29,10 @@ class Name(ConstrainedStr):
     strict = True
 
 
+class FileName(Name):
+    """A file name."""
+
+
 class ReportName(Name):
     """A report name."""
 
@@ -39,10 +43,6 @@ class DatasetName(Name):
 
 class FeatureName(Name):
     """A feature name."""
-
-
-class FileName(Name):
-    """A file name."""
 
 
 class FeatureKind(str, Enum):

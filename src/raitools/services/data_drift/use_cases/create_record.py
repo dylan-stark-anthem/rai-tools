@@ -3,17 +3,13 @@
 from collections import defaultdict
 from datetime import datetime, timezone
 from operator import attrgetter
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 import uuid
 
 import pyarrow as pa
 
 import raitools
-from raitools.services.data_drift.domain.bundle import (
-    DataDriftBundle,
-    create_bundle_from_zip,
-)
+from raitools.services.data_drift.domain.bundle import Bundle
 from raitools.services.data_drift.domain.data_drift_record import (
     BundleData,
     BundleManifest,
@@ -29,19 +25,17 @@ from raitools.services.data_drift.domain.data_drift_record import (
     ResultMetadata,
 )
 from raitools.services.data_drift.domain.stats import statistical_tests
-from raitools.services.data_drift.exceptions import BadPathToBundleError
 
 
-def process_bundle(
-    bundle_path: Path, timestamp: Optional[str] = None, uuid: Optional[str] = None
+def create_record_from_bundle(
+    bundle: Bundle,
+    bundle_filename: str,
+    timestamp: Optional[str] = None,
+    uuid: Optional[str] = None,
 ) -> DataDriftRecord:
     """Processes a data drift bundle."""
-    _validate_is_pathlib_path(bundle_path)
-
-    bundle = create_bundle_from_zip(bundle_path)
-
     metadata = _compile_metadata_for_record()
-    record_bundle = _compile_bundle_for_record(bundle, bundle_path.name)
+    record_bundle = _compile_bundle_for_record(bundle, bundle_filename)
     results = _compile_drift_results_for_record(bundle, timestamp, uuid)
 
     record = DataDriftRecord(
@@ -59,9 +53,7 @@ def _compile_metadata_for_record() -> RecordMetadata:
     return metadata
 
 
-def _compile_bundle_for_record(
-    bundle: DataDriftBundle, bundle_filename: str
-) -> RecordBundle:
+def _compile_bundle_for_record(bundle: Bundle, bundle_filename: str) -> RecordBundle:
     """Creates record bundle."""
     record_bundle = RecordBundle(
         job_config=bundle.job_config,
@@ -89,7 +81,7 @@ def _compile_bundle_for_record(
 
 
 def _compile_drift_results_for_record(
-    bundle: DataDriftBundle, timestamp: Optional[str] = None, uuid: Optional[str] = None
+    bundle: Bundle, timestamp: Optional[str] = None, uuid: Optional[str] = None
 ) -> RecordResults:
     """Creates drift summary for record."""
     if not timestamp:
@@ -196,13 +188,6 @@ def _compute_num_feature_kind(feature_mapping: Dict, kind: str) -> int:
     return len(
         [feature for feature in feature_mapping.values() if feature.kind == kind]
     )
-
-
-def _validate_is_pathlib_path(bundle_path: Path) -> None:
-    if not isinstance(bundle_path, Path):
-        raise BadPathToBundleError(
-            f"Path to bundle is not a valid `pathlib.Path`, it's a(n) `{type(bundle_path)}`."
-        )
 
 
 def _drifted_feature_list(
