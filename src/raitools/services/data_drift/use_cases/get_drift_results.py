@@ -3,7 +3,7 @@
 from typing import Callable, Dict, List
 import pyarrow as pa
 
-from raitools.services.data_drift.domain.stats import statistical_tests
+from raitools.services.data_drift.stats import statistical_tests
 
 
 def get_drift_result(test_fn: Callable, baseline_data: List, test_data: List) -> Dict:
