@@ -1,9 +1,14 @@
 """Data Drift results."""
 
-from typing import Dict
+from typing import Callable, Dict, List
 import pyarrow as pa
 
 from raitools.services.data_drift.domain.stats import statistical_tests
+
+
+def get_drift_result(test_fn: Callable, baseline_data: List, test_data: List) -> Dict:
+    """Computes drift result."""
+    return test_fn(baseline_data, test_data)
 
 
 def get_drift_results(
@@ -12,6 +17,19 @@ def get_drift_results(
     feature_mapping: Dict,
 ) -> Dict:
     """Computes drift results."""
+    drift_results = {}
+    for feature_name, feature_details in feature_mapping.items():
+        kind = feature_details.kind
+        for test_name, test_details in statistical_tests[kind].items():
+            drift_result = get_drift_result(
+                test_details["method"],
+                baseline_data.column(feature_name).to_pylist(),
+                test_data.column(feature_name).to_pylist(),
+            )
+            drift_results[feature_name] = dict(
+                test_name=test_name, drift_result=drift_result
+            )
+
     OUTCOME_DESC = {
         True: "reject null hypothesis",
         False: "fail to reject null hypothesis",
@@ -24,24 +42,19 @@ def get_drift_results(
     significance_level = 0.05
 
     results = {}
-    for feature_name, feature_details in feature_mapping.items():
-        kind = feature_details.kind
-        tests = statistical_tests[kind]
-        for test_name, test_details in tests.items():
-            result = test_details["method"](
-                baseline_data.column(feature_name).to_pylist(),
-                test_data.column(feature_name).to_pylist(),
-            )
-            outcome = OUTCOME_DESC[result.p_value <= significance_level]
-            drift_status = STATUS_DESC[outcome]
-            results[feature_name] = dict(
-                name=feature_name,
-                statistical_test=dict(
-                    name=test_name,
-                    result=result,
-                    significance_level=significance_level,
-                    outcome=outcome,
-                ),
-                drift_status=drift_status,
-            )
+    for feature_name, drift_result in drift_results.items():
+        outcome = OUTCOME_DESC[
+            drift_result["drift_result"].p_value <= significance_level
+        ]
+        drift_status = STATUS_DESC[outcome]
+        results[feature_name] = dict(
+            name=feature_name,
+            statistical_test=dict(
+                name=drift_result["test_name"],
+                result=drift_result["drift_result"],
+                significance_level=significance_level,
+                outcome=outcome,
+            ),
+            drift_status=drift_status,
+        )
     return results

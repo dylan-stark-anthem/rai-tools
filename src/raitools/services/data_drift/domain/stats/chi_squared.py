@@ -8,10 +8,10 @@ work with.
 
 from typing import List
 
+from raitools import stats
 from raitools.services.data_drift.domain.statistical_test_result import (
     StatisticalTestResult,
 )
-from raitools import stats
 
 
 def chi_squared(baseline_data: List, test_data: List) -> StatisticalTestResult:
