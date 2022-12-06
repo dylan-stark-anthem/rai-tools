@@ -315,9 +315,7 @@ def plotly_drift_magnitude_maker(
         return text
 
     def z(element: Dict[str, Any]) -> Optional[Any]:
-        z = None
-        if element:
-            z = element["p_value"]
+        z = element["p_value"]
         return z
 
     z_data = [[z(element) for element in chunk if element] for chunk in chunked_data]
