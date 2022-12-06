@@ -7,7 +7,7 @@ import zipfile
 
 import pyarrow as pa
 from pyarrow.csv import read_csv
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 
 from raitools.exceptions import (
     BadBundleZipFileError,
@@ -16,28 +16,9 @@ from raitools.exceptions import (
     BadJobConfigError,
     BadPathToBundleError,
 )
-from raitools.services.data_drift.domain.data_file_readers import read_data_file
-from raitools.services.data_drift.domain.feature_mapping import FeatureMapping
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.services.data_drift.domain.types import FileName
-
-
-class Bundle(BaseModel):
-    """A Data Drift bundle."""
-
-    job_config_filename: FileName
-    feature_mapping_filename: FileName
-    baseline_data_filename: FileName
-    test_data_filename: FileName
-    job_config: DataDriftJobConfig
-    feature_mapping: FeatureMapping
-    baseline_data: pa.Table
-    test_data: pa.Table
-
-    class Config:
-        """Configuration for bundle data model."""
-
-        arbitrary_types_allowed = True
+from raitools.services.data_drift.data.bundle import Bundle, FeatureMapping
+from raitools.services.data_drift.data_file_readers import read_data_file
+from raitools.services.data_drift.data.job_config import DataDriftJobConfig
 
 
 def create_bundle_from_zip(bundle_path: Path) -> Bundle:

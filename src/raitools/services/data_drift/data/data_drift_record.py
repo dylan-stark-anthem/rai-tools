@@ -1,26 +1,64 @@
 """The data drift record."""
 
+from enum import Enum
 from typing import Any, Dict, List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConstrainedFloat, ConstrainedInt, Field
 
 import raitools
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
-from raitools.services.data_drift.domain.statistical_test_result import (
-    StatisticalTestResult,
-)
-from raitools.services.data_drift.domain.types import (
-    DriftStatus,
-    FeatureKind,
-    FeatureName,
+from raitools.services.data_drift.data.job_config import DataDriftJobConfig
+from raitools.services.data_drift.data.common import (
     FileName,
     ImportanceScore,
     Name,
-    NonNegativeCount,
-    PositiveCount,
-    Probability,
-    StatisticalTestOutcome,
 )
+
+
+class FeatureName(Name):
+    """A feature name."""
+
+
+class FeatureKind(str, Enum):
+    """A kind of feature."""
+
+    numerical = "numerical"
+    categorical = "categorical"
+
+
+class PositiveCount(ConstrainedInt):
+    """A positive count."""
+
+    ge = 1
+    strict = True
+
+
+class NonNegativeCount(ConstrainedInt):
+    """A non-negative count."""
+
+    ge = 0
+    strict = True
+
+
+class Probability(ConstrainedFloat):
+    """A probability value in [0, 1]."""
+
+    ge = 0.0
+    le = 1.0
+    strict = True
+
+
+class StatisticalTestOutcome(str, Enum):
+    """A statistical test outcome."""
+
+    reject_null_hypothesis = "reject null hypothesis"
+    fail_to_reject_null_hypothesis = "fail to reject null hypothesis"
+
+
+class DriftStatus(str, Enum):
+    """A drift status."""
+
+    drifted = "drifted"
+    not_drifted = "not drifted"
 
 
 class BundleManifest(BaseModel):
@@ -53,6 +91,13 @@ class RecordMetadata(BaseModel):
     """Metadata for data drift record."""
 
     raitools_version: str = Field(raitools.__version__, const=True)
+
+
+class StatisticalTestResult(BaseModel):
+    """Results of a statistical test."""
+
+    test_statistic: float
+    p_value: float
 
 
 class FeatureStatisticalTest(BaseModel):

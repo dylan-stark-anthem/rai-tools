@@ -7,7 +7,7 @@ import pyarrow as pa
 import pytest
 
 from raitools.exceptions import BadDataFileError
-from raitools.services.data_drift.domain.data_file_readers import read_data_file
+from raitools.services.data_drift.data_file_readers import read_data_file
 
 
 @pytest.mark.parametrize(

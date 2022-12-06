@@ -5,8 +5,8 @@ from typing import Any, Dict, List, Optional
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
+from raitools.services.data_drift.data.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.reports.html_report_builder import HtmlReportBuilder
 
 
 def plotly_report_builder(record: DataDriftRecord) -> Any:

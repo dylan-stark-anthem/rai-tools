@@ -13,7 +13,7 @@ from raitools.exceptions import (
     BadJobConfigError,
     BadPathToBundleError,
 )
-from raitools.services.data_drift.domain.bundle import create_bundle_from_zip
+from raitools.services.data_drift.bundles import create_bundle_from_zip
 
 
 @pytest.mark.parametrize(

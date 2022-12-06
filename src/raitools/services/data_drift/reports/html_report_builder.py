@@ -4,7 +4,7 @@
 from datetime import datetime
 from typing import Any, Callable, Dict, List
 
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.data.data_drift_record import DataDriftRecord
 
 
 class HtmlReportBuilder:

@@ -5,7 +5,7 @@ from typing import Any
 
 from raitools.exceptions import DataDriftError
 from raitools.rai_error import RaiError
-from raitools.services.data_drift.domain.response import Response
+from raitools.services.data_drift.data.response import Response
 
 
 def make_response(result: Any) -> Response:

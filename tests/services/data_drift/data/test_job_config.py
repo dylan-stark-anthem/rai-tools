@@ -5,7 +5,7 @@ from pydantic import ValidationError
 import pytest
 
 from raitools.exceptions import BadJobConfigError
-from raitools.services.data_drift.domain.job_config import DataDriftJobConfig
+from raitools.services.data_drift.data.job_config import DataDriftJobConfig
 
 
 @pytest.fixture

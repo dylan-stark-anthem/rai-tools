@@ -9,6 +9,6 @@ per-file-ignores =
     # https://pydantic-docs.helpmanual.io/usage/validators/
     # > validators are "class methods", so the first argument value they
     #   receive is the UserModel class, not an instance of UserModel
-    src/raitools/services/data_drift/domain/job_config.py: B902
+    src/raitools/services/*/data/*.py: B902
     # Acceptance tests are decorated and method names do not need to be unique
-    test_acceptance/services/data_drift/features/steps/api.py: F811
+    test_acceptance/services/*/features/steps/*.py: F811

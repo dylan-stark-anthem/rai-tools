@@ -3,8 +3,8 @@
 from pathlib import Path
 
 import pytest
-from raitools.services.data_drift.domain.bundle import create_bundle_from_zip
 
+from raitools.services.data_drift.bundles import create_bundle_from_zip
 from raitools.services.data_drift.use_cases.create_record import (
     create_record_from_bundle,
 )

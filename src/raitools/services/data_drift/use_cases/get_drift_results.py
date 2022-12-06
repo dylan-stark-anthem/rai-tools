@@ -3,10 +3,8 @@
 from typing import Callable, Dict, List, TypedDict
 
 import pyarrow as pa
+from raitools.services.data_drift.data.data_drift_record import StatisticalTestResult
 
-from raitools.services.data_drift.domain.statistical_test_result import (
-    StatisticalTestResult,
-)
 from raitools.services.data_drift.stats import statistical_tests
 
 

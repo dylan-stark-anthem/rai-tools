@@ -5,7 +5,7 @@ from pydantic import ValidationError
 import pytest
 
 from raitools.exceptions import BadFeatureMappingError
-from raitools.services.data_drift.domain.feature_mapping import Feature, FeatureMapping
+from raitools.services.data_drift.data.bundle import Feature, FeatureMapping
 
 
 def test_unsupported_kind() -> None:

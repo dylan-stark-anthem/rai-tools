@@ -4,8 +4,8 @@ from typing import Any, Dict, List
 
 import bs4
 
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
-from raitools.services.data_drift.domain.html_report_builder import HtmlReportBuilder
+from raitools.services.data_drift.data.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.reports.html_report_builder import HtmlReportBuilder
 
 
 def simple_report_builder(record: DataDriftRecord) -> str:

@@ -5,8 +5,8 @@ from operator import attrgetter
 from typing import Any, Dict, List, Optional
 
 
-from raitools.services.data_drift.domain.bundle import Bundle
-from raitools.services.data_drift.domain.data_drift_record import (
+from raitools.services.data_drift.bundles import Bundle
+from raitools.services.data_drift.data.data_drift_record import (
     BundleData,
     BundleManifest,
     DataDriftRecord,

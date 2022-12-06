@@ -2,10 +2,8 @@
 
 from typing import List
 
-from raitools.services.data_drift.domain.statistical_test_result import (
-    StatisticalTestResult,
-)
 from raitools import stats
+from raitools.services.data_drift.data.data_drift_record import StatisticalTestResult
 
 
 def kolmogorov_smirnov(baseline_data: List, test_data: List) -> StatisticalTestResult:

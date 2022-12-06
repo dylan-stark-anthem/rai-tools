@@ -10,7 +10,7 @@ from zipfile import ZipFile
 import pyarrow as pa
 from pyarrow.csv import write_csv
 
-from raitools.services.data_drift.domain.data_drift_record import DataDriftRecord
+from raitools.services.data_drift.data.data_drift_record import DataDriftRecord
 
 
 def write_bundle_zip_to_disk(

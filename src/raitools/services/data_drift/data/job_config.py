@@ -34,12 +34,12 @@ class DataDriftJobConfig(BaseModel):
         if value == "":
             raise BadJobConfigError("Report name is empty.")
 
-        if find_unsupported_characters(value[0], r"[^a-zA-Z]"):
+        if _find_unsupported_characters(value[0], r"[^a-zA-Z]"):
             raise BadJobConfigError(
                 f"Report name '{value}' does not start with `[a-zA-Z]`."
             )
 
-        if find_unsupported_characters(value, r"[^A-Za-z0-9. _]"):
+        if _find_unsupported_characters(value, r"[^A-Za-z0-9. _]"):
             raise BadJobConfigError(
                 f"Report name '{value}' contains unsupported characters."
             )
@@ -50,7 +50,7 @@ class DataDriftJobConfig(BaseModel):
         return value
 
 
-def find_unsupported_characters(value_string: str, search_string: str) -> bool:
+def _find_unsupported_characters(value_string: str, search_string: str) -> bool:
     """Matches invalid characters.
 
     The search string is a regex to match what should *not* be in the value
