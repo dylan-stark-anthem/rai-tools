@@ -62,6 +62,7 @@ def step_then(context: Context) -> None:
 def step_then(context: Context) -> None:
     """Takes step."""
     assert context.response["body"]["kind"] == "DataDriftReport"
+    _write_report_to_disk(context)
 
 
 @then("the Data Drift service returns an error in the response")  # type: ignore
@@ -129,3 +130,8 @@ def _get_bad_record(context: Context) -> Dict:
 def _write_response_to_disk(context: Context) -> None:
     response_path = context.scratch_path / "response.json"
     response_path.write_text(json.dumps(context.response, indent=4))
+
+
+def _write_report_to_disk(context: Context) -> None:
+    response_path = context.scratch_path / "report.html"
+    response_path.write_text(context.response["body"]["results"])
