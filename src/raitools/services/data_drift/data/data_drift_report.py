@@ -18,5 +18,5 @@ class DataDriftReport(BaseModel):
 
     apiVersion: str = Field("raitools/v1", const=True)
     kind: str = Field("DataDriftReport", const=True)
-    metadata: RecordMetadata = Field(dict)
+    metadata: RecordMetadata = RecordMetadata()
     results: Any

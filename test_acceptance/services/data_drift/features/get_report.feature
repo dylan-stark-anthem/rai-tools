@@ -1,5 +1,6 @@
 Feature: Data Drift service API for getting a report
 
+  @wip
   Scenario: User gets a report
     Given a user has a record
     When they compile the report

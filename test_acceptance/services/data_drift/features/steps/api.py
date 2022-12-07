@@ -1,6 +1,7 @@
 """Acceptance test steps for Data Drift service."""
 
 from datetime import datetime, timezone
+import json
 from typing import Dict
 import uuid
 
@@ -41,12 +42,14 @@ def step_given(context: Context) -> None:
 def step_when(context: Context) -> None:
     """Compiles a record."""
     context.response = _get_response_with_bundle_path(context.bundle_path)
+    _write_response_to_disk(context)
 
 
 @when("they compile the report")  # type: ignore
 def step_when(context: Context) -> None:
     """Compiles a report."""
     context.response = get_report(record=context.record)
+    _write_response_to_disk(context)
 
 
 @then("the Data Drift service returns a record in the response")  # type: ignore
@@ -121,3 +124,8 @@ def _get_bad_record(context: Context) -> Dict:
     record = _get_good_record(context)
     del record["results"]
     return record
+
+
+def _write_response_to_disk(context: Context) -> None:
+    response_path = context.scratch_path / "response.json"
+    response_path.write_text(json.dumps(context.response, indent=4))
