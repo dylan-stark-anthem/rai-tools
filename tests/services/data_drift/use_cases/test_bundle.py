@@ -13,7 +13,10 @@ from raitools.exceptions import (
     BadJobConfigError,
     BadPathToBundleError,
 )
-from raitools.services.data_drift.bundles import create_bundle_from_zip
+from raitools.services.data_drift.bundles import (
+    create_bundle_from_zip,
+    get_job_config_from_bundle,
+)
 
 
 @pytest.mark.parametrize(
@@ -234,6 +237,26 @@ def no_observations_feature_mapping_file_error(
     """The error raised when the feature mapping is empty."""
     return BadFeatureMappingError(
         f"Feature mapping file `{no_observations_feature_mapping_file_path.name}` does not contain any observations (only header)."
+    )
+
+
+@pytest.fixture
+def corrupt_feature_mapping_file_path(job_config: Dict, tmp_path: Path) -> Path:
+    """A path to an empty feature mapping file."""
+    feature_mapping_filename = job_config["feature_mapping_filename"]
+    feature_mapping_path = tmp_path / feature_mapping_filename
+    feature_mapping_path.write_text("name,kind,importance_score\nfoo,")
+    return feature_mapping_path
+
+
+@pytest.fixture
+def corrupt_feature_mapping_file_error(
+    corrupt_feature_mapping_file_path: Path,
+) -> Exception:
+    """The error raised when the feature mapping is empty."""
+    return BadFeatureMappingError(
+        f"Feature mapping file `{corrupt_feature_mapping_file_path.name}` could not be parsed",
+        "CSV parse error: Expected 3 columns, got 2: foo,",
     )
 
 
@@ -498,16 +521,12 @@ def double_categorical_field_error(
 
 def _create_bundle(
     job_config: Dict,
-    feature_mapping_path_fixture: str,
-    baseline_data_path_fixture: str,
-    test_data_path_fixture: str,
+    feature_mapping_path: Path,
+    baseline_data_path: Path,
+    test_data_path: Path,
     tmp_path: Path,
-    request: pytest.FixtureRequest,
 ) -> Path:
-    """A path to a bundle with an empty feature mapping file."""
-    feature_mapping_path = request.getfixturevalue(feature_mapping_path_fixture)
-    baseline_data_path = request.getfixturevalue(baseline_data_path_fixture)
-    test_data_path = request.getfixturevalue(test_data_path_fixture)
+    """A path to a bundle."""
     bundle_path = tmp_path / "bundle.zip"
     with ZipFile(bundle_path, "w") as zip_file:
         job_config_path = tmp_path / "job_config.json"
@@ -520,6 +539,23 @@ def _create_bundle(
         zip_file.write(baseline_data_path, arcname=baseline_data_path.name)
         zip_file.write(test_data_path, arcname=test_data_path.name)
     return bundle_path
+
+
+def _create_bundle_with_fixtures(
+    job_config: Dict,
+    feature_mapping_path_fixture: str,
+    baseline_data_path_fixture: str,
+    test_data_path_fixture: str,
+    tmp_path: Path,
+    request: pytest.FixtureRequest,
+) -> Path:
+    """A path to a bundle."""
+    feature_mapping_path = request.getfixturevalue(feature_mapping_path_fixture)
+    baseline_data_path = request.getfixturevalue(baseline_data_path_fixture)
+    test_data_path = request.getfixturevalue(test_data_path_fixture)
+    return _create_bundle(
+        job_config, feature_mapping_path, baseline_data_path, test_data_path, tmp_path
+    )
 
 
 @pytest.mark.parametrize(
@@ -569,6 +605,13 @@ def _create_bundle(
             "non_empty_baseline_data_path",
             "no_observations_test_data_path",
             "no_observations_test_data_error",
+        ),
+        # Cases in which one of the CSV files is corrupt
+        (
+            "corrupt_feature_mapping_file_path",
+            "non_empty_baseline_data_path",
+            "non_empty_test_data_path",
+            "corrupt_feature_mapping_file_error",
         ),
         # Cases in which one of the CSV files has a different set of fields
         (
@@ -620,7 +663,7 @@ def test_csv_files(
     request: pytest.FixtureRequest,
 ) -> None:
     """Tests that error raised if given empty data file."""
-    bundle_path = _create_bundle(
+    bundle_path = _create_bundle_with_fixtures(
         job_config,
         feature_mapping_path_fixture,
         baseline_data_path_fixture,
@@ -637,3 +680,24 @@ def test_csv_files(
         type(excinfo.value) == type(expected_error)
         and excinfo.value.args == expected_error.args
     )
+
+
+def test_error_if_bad_job_config_in_bundle(
+    non_empty_feature_mapping_file_path: Path,
+    non_empty_baseline_data_path: Path,
+    non_empty_test_data_path: Path,
+    job_config: Dict,
+    tmp_path: Path,
+) -> None:
+    """Tests we error if bad job config in bundle."""
+    del job_config["service_name"]
+    bundle_path = _create_bundle(
+        job_config,
+        non_empty_feature_mapping_file_path,
+        non_empty_baseline_data_path,
+        non_empty_test_data_path,
+        tmp_path,
+    )
+
+    with pytest.raises(BadJobConfigError):
+        get_job_config_from_bundle(bundle_path)

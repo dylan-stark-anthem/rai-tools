@@ -138,7 +138,9 @@ def read_feature_mapping_file(data_file: IO[bytes], data_filename: str) -> pa.Ta
             raise BadFeatureMappingError(
                 f"Feature mapping file `{data_filename}` is empty."
             ) from err
-        raise
+        raise BadFeatureMappingError(
+            f"Feature mapping file `{data_filename}` could not be parsed", *err.args
+        ) from err
 
 
 def _validate_data_file_has_observations(data: pa.Table, data_filename: str) -> None:

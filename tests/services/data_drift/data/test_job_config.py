@@ -43,6 +43,7 @@ def test_job_config_without_field(field_name: str, full_job_config_dict: Dict) -
 
     with pytest.raises(ValidationError) as excinfo:
         DataDriftJobConfig(**full_job_config_dict)
+
     assert {
         "loc": (field_name,),
         "msg": "field required",
