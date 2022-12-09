@@ -22,6 +22,7 @@ from raitools.services.data_drift.data.data_drift_record import (
 )
 from raitools.services.data_drift.use_cases.get_drift_results import (
     DriftResultsType,
+    FeatureType,
     get_drift_results,
 )
 
@@ -33,10 +34,15 @@ def create_record_from_bundle(
     uuid: Optional[str] = None,
 ) -> DataDriftRecord:
     """Processes a data drift bundle."""
+    feature_mapping = {
+        name: FeatureType(name=details.name, kind=details.kind)
+        for name, details in bundle.feature_mapping.feature_mapping.items()
+    }
+
     drift_results = get_drift_results(
         baseline_data=bundle.baseline_data,
         test_data=bundle.test_data,
-        feature_mapping=bundle.feature_mapping.feature_mapping,
+        feature_mapping=feature_mapping,
     )
 
     record_bundle = _compile_bundle_for_record(bundle, bundle_filename)

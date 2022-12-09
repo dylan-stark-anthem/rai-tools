@@ -4,7 +4,6 @@ from typing import Dict, List, TypedDict
 
 import pyarrow as pa
 
-from raitools.services.data_drift.data.bundle import Feature
 from raitools.services.data_drift.stats import statistical_tests
 from raitools.services.data_drift.stats.common import StatisticalTestType
 
@@ -43,6 +42,16 @@ class ResultType(TypedDict):
 
     test_name: str
     drift_result: DriftResultType
+
+
+class FeatureType(TypedDict):
+    """Feature."""
+
+    name: str
+    kind: str
+
+
+DriftResultsType = Dict[str, ResultType]
 
 
 def get_result_for_test(
@@ -90,22 +99,20 @@ def get_drift_results_for_feature(
     return ResultType(test_name=test_name, drift_result=result)
 
 
-DriftResultsType = Dict[str, ResultType]
-
-
 def get_drift_results(
     baseline_data: pa.Table,
     test_data: pa.Table,
-    feature_mapping: Dict[str, Feature],
+    feature_mapping: Dict[str, FeatureType],
 ) -> DriftResultsType:
     """Gets drift results for all features."""
     results = {
         feature_name: get_drift_results_for_feature(
             baseline_data.column(feature_name).to_pylist(),
             test_data.column(feature_name).to_pylist(),
-            feature_details.name,
-            feature_details.kind,
+            feature_details["name"],
+            feature_details["kind"],
         )
         for feature_name, feature_details in feature_mapping.items()
     }
+
     return results
