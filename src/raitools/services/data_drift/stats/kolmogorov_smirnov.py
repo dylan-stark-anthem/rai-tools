@@ -3,14 +3,16 @@
 from typing import List
 
 from raitools import stats
-from raitools.services.data_drift.data.data_drift_record import StatisticalTestResult
+from raitools.services.data_drift.stats.common import StatisticalTestResultType
 
 
-def kolmogorov_smirnov(baseline_data: List, test_data: List) -> StatisticalTestResult:
+def kolmogorov_smirnov(
+    baseline_data: List, test_data: List
+) -> StatisticalTestResultType:
     """Applies Kilmogorov-Smirnov test."""
     test_statistic, p_value = stats.kolmogorov_smirnov(baseline_data, test_data)
 
-    return StatisticalTestResult(
+    return StatisticalTestResultType(
         test_statistic=test_statistic,
         p_value=p_value,
     )

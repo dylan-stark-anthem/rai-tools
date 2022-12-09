@@ -11,14 +11,19 @@ from raitools.services.data_drift.data.data_drift_record import (
     BundleManifest,
     DataDriftRecord,
     DriftSummaryFeature,
+    FeatureStatisticalTest,
     RecordBundle,
     RecordDataSummary,
     RecordDriftDetails,
     RecordDriftSummary,
     RecordResults,
     ResultMetadata,
+    StatisticalTestResult,
 )
-from raitools.services.data_drift.use_cases.get_drift_results import get_drift_results
+from raitools.services.data_drift.use_cases.get_drift_results import (
+    DriftResultsType,
+    get_drift_results,
+)
 
 
 def create_record_from_bundle(
@@ -79,7 +84,7 @@ def _compile_bundle_for_record(bundle: Bundle, bundle_filename: str) -> RecordBu
 
 
 def _compile_drift_results_for_record(
-    drift_results: Dict,
+    drift_results: DriftResultsType,
     feature_mapping: Dict,
     report_name: str,
     timestamp: Optional[str] = None,
@@ -134,7 +139,7 @@ def _compile_drift_results_for_record(
 
 
 def _compile_features_for_drift_summary(
-    drift_results: Dict, feature_mapping: Dict
+    drift_results: DriftResultsType, feature_mapping: Dict
 ) -> Dict[str, DriftSummaryFeature]:
     """Calculates drift statistics for all features."""
     ranking = {
@@ -158,8 +163,22 @@ def _compile_features_for_drift_summary(
             kind=kind,
             rank=ranking[feature_name],
             importance_score=importance_score,
-            statistical_test=feature_results["statistical_test"],
-            drift_status=feature_results["drift_status"],
+            statistical_test=FeatureStatisticalTest(
+                name=feature_results["test_name"],
+                result=StatisticalTestResult(
+                    test_statistic=feature_results["drift_result"]["statistical_test"][
+                        "test_statistic"
+                    ],
+                    p_value=feature_results["drift_result"]["statistical_test"][
+                        "p_value"
+                    ],
+                ),
+                significance_level=feature_results["drift_result"]["statistical_test"][
+                    "significance_level"
+                ],
+                outcome=feature_results["drift_result"]["statistical_test"]["outcome"],
+            ),
+            drift_status=feature_results["drift_result"]["drift_status"],
         )
 
     return results
